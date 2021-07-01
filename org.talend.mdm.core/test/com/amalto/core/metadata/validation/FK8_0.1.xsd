@@ -751,8 +751,6 @@
             </xsd:documentation>
             <xsd:appinfo source="X_Write">DATA_STEWARD</xsd:appinfo>
             <xsd:appinfo source="X_Write">DATA_APPROVER</xsd:appinfo>
-            <xsd:appinfo source="X_Workflow">DATA_APPROVER#WorkFlow_MI_MDM_REF_CD_SET_1.0#Writable</xsd:appinfo>
-            <xsd:appinfo source="X_Workflow">DATA_STEWARD#WorkFlow_MI_MDM_REF_CD_SET_1.0#Writable</xsd:appinfo>
         </xsd:annotation>
         <xsd:complexType>
             <xsd:annotation>
@@ -765,8 +763,6 @@
                     <xsd:annotation>
                         <xsd:documentation>The unique, system generated id for a reference code set.</xsd:documentation>
                         <xsd:appinfo source="X_Label_EN">Reference Code Set ID</xsd:appinfo>
-                        <xsd:appinfo source="X_Workflow">DATA_APPROVER#WorkFlow_MI_MDM_REF_CD_SET_1.0#Writable</xsd:appinfo>
-                        <xsd:appinfo source="X_Workflow">DATA_STEWARD#WorkFlow_MI_MDM_REF_CD_SET_1.0#Writable</xsd:appinfo>
                     </xsd:annotation>
                 </xsd:element>
                 <xsd:element name="REF_CD_SET_NME" nillable="false">
@@ -774,8 +770,6 @@
                         <xsd:documentation>The term used by industry/business for a reference code set.</xsd:documentation>
                         <xsd:appinfo source="X_Write">DATA_STEWARD</xsd:appinfo>
                         <xsd:appinfo source="X_Label_EN">Reference Code Set Name</xsd:appinfo>
-                        <xsd:appinfo source="X_Workflow">DATA_APPROVER#WorkFlow_MI_MDM_REF_CD_SET_1.0#Writable</xsd:appinfo>
-                        <xsd:appinfo source="X_Workflow">DATA_STEWARD#WorkFlow_MI_MDM_REF_CD_SET_1.0#Writable</xsd:appinfo>
                     </xsd:annotation>
                     <xsd:simpleType>
                         <xsd:restriction base="xsd:string">
@@ -788,8 +782,6 @@
                         <xsd:documentation>A long text description of a reference code set.</xsd:documentation>
                         <xsd:appinfo source="X_Write">DATA_STEWARD</xsd:appinfo>
                         <xsd:appinfo source="X_Label_EN">Reference Code Set Description</xsd:appinfo>
-                        <xsd:appinfo source="X_Workflow">DATA_APPROVER#WorkFlow_MI_MDM_REF_CD_SET_1.0#Writable</xsd:appinfo>
-                        <xsd:appinfo source="X_Workflow">DATA_STEWARD#WorkFlow_MI_MDM_REF_CD_SET_1.0#Writable</xsd:appinfo>
                     </xsd:annotation>
                     <xsd:simpleType>
                         <xsd:restriction base="xsd:string">
@@ -815,8 +807,6 @@
                         <xsd:documentation>The date that a reference code set becomes valid.</xsd:documentation>
                         <xsd:appinfo source="X_Write">DATA_STEWARD</xsd:appinfo>
                         <xsd:appinfo source="X_Label_EN">Effective Date</xsd:appinfo>
-                        <xsd:appinfo source="X_Workflow">DATA_APPROVER#WorkFlow_MI_MDM_REF_CD_SET_1.0#Writable</xsd:appinfo>
-                        <xsd:appinfo source="X_Workflow">DATA_STEWARD#WorkFlow_MI_MDM_REF_CD_SET_1.0#Writable</xsd:appinfo>
                         <xsd:appinfo source="X_Default_Value_Rule">
                             fn:format-dateTime(fn:current-dateTime(),'[Y0001]-[M01]-[D01]T[H01]:[m01]:[s01]')
                         </xsd:appinfo>
@@ -827,8 +817,6 @@
                         <xsd:documentation>The date that a code set becomes invalid.</xsd:documentation>
                         <xsd:appinfo source="X_Write">DATA_STEWARD</xsd:appinfo>
                         <xsd:appinfo source="X_Label_EN">Termination Date</xsd:appinfo>
-                        <xsd:appinfo source="X_Workflow">DATA_APPROVER#WorkFlow_MI_MDM_REF_CD_SET_1.0#Writable</xsd:appinfo>
-                        <xsd:appinfo source="X_Workflow">DATA_STEWARD#WorkFlow_MI_MDM_REF_CD_SET_1.0#Writable</xsd:appinfo>
                     </xsd:annotation>
                 </xsd:element>
                 <xsd:element name="CRTN_USR_IDNTFR" nillable="false">
@@ -838,8 +826,6 @@
                         </xsd:documentation>
                         <xsd:appinfo source="X_Write">DATA_STEWARD</xsd:appinfo>
                         <xsd:appinfo source="X_Label_EN">Created User ID</xsd:appinfo>
-                        <xsd:appinfo source="X_Workflow">DATA_APPROVER#WorkFlow_MI_MDM_REF_CD_SET_1.0#Writable</xsd:appinfo>
-                        <xsd:appinfo source="X_Workflow">DATA_STEWARD#WorkFlow_MI_MDM_REF_CD_SET_1.0#Writable</xsd:appinfo>
                     </xsd:annotation>
                     <xsd:simpleType>
                         <xsd:restriction base="xsd:string">
@@ -853,8 +839,6 @@
                         </xsd:documentation>
 
                         <xsd:appinfo source="X_Label_EN">Load Date</xsd:appinfo>
-                        <xsd:appinfo source="X_Workflow">DATA_APPROVER#WorkFlow_MI_MDM_REF_CD_SET_1.0#Writable</xsd:appinfo>
-                        <xsd:appinfo source="X_Workflow">DATA_STEWARD#WorkFlow_MI_MDM_REF_CD_SET_1.0#Writable</xsd:appinfo>
                         <xsd:appinfo source="X_Default_Value_Rule">
                             fn:format-dateTime(fn:current-dateTime(),'[Y0001]-[M01]-[D01]T[H01]:[m01]:[s01]')
                         </xsd:appinfo>
@@ -863,8 +847,6 @@
                 <xsd:element maxOccurs="1" minOccurs="0" name="LST_UPD_DT" nillable="true" type="xsd:dateTime">
                     <xsd:annotation>
                         <xsd:documentation>The date/time that a code set is modified in the database.</xsd:documentation>
-                        <xsd:appinfo source="X_Workflow">DATA_APPROVER#WorkFlow_MI_MDM_REF_CD_SET_1.0#Writable</xsd:appinfo>
-                        <xsd:appinfo source="X_Workflow">DATA_STEWARD#WorkFlow_MI_MDM_REF_CD_SET_1.0#Writable</xsd:appinfo>
                         <xsd:appinfo source="X_Default_Value_Rule">
                             fn:format-dateTime(fn:current-dateTime(),'[Y0001]-[M01]-[D01]T[H01]:[m01]:[s01]')
                         </xsd:appinfo>
@@ -874,8 +856,6 @@
                 <xsd:element maxOccurs="1" minOccurs="0" name="LST_UPD_USR_IDNTFR" nillable="true">
                     <xsd:annotation>
                         <xsd:documentation>The unique id of the person or system that modified a code set.</xsd:documentation>
-                        <xsd:appinfo source="X_Workflow">DATA_APPROVER#WorkFlow_MI_MDM_REF_CD_SET_1.0#Writable</xsd:appinfo>
-                        <xsd:appinfo source="X_Workflow">DATA_STEWARD#WorkFlow_MI_MDM_REF_CD_SET_1.0#Writable</xsd:appinfo>
                         <xsd:appinfo source="X_Label_EN">Last Update User ID</xsd:appinfo>
                     </xsd:annotation>
                     <xsd:simpleType>
@@ -889,8 +869,6 @@
                         <xsd:documentation>A short description describing the disposition of the record that a user changes. Valid
                             values include: Approved, Denied, Withdrawn
                         </xsd:documentation>
-                        <xsd:appinfo source="X_Workflow">DATA_APPROVER#WorkFlow_MI_MDM_REF_CD_SET_1.0#Writable</xsd:appinfo>
-                        <xsd:appinfo source="X_Workflow">DATA_STEWARD#WorkFlow_MI_MDM_REF_CD_SET_1.0#Writable</xsd:appinfo>
                         <xsd:appinfo source="X_Default_Value_Rule">"Pending"</xsd:appinfo>
 
 

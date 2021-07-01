@@ -4,8 +4,6 @@
         <xsd:sequence maxOccurs="unbounded" minOccurs="0">
             <xsd:element maxOccurs="1" minOccurs="1" name="IdMatiere" type="AUTO_INCREMENT">
                 <xsd:annotation>
-                    <xsd:appinfo source="X_Workflow">Demo_Manager#REFERENTIEL_DemandeMatiere_1.0#Writable</xsd:appinfo>
-                    <xsd:appinfo source="X_Workflow">BusinessUser#REFERENTIEL_DemandeMatiere_1.0#Read-only</xsd:appinfo>
                     <xsd:appinfo source="X_Label_FR">Identifiant</xsd:appinfo>
                     <xsd:appinfo source="X_Description_FR">Identifiant technique de l'objet Matière</xsd:appinfo>
                     <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
@@ -17,8 +15,6 @@
                     <xsd:appinfo source="X_Description_FR">Code alphanumérique permettant d’identifier communément la matière
                     </xsd:appinfo>
                     <xsd:appinfo source="X_Label_FR">Code matière</xsd:appinfo>
-                    <xsd:appinfo source="X_Workflow">Demo_Manager#REFERENTIEL_DemandeMatiere_1.0#Writable</xsd:appinfo>
-                    <xsd:appinfo source="X_Workflow">BusinessUser#REFERENTIEL_DemandeMatiere_1.0#Read-only</xsd:appinfo>
                     <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
                     <xsd:appinfo source="X_Write">AdministrateurReferentiel</xsd:appinfo>
                 </xsd:annotation>
@@ -26,8 +22,6 @@
             <xsd:element maxOccurs="1" minOccurs="1" name="LibelleLong" type="AttrTypeText255">
                 <xsd:annotation>
                     <xsd:appinfo source="X_Description_FR">Désignation courante de la matière</xsd:appinfo>
-                    <xsd:appinfo source="X_Workflow">Demo_Manager#REFERENTIEL_DemandeMatiere_1.0#Writable</xsd:appinfo>
-                    <xsd:appinfo source="X_Workflow">BusinessUser#REFERENTIEL_DemandeMatiere_1.0#Read-only</xsd:appinfo>
                     <xsd:appinfo source="X_Label_FR">Libellé long</xsd:appinfo>
                     <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
                     <xsd:appinfo source="X_Write">AdministrateurReferentiel</xsd:appinfo>
@@ -35,8 +29,6 @@
             </xsd:element>
             <xsd:element maxOccurs="1" minOccurs="0" name="LibelleOfficiel" type="AttrTypeText255">
                 <xsd:annotation>
-                    <xsd:appinfo source="X_Workflow">Demo_Manager#REFERENTIEL_DemandeMatiere_1.0#Writable</xsd:appinfo>
-                    <xsd:appinfo source="X_Workflow">BusinessUser#REFERENTIEL_DemandeMatiere_1.0#Read-only</xsd:appinfo>
                     <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
                     <xsd:appinfo source="X_Write">AdministrateurReferentiel</xsd:appinfo>
                     <xsd:appinfo source="X_Description_FR">Désignation officielle de la matière pour les échanges avec partenaires
@@ -52,8 +44,6 @@
                         physique représentée par la matière
                     </xsd:appinfo>
                     <xsd:appinfo source="X_Label_FR">Définition</xsd:appinfo>
-                    <xsd:appinfo source="X_Workflow">Demo_Manager#REFERENTIEL_DemandeMatiere_1.0#Writable</xsd:appinfo>
-                    <xsd:appinfo source="X_Workflow">BusinessUser#REFERENTIEL_DemandeMatiere_1.0#Read-only</xsd:appinfo>
                     <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
                     <xsd:appinfo source="X_Write">AdministrateurReferentiel</xsd:appinfo>
                 </xsd:annotation>
@@ -64,8 +54,6 @@
                         applications
                     </xsd:appinfo>
                     <xsd:appinfo source="X_Label_FR">Date de début de validité</xsd:appinfo>
-                    <xsd:appinfo source="X_Workflow">Demo_Manager#REFERENTIEL_DemandeMatiere_1.0#Writable</xsd:appinfo>
-                    <xsd:appinfo source="X_Workflow">BusinessUser#REFERENTIEL_DemandeMatiere_1.0#Read-only</xsd:appinfo>
                     <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
                     <xsd:appinfo source="X_Write">AdministrateurReferentiel</xsd:appinfo>
                 </xsd:annotation>
@@ -76,8 +64,6 @@
                         applications
                     </xsd:appinfo>
                     <xsd:appinfo source="X_Label_FR">Date de fin de validité</xsd:appinfo>
-                    <xsd:appinfo source="X_Workflow">Demo_Manager#REFERENTIEL_DemandeMatiere_1.0#Writable</xsd:appinfo>
-                    <xsd:appinfo source="X_Workflow">BusinessUser#REFERENTIEL_DemandeMatiere_1.0#Read-only</xsd:appinfo>
                     <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
                     <xsd:appinfo source="X_Write">AdministrateurReferentiel</xsd:appinfo>
                 </xsd:annotation>
@@ -88,8 +74,6 @@
                         des matières
                     </xsd:appinfo>
                     <xsd:appinfo source="X_Label_FR">Mots clés</xsd:appinfo>
-                    <xsd:appinfo source="X_Workflow">Demo_Manager#REFERENTIEL_DemandeMatiere_1.0#Writable</xsd:appinfo>
-                    <xsd:appinfo source="X_Workflow">BusinessUser#REFERENTIEL_DemandeMatiere_1.0#Read-only</xsd:appinfo>
                     <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
                     <xsd:appinfo source="X_Write">AdministrateurReferentiel</xsd:appinfo>
                 </xsd:annotation>
@@ -98,8 +82,6 @@
                 <xsd:annotation>
                     <xsd:appinfo source="X_Description_FR">Permet d’identifier les matières dangereuses (O/N)</xsd:appinfo>
                     <xsd:appinfo source="X_Label_FR">Dangereux</xsd:appinfo>
-                    <xsd:appinfo source="X_Workflow">Demo_Manager#REFERENTIEL_DemandeMatiere_1.0#Writable</xsd:appinfo>
-                    <xsd:appinfo source="X_Workflow">BusinessUser#REFERENTIEL_DemandeMatiere_1.0#Read-only</xsd:appinfo>
                     <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
                     <xsd:appinfo source="X_Write">AdministrateurReferentiel</xsd:appinfo>
                 </xsd:annotation>
@@ -111,8 +93,6 @@
                         niveau de regroupement représenté par cette matière
                     </xsd:appinfo>
                     <xsd:appinfo source="X_ForeignKey">NiveauMatiere/IdNiveauMatiere</xsd:appinfo>
-                    <xsd:appinfo source="X_Workflow">Demo_Manager#REFERENTIEL_DemandeMatiere_1.0#Writable</xsd:appinfo>
-                    <xsd:appinfo source="X_Workflow">BusinessUser#REFERENTIEL_DemandeMatiere_1.0#Read-only</xsd:appinfo>
                     <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
                     <xsd:appinfo source="X_Write">AdministrateurReferentiel</xsd:appinfo>
                     <xsd:appinfo source="X_ForeignKeyInfo">NiveauMatiere/Libelle</xsd:appinfo>
@@ -128,8 +108,6 @@
                     </xsd:appinfo>
                     <xsd:appinfo source="X_ForeignKey">StatutMatiere/IdStatutMatiere</xsd:appinfo>
                     <xsd:appinfo source="X_ForeignKeyInfo">StatutMatiere/Libelle</xsd:appinfo>
-                    <xsd:appinfo source="X_Workflow">Demo_Manager#REFERENTIEL_DemandeMatiere_1.0#Writable</xsd:appinfo>
-                    <xsd:appinfo source="X_Workflow">BusinessUser#REFERENTIEL_DemandeMatiere_1.0#Read-only</xsd:appinfo>
                     <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
                     <xsd:appinfo source="X_Write">AdministrateurReferentiel</xsd:appinfo>
                 </xsd:annotation>
@@ -143,8 +121,6 @@
                     </xsd:appinfo>
                     <xsd:appinfo source="X_ForeignKey">FiliereVeolia/IdFiliereVeolia</xsd:appinfo>
                     <xsd:appinfo source="X_ForeignKeyInfo">FiliereVeolia/LibelleLong</xsd:appinfo>
-                    <xsd:appinfo source="X_Workflow">Demo_Manager#REFERENTIEL_DemandeMatiere_1.0#Writable</xsd:appinfo>
-                    <xsd:appinfo source="X_Workflow">BusinessUser#REFERENTIEL_DemandeMatiere_1.0#Read-only</xsd:appinfo>
                     <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
                     <xsd:appinfo source="X_Write">AdministrateurReferentiel</xsd:appinfo>
                 </xsd:annotation>
@@ -157,8 +133,6 @@
                         Fournisseur
                     </xsd:appinfo>
                     <xsd:appinfo source="X_ForeignKey">CategorieAchat/IdCategorieAchat</xsd:appinfo>
-                    <xsd:appinfo source="X_Workflow">Demo_Manager#REFERENTIEL_DemandeMatiere_1.0#Writable</xsd:appinfo>
-                    <xsd:appinfo source="X_Workflow">BusinessUser#REFERENTIEL_DemandeMatiere_1.0#Read-only</xsd:appinfo>
                     <xsd:appinfo source="X_ForeignKeyInfo">CategorieAchat/CodeCategorieAchat</xsd:appinfo>
                     <xsd:appinfo source="X_ForeignKeyInfo">CategorieAchat/LibelleLong</xsd:appinfo>
                     <xsd:appinfo source="X_Retrieve_FKinfos">true</xsd:appinfo>
@@ -174,8 +148,6 @@
                     </xsd:appinfo>
                     <xsd:appinfo source="X_ForeignKey">Matiere/IdMatiere</xsd:appinfo>
                     <xsd:appinfo source="X_ForeignKey_Filter">Matiere/NiveauMatiere$$&lt;$$Matiere/NiveauMatiere$$#</xsd:appinfo>
-                    <xsd:appinfo source="X_Workflow">Demo_Manager#REFERENTIEL_DemandeMatiere_1.0#Writable</xsd:appinfo>
-                    <xsd:appinfo source="X_Workflow">BusinessUser#REFERENTIEL_DemandeMatiere_1.0#Read-only</xsd:appinfo>
                     <xsd:appinfo source="X_ForeignKeyInfo">Matiere/CodeMatiere</xsd:appinfo>
                     <xsd:appinfo source="X_ForeignKeyInfo">Matiere/LibelleLong</xsd:appinfo>
                     <xsd:appinfo source="X_Retrieve_FKinfos">true</xsd:appinfo>
@@ -190,8 +162,6 @@
                         de définir la où les éléments de la nomenclature européenne des déchets permettant de qualifier la matière
                     </xsd:appinfo>
                     <xsd:appinfo source="X_ForeignKey">NomenclatureDechet/IdNomenclatureDechet</xsd:appinfo>
-                    <xsd:appinfo source="X_Workflow">Demo_Manager#REFERENTIEL_DemandeMatiere_1.0#Writable</xsd:appinfo>
-                    <xsd:appinfo source="X_Workflow">BusinessUser#REFERENTIEL_DemandeMatiere_1.0#Read-only</xsd:appinfo>
                     <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
                     <xsd:appinfo source="X_Write">AdministrateurReferentiel</xsd:appinfo>
                     <xsd:appinfo source="X_ForeignKeyInfo">NomenclatureDechet/Libelle</xsd:appinfo>
@@ -206,8 +176,6 @@
                         de définir le où les éléments de la nomenclature filière permettant de qualifier la matière
                     </xsd:appinfo>
                     <xsd:appinfo source="X_ForeignKey">NomenclatureFiliere/IdNomenclatureFiliere</xsd:appinfo>
-                    <xsd:appinfo source="X_Workflow">Demo_Manager#REFERENTIEL_DemandeMatiere_1.0#Writable</xsd:appinfo>
-                    <xsd:appinfo source="X_Workflow">BusinessUser#REFERENTIEL_DemandeMatiere_1.0#Read-only</xsd:appinfo>
                     <xsd:appinfo source="X_ForeignKeyInfo">NomenclatureFiliere/Code</xsd:appinfo>
                     <xsd:appinfo source="X_ForeignKeyInfo">NomenclatureFiliere/Libelle</xsd:appinfo>
                     <xsd:appinfo source="X_Retrieve_FKinfos">true</xsd:appinfo>
@@ -219,8 +187,6 @@
             </xsd:element>
             <xsd:element maxOccurs="1" minOccurs="0" name="ValorisationTheorique" type="xsd:string">
                 <xsd:annotation>
-                    <xsd:appinfo source="X_Workflow">Demo_Manager#REFERENTIEL_DemandeMatiere_1.0#Writable</xsd:appinfo>
-                    <xsd:appinfo source="X_Workflow">BusinessUser#REFERENTIEL_DemandeMatiere_1.0#Read-only</xsd:appinfo>
                     <xsd:appinfo source="X_ForeignKey">Valorisation/IdValorisation</xsd:appinfo>
                     <xsd:appinfo source="X_Label_FR">Valorisation théorique</xsd:appinfo>
                     <xsd:appinfo source="X_Description_FR">Lien vers un autre objet de référence VALORISATION permettant
@@ -398,19 +364,11 @@
             </xsd:element>
             <xsd:element maxOccurs="1" minOccurs="0" name="ApprobationCorrespondantRegion" type="ApprobationRegionType">
                 <xsd:annotation>
-                    <xsd:appinfo source="X_Workflow">CorrespondantMatiereRegional#REFERENTIEL_DemandeMatiere_1.0#Writable
-                    </xsd:appinfo>
-                    <xsd:appinfo source="X_Workflow">AdministrateurFonctionnelMatiere#REFERENTIEL_DemandeMatiere_1.0#Read-only
-                    </xsd:appinfo>
                     <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
                 </xsd:annotation>
             </xsd:element>
             <xsd:element maxOccurs="1" minOccurs="0" name="ApprobationAdminFonctionnel" type="ApprobationFonctionnelleType">
                 <xsd:annotation>
-                    <xsd:appinfo source="X_Workflow">CorrespondantMatiereRegional#REFERENTIEL_DemandeMatiere_1.0#Read-only
-                    </xsd:appinfo>
-                    <xsd:appinfo source="X_Workflow">AdministrateurFonctionnelMatiere#REFERENTIEL_DemandeMatiere_1.0#Writable
-                    </xsd:appinfo>
                     <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
                 </xsd:annotation>
             </xsd:element>
@@ -948,20 +906,12 @@
             <xsd:element maxOccurs="1" minOccurs="0" name="Approuve" type="ApprobationRegionEnumType">
                 <xsd:annotation>
                     <xsd:appinfo source="X_Description_FR">Approuve</xsd:appinfo>
-                    <xsd:appinfo source="X_Workflow">CorrespondantMatiereRegional#REFERENTIEL_DemandeMatiere_1.0#Writable
-                    </xsd:appinfo>
-                    <xsd:appinfo source="X_Workflow">AdministrateurFonctionnelMatiere#REFERENTIEL_DemandeMatiere_1.0#Read-only
-                    </xsd:appinfo>
                     <xsd:appinfo source="X_Label_FR">Approbation 1</xsd:appinfo>
                     <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
                 </xsd:annotation>
             </xsd:element>
             <xsd:element maxOccurs="1" minOccurs="0" name="Commentaire" type="xsd:string">
                 <xsd:annotation>
-                    <xsd:appinfo source="X_Workflow">CorrespondantMatiereRegional#REFERENTIEL_DemandeMatiere_1.0#Writable
-                    </xsd:appinfo>
-                    <xsd:appinfo source="X_Workflow">AdministrateurFonctionnelMatiere#REFERENTIEL_DemandeMatiere_1.0#Read-only
-                    </xsd:appinfo>
                     <xsd:appinfo source="X_Label_FR">Commentaire 1</xsd:appinfo>
                     <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
                 </xsd:annotation>
@@ -2066,20 +2016,12 @@
         <xsd:all maxOccurs="1" minOccurs="1">
             <xsd:element maxOccurs="1" minOccurs="0" name="Approuve" type="ApprobationFonctionnelleEnumType">
                 <xsd:annotation>
-                    <xsd:appinfo source="X_Workflow">CorrespondantMatiereRegional#REFERENTIEL_DemandeMatiere_1.0#Read-only
-                    </xsd:appinfo>
-                    <xsd:appinfo source="X_Workflow">AdministrateurFonctionnelMatiere#REFERENTIEL_DemandeMatiere_1.0#Writable
-                    </xsd:appinfo>
                     <xsd:appinfo source="X_Label_FR">Approbation 2</xsd:appinfo>
                     <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
                 </xsd:annotation>
             </xsd:element>
             <xsd:element maxOccurs="1" minOccurs="0" name="Commentaire" type="xsd:string">
                 <xsd:annotation>
-                    <xsd:appinfo source="X_Workflow">CorrespondantMatiereRegional#REFERENTIEL_DemandeMatiere_1.0#Read-only
-                    </xsd:appinfo>
-                    <xsd:appinfo source="X_Workflow">AdministrateurFonctionnelMatiere#REFERENTIEL_DemandeMatiere_1.0#Writable
-                    </xsd:appinfo>
                     <xsd:appinfo source="X_Label_FR">Commentaire 2</xsd:appinfo>
                     <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
                 </xsd:annotation>

@@ -8,149 +8,71 @@
                         <xsd:annotation>
                             <xsd:appinfo source="X_Label_EN">Business Type (Saleable Inventory)</xsd:appinfo>
                             <xsd:appinfo source="X_Write">User</xsd:appinfo>
-                            <xsd:appinfo source="X_Workflow">OM5_DataSteward#OM5_Generic_ClassCodeChange_1.0#Writable
-                            </xsd:appinfo>
-                            <xsd:appinfo source="X_Workflow">OM5_DataSteward#OM5_Generic_NameChange_1.0#Writable
-                            </xsd:appinfo>
-                            <xsd:appinfo source="X_Workflow">OM5_DataSteward#OM5_Generic_DeletionChange_1.0#Writable
-                            </xsd:appinfo>
                         </xsd:annotation>
                     </xsd:element>
                     <xsd:element maxOccurs="1" minOccurs="0" name="BusinessTypeChange" type="TermNameChangeType">
                         <xsd:annotation>
                             <xsd:appinfo source="X_Label_EN">Business Type name workflow</xsd:appinfo>
                             <xsd:appinfo source="X_Write">User</xsd:appinfo>
-                            <xsd:appinfo source="X_Workflow">OM5_DataSteward#OM5_Generic_ClassCodeChange_1.0#Writable
-                            </xsd:appinfo>
-                            <xsd:appinfo source="X_Workflow">OM5_DataSteward#OM5_Generic_NameChange_1.0#Writable
-                            </xsd:appinfo>
-                            <xsd:appinfo source="X_Workflow">OM5_DataSteward#OM5_Generic_DeletionChange_1.0#Writable
-                            </xsd:appinfo>
                         </xsd:annotation>
                     </xsd:element>
                     <xsd:element maxOccurs="1" minOccurs="0" name="SaleableTerm" type="xsd:boolean">
                         <xsd:annotation>
                             <xsd:appinfo source="X_Write">User</xsd:appinfo>
-                            <xsd:appinfo source="X_Workflow">OM5_DataSteward#OM5_Generic_ClassCodeChange_1.0#Writable
-                            </xsd:appinfo>
-                            <xsd:appinfo source="X_Workflow">OM5_DataSteward#OM5_Generic_NameChange_1.0#Writable
-                            </xsd:appinfo>
-                            <xsd:appinfo source="X_Workflow">OM5_DataSteward#OM5_Generic_DeletionChange_1.0#Writable
-                            </xsd:appinfo>
                         </xsd:annotation>
                     </xsd:element>
                     <xsd:element maxOccurs="1" minOccurs="0" name="VideoCategory" type="xsd:boolean">
                         <xsd:annotation>
                             <xsd:appinfo source="X_Label_EN">Video Category</xsd:appinfo>
                             <xsd:appinfo source="X_Write">User</xsd:appinfo>
-                            <xsd:appinfo source="X_Workflow">OM5_DataSteward#OM5_Generic_ClassCodeChange_1.0#Writable
-                            </xsd:appinfo>
-                            <xsd:appinfo source="X_Workflow">OM5_DataSteward#OM5_Generic_NameChange_1.0#Writable
-                            </xsd:appinfo>
-                            <xsd:appinfo source="X_Workflow">OM5_DataSteward#OM5_Generic_DeletionChange_1.0#Writable
-                            </xsd:appinfo>
                         </xsd:annotation>
                     </xsd:element>
                     <xsd:element maxOccurs="1" minOccurs="0" name="MultiClassTerm" type="xsd:boolean">
                         <xsd:annotation>
                             <xsd:appinfo source="X_Label_EN">Multi Class Term</xsd:appinfo>
                             <xsd:appinfo source="X_Write">User</xsd:appinfo>
-                            <xsd:appinfo source="X_Workflow">OM5_DataSteward#OM5_Generic_ClassCodeChange_1.0#Writable
-                            </xsd:appinfo>
-                            <xsd:appinfo source="X_Workflow">OM5_DataSteward#OM5_Generic_NameChange_1.0#Writable
-                            </xsd:appinfo>
-                            <xsd:appinfo source="X_Workflow">OM5_DataSteward#OM5_Generic_DeletionChange_1.0#Writable
-                            </xsd:appinfo>
                         </xsd:annotation>
                     </xsd:element>
                     <xsd:element maxOccurs="1" minOccurs="0" name="GasSafeAlert" type="xsd:boolean">
                         <xsd:annotation>
                             <xsd:appinfo source="X_Label_EN">Gas Safe Alert</xsd:appinfo>
                             <xsd:appinfo source="X_Write">User</xsd:appinfo>
-                            <xsd:appinfo source="X_Workflow">OM5_DataSteward#OM5_Generic_ClassCodeChange_1.0#Writable
-                            </xsd:appinfo>
-                            <xsd:appinfo source="X_Workflow">OM5_DataSteward#OM5_Generic_NameChange_1.0#Writable
-                            </xsd:appinfo>
-                            <xsd:appinfo source="X_Workflow">OM5_DataSteward#OM5_Generic_DeletionChange_1.0#Writable
-                            </xsd:appinfo>
                         </xsd:annotation>
                     </xsd:element>
                     <xsd:element maxOccurs="1" minOccurs="0" name="LHDRestricted" type="xsd:boolean">
                         <xsd:annotation>
                             <xsd:appinfo source="X_Label_EN">LDH Restricted</xsd:appinfo>
                             <xsd:appinfo source="X_Write">User</xsd:appinfo>
-                            <xsd:appinfo source="X_Workflow">OM5_DataSteward#OM5_Generic_ClassCodeChange_1.0#Writable
-                            </xsd:appinfo>
-                            <xsd:appinfo source="X_Workflow">OM5_DataSteward#OM5_Generic_NameChange_1.0#Writable
-                            </xsd:appinfo>
-                            <xsd:appinfo source="X_Workflow">OM5_DataSteward#OM5_Generic_DeletionChange_1.0#Writable
-                            </xsd:appinfo>
                         </xsd:annotation>
                     </xsd:element>
                     <xsd:element maxOccurs="1" minOccurs="0" name="NarrowTerms" type="BusinessFunctionFKType2">
                         <xsd:annotation>
                             <xsd:appinfo source="X_Write">User</xsd:appinfo>
-                            <xsd:appinfo source="X_Workflow">OM5_DataSteward#OM5_Generic_ClassCodeChange_1.0#Writable
-                            </xsd:appinfo>
-                            <xsd:appinfo source="X_Workflow">OM5_DataSteward#OM5_Generic_NameChange_1.0#Writable
-                            </xsd:appinfo>
-                            <xsd:appinfo source="X_Workflow">OM5_DataSteward#OM5_Generic_DeletionChange_1.0#Writable
-                            </xsd:appinfo>
                         </xsd:annotation>
                     </xsd:element>
                     <xsd:element maxOccurs="1" minOccurs="0" name="ExpandsTo" type="ExpansionTermFKType2">
                         <xsd:annotation>
                             <xsd:appinfo source="X_Write">User</xsd:appinfo>
-                            <xsd:appinfo source="X_Workflow">OM5_DataSteward#OM5_Generic_ClassCodeChange_1.0#Writable
-                            </xsd:appinfo>
-                            <xsd:appinfo source="X_Workflow">OM5_DataSteward#OM5_Generic_NameChange_1.0#Writable
-                            </xsd:appinfo>
-                            <xsd:appinfo source="X_Workflow">OM5_DataSteward#OM5_Generic_DeletionChange_1.0#Writable
-                            </xsd:appinfo>
                         </xsd:annotation>
                     </xsd:element>
                     <xsd:element maxOccurs="1" minOccurs="0" name="Brands" type="BrandGroupFKType">
                         <xsd:annotation>
                             <xsd:appinfo source="X_Write">User</xsd:appinfo>
-                            <xsd:appinfo source="X_Workflow">OM5_DataSteward#OM5_Generic_ClassCodeChange_1.0#Writable
-                            </xsd:appinfo>
-                            <xsd:appinfo source="X_Workflow">OM5_DataSteward#OM5_Generic_NameChange_1.0#Writable
-                            </xsd:appinfo>
-                            <xsd:appinfo source="X_Workflow">OM5_DataSteward#OM5_Generic_DeletionChange_1.0#Writable
-                            </xsd:appinfo>
                         </xsd:annotation>
                     </xsd:element>
                     <xsd:element maxOccurs="1" minOccurs="0" name="NarrowTermsChange" type="RelationChangeType">
                         <xsd:annotation>
                             <xsd:appinfo source="X_Write">User</xsd:appinfo>
-                            <xsd:appinfo source="X_Workflow">OM5_DataSteward#OM5_Generic_ClassCodeChange_1.0#Writable
-                            </xsd:appinfo>
-                            <xsd:appinfo source="X_Workflow">OM5_DataSteward#OM5_Generic_NameChange_1.0#Writable
-                            </xsd:appinfo>
-                            <xsd:appinfo source="X_Workflow">OM5_DataSteward#OM5_Generic_DeletionChange_1.0#Writable
-                            </xsd:appinfo>
                         </xsd:annotation>
                     </xsd:element>
                     <xsd:element maxOccurs="1" minOccurs="0" name="ExpandsToChange" type="RelationChangeType">
                         <xsd:annotation>
                             <xsd:appinfo source="X_Write">User</xsd:appinfo>
-                            <xsd:appinfo source="X_Workflow">OM5_DataSteward#OM5_Generic_ClassCodeChange_1.0#Writable
-                            </xsd:appinfo>
-                            <xsd:appinfo source="X_Workflow">OM5_DataSteward#OM5_Generic_NameChange_1.0#Writable
-                            </xsd:appinfo>
-                            <xsd:appinfo source="X_Workflow">OM5_DataSteward#OM5_Generic_DeletionChange_1.0#Writable
-                            </xsd:appinfo>
                         </xsd:annotation>
                     </xsd:element>
                     <xsd:element maxOccurs="1" minOccurs="0" name="BrandsChange" type="RelationChangeType">
                         <xsd:annotation>
                             <xsd:appinfo source="X_Write">User</xsd:appinfo>
-                            <xsd:appinfo source="X_Workflow">OM5_DataSteward#OM5_Generic_ClassCodeChange_1.0#Writable
-                            </xsd:appinfo>
-                            <xsd:appinfo source="X_Workflow">OM5_DataSteward#OM5_Generic_NameChange_1.0#Writable
-                            </xsd:appinfo>
-                            <xsd:appinfo source="X_Workflow">OM5_DataSteward#OM5_Generic_DeletionChange_1.0#Writable
-                            </xsd:appinfo>
                         </xsd:annotation>
                     </xsd:element>
                 </xsd:sequence>
@@ -159,10 +81,6 @@
     </xsd:complexType>
     <xsd:element name="ExpansionTerm" type="ExpansionTermType">
         <xsd:annotation>
-
-            <xsd:appinfo source="X_Workflow">OM5_DataSteward#OM5_Generic_ClassCodeChange_1.0#Writable</xsd:appinfo>
-            <xsd:appinfo source="X_Workflow">OM5_DataSteward#OM5_Generic_NameChange_1.0#Writable</xsd:appinfo>
-            <xsd:appinfo source="X_Workflow">OM5_DataSteward#OM5_Generic_DeletionChange_1.0#Writable</xsd:appinfo>
             <xsd:appinfo source="X_Write">User</xsd:appinfo>
             <xsd:appinfo source="X_Write">OM5_DataSteward</xsd:appinfo>
         </xsd:annotation>
@@ -178,104 +96,50 @@
                     <xsd:element maxOccurs="1" minOccurs="1" name="ExpansionTerm" type="xsd:string">
                         <xsd:annotation>
                             <xsd:appinfo source="X_Write">User</xsd:appinfo>
-                            <xsd:appinfo source="X_Workflow">OM5_DataSteward#OM5_Generic_ClassCodeChange_1.0#Writable
-                            </xsd:appinfo>
-                            <xsd:appinfo source="X_Workflow">OM5_DataSteward#OM5_Generic_NameChange_1.0#Writable
-                            </xsd:appinfo>
-                            <xsd:appinfo source="X_Workflow">OM5_DataSteward#OM5_Generic_DeletionChange_1.0#Writable
-                            </xsd:appinfo>
                         </xsd:annotation>
                     </xsd:element>
                     <xsd:element maxOccurs="1" minOccurs="0" name="ExpansionTermChange" type="TermNameChangeType">
                         <xsd:annotation>
                             <xsd:appinfo source="X_Write">User</xsd:appinfo>
-                            <xsd:appinfo source="X_Workflow">OM5_DataSteward#OM5_Generic_ClassCodeChange_1.0#Writable
-                            </xsd:appinfo>
-                            <xsd:appinfo source="X_Workflow">OM5_DataSteward#OM5_Generic_NameChange_1.0#Writable
-                            </xsd:appinfo>
-                            <xsd:appinfo source="X_Workflow">OM5_DataSteward#OM5_Generic_DeletionChange_1.0#Writable
-                            </xsd:appinfo>
                         </xsd:annotation>
                     </xsd:element>
                     <xsd:element maxOccurs="1" minOccurs="0" name="SaleableTerm" type="xsd:boolean">
                         <xsd:annotation>
                             <xsd:appinfo source="X_Write">User</xsd:appinfo>
-                            <xsd:appinfo source="X_Workflow">OM5_DataSteward#OM5_Generic_ClassCodeChange_1.0#Writable
-                            </xsd:appinfo>
-                            <xsd:appinfo source="X_Workflow">OM5_DataSteward#OM5_Generic_NameChange_1.0#Writable
-                            </xsd:appinfo>
-                            <xsd:appinfo source="X_Workflow">OM5_DataSteward#OM5_Generic_DeletionChange_1.0#Writable
-                            </xsd:appinfo>
                         </xsd:annotation>
                     </xsd:element>
                     <xsd:element maxOccurs="1" minOccurs="0" name="VideoCategory" type="xsd:boolean">
                         <xsd:annotation>
                             <xsd:appinfo source="X_Label_EN">Video Category</xsd:appinfo>
                             <xsd:appinfo source="X_Write">User</xsd:appinfo>
-                            <xsd:appinfo source="X_Workflow">OM5_DataSteward#OM5_Generic_ClassCodeChange_1.0#Writable
-                            </xsd:appinfo>
-                            <xsd:appinfo source="X_Workflow">OM5_DataSteward#OM5_Generic_NameChange_1.0#Writable
-                            </xsd:appinfo>
-                            <xsd:appinfo source="X_Workflow">OM5_DataSteward#OM5_Generic_DeletionChange_1.0#Writable
-                            </xsd:appinfo>
                         </xsd:annotation>
                     </xsd:element>
                     <xsd:element maxOccurs="1" minOccurs="0" name="MultiClassTerm" type="xsd:boolean">
                         <xsd:annotation>
                             <xsd:appinfo source="X_Label_EN">Multi Class Term</xsd:appinfo>
                             <xsd:appinfo source="X_Write">User</xsd:appinfo>
-                            <xsd:appinfo source="X_Workflow">OM5_DataSteward#OM5_Generic_ClassCodeChange_1.0#Writable
-                            </xsd:appinfo>
-                            <xsd:appinfo source="X_Workflow">OM5_DataSteward#OM5_Generic_NameChange_1.0#Writable
-                            </xsd:appinfo>
-                            <xsd:appinfo source="X_Workflow">OM5_DataSteward#OM5_Generic_DeletionChange_1.0#Writable
-                            </xsd:appinfo>
                         </xsd:annotation>
                     </xsd:element>
                     <xsd:element maxOccurs="1" minOccurs="0" name="GasSafeAlert" type="xsd:boolean">
                         <xsd:annotation>
                             <xsd:appinfo source="X_Label_EN">Gas Safe Alert</xsd:appinfo>
                             <xsd:appinfo source="X_Write">User</xsd:appinfo>
-                            <xsd:appinfo source="X_Workflow">OM5_DataSteward#OM5_Generic_ClassCodeChange_1.0#Writable
-                            </xsd:appinfo>
-                            <xsd:appinfo source="X_Workflow">OM5_DataSteward#OM5_Generic_NameChange_1.0#Writable
-                            </xsd:appinfo>
-                            <xsd:appinfo source="X_Workflow">OM5_DataSteward#OM5_Generic_DeletionChange_1.0#Writable
-                            </xsd:appinfo>
                         </xsd:annotation>
                     </xsd:element>
                     <xsd:element maxOccurs="1" minOccurs="0" name="LHDRestricted" type="xsd:boolean">
                         <xsd:annotation>
                             <xsd:appinfo source="X_Label_EN">LHD Restricted</xsd:appinfo>
                             <xsd:appinfo source="X_Write">User</xsd:appinfo>
-                            <xsd:appinfo source="X_Workflow">OM5_DataSteward#OM5_Generic_ClassCodeChange_1.0#Writable
-                            </xsd:appinfo>
-                            <xsd:appinfo source="X_Workflow">OM5_DataSteward#OM5_Generic_NameChange_1.0#Writable
-                            </xsd:appinfo>
-                            <xsd:appinfo source="X_Workflow">OM5_DataSteward#OM5_Generic_DeletionChange_1.0#Writable
-                            </xsd:appinfo>
                         </xsd:annotation>
                     </xsd:element>
                     <xsd:element maxOccurs="1" minOccurs="0" name="Brands" type="BrandGroupFKType">
                         <xsd:annotation>
                             <xsd:appinfo source="X_Write">User</xsd:appinfo>
-                            <xsd:appinfo source="X_Workflow">OM5_DataSteward#OM5_Generic_ClassCodeChange_1.0#Writable
-                            </xsd:appinfo>
-                            <xsd:appinfo source="X_Workflow">OM5_DataSteward#OM5_Generic_NameChange_1.0#Writable
-                            </xsd:appinfo>
-                            <xsd:appinfo source="X_Workflow">OM5_DataSteward#OM5_Generic_DeletionChange_1.0#Writable
-                            </xsd:appinfo>
                         </xsd:annotation>
                     </xsd:element>
                     <xsd:element maxOccurs="1" minOccurs="0" name="BrandsChange" type="RelationChangeType">
                         <xsd:annotation>
                             <xsd:appinfo source="X_Write">User</xsd:appinfo>
-                            <xsd:appinfo source="X_Workflow">OM5_DataSteward#OM5_Generic_ClassCodeChange_1.0#Writable
-                            </xsd:appinfo>
-                            <xsd:appinfo source="X_Workflow">OM5_DataSteward#OM5_Generic_NameChange_1.0#Writable
-                            </xsd:appinfo>
-                            <xsd:appinfo source="X_Workflow">OM5_DataSteward#OM5_Generic_DeletionChange_1.0#Writable
-                            </xsd:appinfo>
                         </xsd:annotation>
                     </xsd:element>
                 </xsd:sequence>
@@ -284,10 +148,6 @@
     </xsd:complexType>
     <xsd:element name="BusinessType" type="BusinessTypeType">
         <xsd:annotation>
-
-            <xsd:appinfo source="X_Workflow">OM5_DataSteward#OM5_Generic_ClassCodeChange_1.0#Writable</xsd:appinfo>
-            <xsd:appinfo source="X_Workflow">OM5_DataSteward#OM5_Generic_NameChange_1.0#Writable</xsd:appinfo>
-            <xsd:appinfo source="X_Workflow">OM5_DataSteward#OM5_Generic_DeletionChange_1.0#Writable</xsd:appinfo>
             <xsd:appinfo source="X_Write">User</xsd:appinfo>
             <xsd:appinfo source="X_Write">OM5_DataSteward</xsd:appinfo>
         </xsd:annotation>
@@ -298,10 +158,6 @@
     </xsd:element>
     <xsd:element name="BusinessFunction" type="BusinessFunctionType">
         <xsd:annotation>
-
-            <xsd:appinfo source="X_Workflow">OM5_DataSteward#OM5_Generic_ClassCodeChange_1.0#Writable</xsd:appinfo>
-            <xsd:appinfo source="X_Workflow">OM5_DataSteward#OM5_Generic_NameChange_1.0#Writable</xsd:appinfo>
-            <xsd:appinfo source="X_Workflow">OM5_DataSteward#OM5_Generic_DeletionChange_1.0#Writable</xsd:appinfo>
             <xsd:appinfo source="X_Write">User</xsd:appinfo>
             <xsd:appinfo source="X_Write">OM5_DataSteward</xsd:appinfo>
         </xsd:annotation>
@@ -317,104 +173,50 @@
                     <xsd:element maxOccurs="1" minOccurs="1" name="BusinessFunction" type="xsd:string">
                         <xsd:annotation>
                             <xsd:appinfo source="X_Write">User</xsd:appinfo>
-                            <xsd:appinfo source="X_Workflow">OM5_DataSteward#OM5_Generic_ClassCodeChange_1.0#Writable
-                            </xsd:appinfo>
-                            <xsd:appinfo source="X_Workflow">OM5_DataSteward#OM5_Generic_NameChange_1.0#Writable
-                            </xsd:appinfo>
-                            <xsd:appinfo source="X_Workflow">OM5_DataSteward#OM5_Generic_DeletionChange_1.0#Writable
-                            </xsd:appinfo>
                         </xsd:annotation>
                     </xsd:element>
                     <xsd:element maxOccurs="1" minOccurs="0" name="BusinessFunctionChange" type="TermNameChangeType">
                         <xsd:annotation>
                             <xsd:appinfo source="X_Write">User</xsd:appinfo>
-                            <xsd:appinfo source="X_Workflow">OM5_DataSteward#OM5_Generic_ClassCodeChange_1.0#Writable
-                            </xsd:appinfo>
-                            <xsd:appinfo source="X_Workflow">OM5_DataSteward#OM5_Generic_NameChange_1.0#Writable
-                            </xsd:appinfo>
-                            <xsd:appinfo source="X_Workflow">OM5_DataSteward#OM5_Generic_DeletionChange_1.0#Writable
-                            </xsd:appinfo>
                         </xsd:annotation>
                     </xsd:element>
                     <xsd:element maxOccurs="1" minOccurs="0" name="SaleableTerm" type="xsd:boolean">
                         <xsd:annotation>
                             <xsd:appinfo source="X_Write">User</xsd:appinfo>
-                            <xsd:appinfo source="X_Workflow">OM5_DataSteward#OM5_Generic_ClassCodeChange_1.0#Writable
-                            </xsd:appinfo>
-                            <xsd:appinfo source="X_Workflow">OM5_DataSteward#OM5_Generic_NameChange_1.0#Writable
-                            </xsd:appinfo>
-                            <xsd:appinfo source="X_Workflow">OM5_DataSteward#OM5_Generic_DeletionChange_1.0#Writable
-                            </xsd:appinfo>
                         </xsd:annotation>
                     </xsd:element>
                     <xsd:element maxOccurs="1" minOccurs="0" name="VideoCategory" type="xsd:boolean">
                         <xsd:annotation>
                             <xsd:appinfo source="X_Label_EN">Video Category</xsd:appinfo>
                             <xsd:appinfo source="X_Write">User</xsd:appinfo>
-                            <xsd:appinfo source="X_Workflow">OM5_DataSteward#OM5_Generic_ClassCodeChange_1.0#Writable
-                            </xsd:appinfo>
-                            <xsd:appinfo source="X_Workflow">OM5_DataSteward#OM5_Generic_NameChange_1.0#Writable
-                            </xsd:appinfo>
-                            <xsd:appinfo source="X_Workflow">OM5_DataSteward#OM5_Generic_DeletionChange_1.0#Writable
-                            </xsd:appinfo>
                         </xsd:annotation>
                     </xsd:element>
                     <xsd:element maxOccurs="1" minOccurs="0" name="MultiClassTerm" type="xsd:boolean">
                         <xsd:annotation>
                             <xsd:appinfo source="X_Label_EN">Multi Class Term</xsd:appinfo>
                             <xsd:appinfo source="X_Write">User</xsd:appinfo>
-                            <xsd:appinfo source="X_Workflow">OM5_DataSteward#OM5_Generic_ClassCodeChange_1.0#Writable
-                            </xsd:appinfo>
-                            <xsd:appinfo source="X_Workflow">OM5_DataSteward#OM5_Generic_NameChange_1.0#Writable
-                            </xsd:appinfo>
-                            <xsd:appinfo source="X_Workflow">OM5_DataSteward#OM5_Generic_DeletionChange_1.0#Writable
-                            </xsd:appinfo>
                         </xsd:annotation>
                     </xsd:element>
                     <xsd:element maxOccurs="1" minOccurs="0" name="GasSafeAlert" type="xsd:boolean">
                         <xsd:annotation>
                             <xsd:appinfo source="X_Label_EN">Gas Safe Alert</xsd:appinfo>
                             <xsd:appinfo source="X_Write">User</xsd:appinfo>
-                            <xsd:appinfo source="X_Workflow">OM5_DataSteward#OM5_Generic_ClassCodeChange_1.0#Writable
-                            </xsd:appinfo>
-                            <xsd:appinfo source="X_Workflow">OM5_DataSteward#OM5_Generic_NameChange_1.0#Writable
-                            </xsd:appinfo>
-                            <xsd:appinfo source="X_Workflow">OM5_DataSteward#OM5_Generic_DeletionChange_1.0#Writable
-                            </xsd:appinfo>
                         </xsd:annotation>
                     </xsd:element>
                     <xsd:element maxOccurs="1" minOccurs="0" name="LHDRestricted" type="xsd:boolean">
                         <xsd:annotation>
                             <xsd:appinfo source="X_Label_EN">LHD Restricted</xsd:appinfo>
                             <xsd:appinfo source="X_Write">User</xsd:appinfo>
-                            <xsd:appinfo source="X_Workflow">OM5_DataSteward#OM5_Generic_ClassCodeChange_1.0#Writable
-                            </xsd:appinfo>
-                            <xsd:appinfo source="X_Workflow">OM5_DataSteward#OM5_Generic_NameChange_1.0#Writable
-                            </xsd:appinfo>
-                            <xsd:appinfo source="X_Workflow">OM5_DataSteward#OM5_Generic_DeletionChange_1.0#Writable
-                            </xsd:appinfo>
                         </xsd:annotation>
                     </xsd:element>
                     <xsd:element maxOccurs="1" minOccurs="0" name="Brands" type="BrandGroupFKType">
                         <xsd:annotation>
                             <xsd:appinfo source="X_Write">User</xsd:appinfo>
-                            <xsd:appinfo source="X_Workflow">OM5_DataSteward#OM5_Generic_ClassCodeChange_1.0#Writable
-                            </xsd:appinfo>
-                            <xsd:appinfo source="X_Workflow">OM5_DataSteward#OM5_Generic_NameChange_1.0#Writable
-                            </xsd:appinfo>
-                            <xsd:appinfo source="X_Workflow">OM5_DataSteward#OM5_Generic_DeletionChange_1.0#Writable
-                            </xsd:appinfo>
                         </xsd:annotation>
                     </xsd:element>
                     <xsd:element maxOccurs="1" minOccurs="0" name="BrandsChange" type="RelationChangeType">
                         <xsd:annotation>
                             <xsd:appinfo source="X_Write">User</xsd:appinfo>
-                            <xsd:appinfo source="X_Workflow">OM5_DataSteward#OM5_Generic_ClassCodeChange_1.0#Writable
-                            </xsd:appinfo>
-                            <xsd:appinfo source="X_Workflow">OM5_DataSteward#OM5_Generic_NameChange_1.0#Writable
-                            </xsd:appinfo>
-                            <xsd:appinfo source="X_Workflow">OM5_DataSteward#OM5_Generic_DeletionChange_1.0#Writable
-                            </xsd:appinfo>
                         </xsd:annotation>
                     </xsd:element>
                 </xsd:sequence>
@@ -423,12 +225,6 @@
     </xsd:complexType>
     <xsd:element name="BrandGroup" type="BrandGroupType">
         <xsd:annotation>
-
-            <xsd:appinfo source="X_Workflow">OM5_DataSteward#OM5_Generic_ClassCodeChange_1.0#Writable</xsd:appinfo>
-            <xsd:appinfo source="X_Workflow">OM5_DataSteward#OM5_Generic_NameChange_1.0#Writable</xsd:appinfo>
-            <xsd:appinfo source="X_Workflow">OM5_DataSteward#OM5_Generic_DeletionChange_1.0#Writable</xsd:appinfo>
-
-
             <xsd:appinfo source="X_Write">User</xsd:appinfo>
             <xsd:appinfo source="X_Write">OM5_DataSteward</xsd:appinfo>
             <xsd:appinfo source="X_Deny_Create">OM5_DataSteward</xsd:appinfo>
@@ -446,54 +242,22 @@
                 <xsd:sequence>
                     <xsd:element maxOccurs="1" minOccurs="1" name="BrandGroup" type="xsd:string">
                         <xsd:annotation>
-
-                            <xsd:appinfo source="X_Workflow">OM5_DataSteward#OM5_Generic_ClassCodeChange_1.0#Writable
-                            </xsd:appinfo>
-                            <xsd:appinfo source="X_Workflow">OM5_DataSteward#OM5_Generic_NameChange_1.0#Writable
-                            </xsd:appinfo>
-                            <xsd:appinfo source="X_Workflow">OM5_DataSteward#OM5_Generic_DeletionChange_1.0#Writable
-                            </xsd:appinfo>
-
                             <xsd:appinfo source="X_Write">User</xsd:appinfo>
                         </xsd:annotation>
                     </xsd:element>
                     <xsd:element maxOccurs="1" minOccurs="0" name="BrandGroupChange" type="TermNameChangeType">
                         <xsd:annotation>
-
-                            <xsd:appinfo source="X_Workflow">OM5_DataSteward#OM5_Generic_ClassCodeChange_1.0#Writable
-                            </xsd:appinfo>
-                            <xsd:appinfo source="X_Workflow">OM5_DataSteward#OM5_Generic_NameChange_1.0#Writable
-                            </xsd:appinfo>
-                            <xsd:appinfo source="X_Workflow">OM5_DataSteward#OM5_Generic_DeletionChange_1.0#Writable
-                            </xsd:appinfo>
-
                             <xsd:appinfo source="X_Write">User</xsd:appinfo>
                         </xsd:annotation>
                     </xsd:element>
                     <xsd:element maxOccurs="1" minOccurs="0" name="NarrowTerms" type="BrandNameFKType">
                         <xsd:annotation>
                             <xsd:appinfo source="X_Label_EN">Narrow Terms</xsd:appinfo>
-
-                            <xsd:appinfo source="X_Workflow">OM5_DataSteward#OM5_Generic_ClassCodeChange_1.0#Writable
-                            </xsd:appinfo>
-                            <xsd:appinfo source="X_Workflow">OM5_DataSteward#OM5_Generic_NameChange_1.0#Writable
-                            </xsd:appinfo>
-                            <xsd:appinfo source="X_Workflow">OM5_DataSteward#OM5_Generic_DeletionChange_1.0#Writable
-                            </xsd:appinfo>
-
                             <xsd:appinfo source="X_Write">User</xsd:appinfo>
                         </xsd:annotation>
                     </xsd:element>
                     <xsd:element maxOccurs="1" minOccurs="0" name="NarrowTermsChange" type="RelationChangeType">
                         <xsd:annotation>
-
-                            <xsd:appinfo source="X_Workflow">OM5_DataSteward#OM5_Generic_ClassCodeChange_1.0#Writable
-                            </xsd:appinfo>
-                            <xsd:appinfo source="X_Workflow">OM5_DataSteward#OM5_Generic_NameChange_1.0#Writable
-                            </xsd:appinfo>
-                            <xsd:appinfo source="X_Workflow">OM5_DataSteward#OM5_Generic_DeletionChange_1.0#Writable
-                            </xsd:appinfo>
-
                             <xsd:appinfo source="X_Write">User</xsd:appinfo>
                         </xsd:annotation>
                     </xsd:element>
@@ -503,10 +267,6 @@
     </xsd:complexType>
     <xsd:element name="BrandName" type="BrandNameType">
         <xsd:annotation>
-
-            <xsd:appinfo source="X_Workflow">OM5_DataSteward#OM5_Generic_ClassCodeChange_1.0#Writable</xsd:appinfo>
-            <xsd:appinfo source="X_Workflow">OM5_DataSteward#OM5_Generic_NameChange_1.0#Writable</xsd:appinfo>
-            <xsd:appinfo source="X_Workflow">OM5_DataSteward#OM5_Generic_DeletionChange_1.0#Writable</xsd:appinfo>
             <xsd:appinfo source="X_Write">User</xsd:appinfo>
             <xsd:appinfo source="X_Write">OM5_DataSteward</xsd:appinfo>
         </xsd:annotation>
@@ -522,23 +282,11 @@
                     <xsd:element maxOccurs="1" minOccurs="1" name="BrandName" type="xsd:string">
                         <xsd:annotation>
                             <xsd:appinfo source="X_Write">User</xsd:appinfo>
-                            <xsd:appinfo source="X_Workflow">OM5_DataSteward#OM5_Generic_ClassCodeChange_1.0#Writable
-                            </xsd:appinfo>
-                            <xsd:appinfo source="X_Workflow">OM5_DataSteward#OM5_Generic_NameChange_1.0#Writable
-                            </xsd:appinfo>
-                            <xsd:appinfo source="X_Workflow">OM5_DataSteward#OM5_Generic_DeletionChange_1.0#Writable
-                            </xsd:appinfo>
                         </xsd:annotation>
                     </xsd:element>
                     <xsd:element maxOccurs="1" minOccurs="0" name="BrandNameChange" type="TermNameChangeType">
                         <xsd:annotation>
                             <xsd:appinfo source="X_Write">User</xsd:appinfo>
-                            <xsd:appinfo source="X_Workflow">OM5_DataSteward#OM5_Generic_ClassCodeChange_1.0#Writable
-                            </xsd:appinfo>
-                            <xsd:appinfo source="X_Workflow">OM5_DataSteward#OM5_Generic_NameChange_1.0#Writable
-                            </xsd:appinfo>
-                            <xsd:appinfo source="X_Workflow">OM5_DataSteward#OM5_Generic_DeletionChange_1.0#Writable
-                            </xsd:appinfo>
                         </xsd:annotation>
                     </xsd:element>
                 </xsd:sequence>
@@ -547,10 +295,6 @@
     </xsd:complexType>
     <xsd:element name="TaxonomyCategory" type="TaxonomyCategoryType">
         <xsd:annotation>
-
-            <xsd:appinfo source="X_Workflow">OM5_DataSteward#OM5_Generic_ClassCodeChange_1.0#Writable</xsd:appinfo>
-            <xsd:appinfo source="X_Workflow">OM5_DataSteward#OM5_Generic_NameChange_1.0#Writable</xsd:appinfo>
-            <xsd:appinfo source="X_Workflow">OM5_DataSteward#OM5_Generic_DeletionChange_1.0#Writable</xsd:appinfo>
             <xsd:appinfo source="X_Write">User</xsd:appinfo>
             <xsd:appinfo source="X_Write">OM5_DataSteward</xsd:appinfo>
         </xsd:annotation>
@@ -566,34 +310,16 @@
                     <xsd:element maxOccurs="1" minOccurs="1" name="TaxonomyCategory" type="xsd:string">
                         <xsd:annotation>
                             <xsd:appinfo source="X_Write">User</xsd:appinfo>
-                            <xsd:appinfo source="X_Workflow">OM5_DataSteward#OM5_Generic_ClassCodeChange_1.0#Writable
-                            </xsd:appinfo>
-                            <xsd:appinfo source="X_Workflow">OM5_DataSteward#OM5_Generic_NameChange_1.0#Writable
-                            </xsd:appinfo>
-                            <xsd:appinfo source="X_Workflow">OM5_DataSteward#OM5_Generic_DeletionChange_1.0#Writable
-                            </xsd:appinfo>
                         </xsd:annotation>
                     </xsd:element>
                     <xsd:element maxOccurs="1" minOccurs="0" name="TaxonomyCategoryChange" type="TermNameChangeType">
                         <xsd:annotation>
                             <xsd:appinfo source="X_Write">User</xsd:appinfo>
-                            <xsd:appinfo source="X_Workflow">OM5_DataSteward#OM5_Generic_ClassCodeChange_1.0#Writable
-                            </xsd:appinfo>
-                            <xsd:appinfo source="X_Workflow">OM5_DataSteward#OM5_Generic_NameChange_1.0#Writable
-                            </xsd:appinfo>
-                            <xsd:appinfo source="X_Workflow">OM5_DataSteward#OM5_Generic_DeletionChange_1.0#Writable
-                            </xsd:appinfo>
                         </xsd:annotation>
                     </xsd:element>
                     <xsd:element maxOccurs="1" minOccurs="0" name="NarrowTerms" type="TaxonomySubCategoryFKType">
                         <xsd:annotation>
                             <xsd:appinfo source="X_Write">User</xsd:appinfo>
-                            <xsd:appinfo source="X_Workflow">OM5_DataSteward#OM5_Generic_ClassCodeChange_1.0#Writable
-                            </xsd:appinfo>
-                            <xsd:appinfo source="X_Workflow">OM5_DataSteward#OM5_Generic_NameChange_1.0#Writable
-                            </xsd:appinfo>
-                            <xsd:appinfo source="X_Workflow">OM5_DataSteward#OM5_Generic_DeletionChange_1.0#Writable
-                            </xsd:appinfo>
                         </xsd:annotation>
                     </xsd:element>
                     <xsd:element maxOccurs="1" minOccurs="0" name="X-SI_BusinessType" type="BusinessTypeFKType2">
@@ -601,12 +327,6 @@
                             <xsd:appinfo source="X_Label_EN">X-SI Taxonomy Term - Business Type</xsd:appinfo>
                             <xsd:appinfo source="X_AutoExpand">false</xsd:appinfo>
                             <xsd:appinfo source="X_Write">User</xsd:appinfo>
-                            <xsd:appinfo source="X_Workflow">OM5_DataSteward#OM5_Generic_ClassCodeChange_1.0#Writable
-                            </xsd:appinfo>
-                            <xsd:appinfo source="X_Workflow">OM5_DataSteward#OM5_Generic_NameChange_1.0#Writable
-                            </xsd:appinfo>
-                            <xsd:appinfo source="X_Workflow">OM5_DataSteward#OM5_Generic_DeletionChange_1.0#Writable
-                            </xsd:appinfo>
                         </xsd:annotation>
                     </xsd:element>
                     <xsd:element maxOccurs="1" minOccurs="0" name="X-SI_BusinessFunction"
@@ -615,12 +335,6 @@
                             <xsd:appinfo source="X_Label_EN">X-SI TaxonomyTerm - Business Function</xsd:appinfo>
                             <xsd:appinfo source="X_AutoExpand">false</xsd:appinfo>
                             <xsd:appinfo source="X_Write">User</xsd:appinfo>
-                            <xsd:appinfo source="X_Workflow">OM5_DataSteward#OM5_Generic_ClassCodeChange_1.0#Writable
-                            </xsd:appinfo>
-                            <xsd:appinfo source="X_Workflow">OM5_DataSteward#OM5_Generic_NameChange_1.0#Writable
-                            </xsd:appinfo>
-                            <xsd:appinfo source="X_Workflow">OM5_DataSteward#OM5_Generic_DeletionChange_1.0#Writable
-                            </xsd:appinfo>
                         </xsd:annotation>
                     </xsd:element>
                     <xsd:element maxOccurs="1" minOccurs="0" name="X-SI_ExpansionTerm" type="ExpansionTermFKType">
@@ -628,57 +342,27 @@
                             <xsd:appinfo source="X_Label_EN">X-SI Taxonomy Term - Expansion Term</xsd:appinfo>
                             <xsd:appinfo source="X_AutoExpand">false</xsd:appinfo>
                             <xsd:appinfo source="X_Write">User</xsd:appinfo>
-                            <xsd:appinfo source="X_Workflow">OM5_DataSteward#OM5_Generic_ClassCodeChange_1.0#Writable
-                            </xsd:appinfo>
-                            <xsd:appinfo source="X_Workflow">OM5_DataSteward#OM5_Generic_NameChange_1.0#Writable
-                            </xsd:appinfo>
-                            <xsd:appinfo source="X_Workflow">OM5_DataSteward#OM5_Generic_DeletionChange_1.0#Writable
-                            </xsd:appinfo>
                         </xsd:annotation>
                     </xsd:element>
                     <xsd:element maxOccurs="1" minOccurs="0" name="NarrowTermsChange" type="RelationChangeType">
                         <xsd:annotation>
                             <xsd:appinfo source="X_Write">User</xsd:appinfo>
-                            <xsd:appinfo source="X_Workflow">OM5_DataSteward#OM5_Generic_ClassCodeChange_1.0#Writable
-                            </xsd:appinfo>
-                            <xsd:appinfo source="X_Workflow">OM5_DataSteward#OM5_Generic_NameChange_1.0#Writable
-                            </xsd:appinfo>
-                            <xsd:appinfo source="X_Workflow">OM5_DataSteward#OM5_Generic_DeletionChange_1.0#Writable
-                            </xsd:appinfo>
                         </xsd:annotation>
                     </xsd:element>
                     <xsd:element maxOccurs="1" minOccurs="0" name="X-SI_BusinessTypeChange" type="RelationChangeType">
                         <xsd:annotation>
                             <xsd:appinfo source="X_Write">User</xsd:appinfo>
-                            <xsd:appinfo source="X_Workflow">OM5_DataSteward#OM5_Generic_ClassCodeChange_1.0#Writable
-                            </xsd:appinfo>
-                            <xsd:appinfo source="X_Workflow">OM5_DataSteward#OM5_Generic_NameChange_1.0#Writable
-                            </xsd:appinfo>
-                            <xsd:appinfo source="X_Workflow">OM5_DataSteward#OM5_Generic_DeletionChange_1.0#Writable
-                            </xsd:appinfo>
                         </xsd:annotation>
                     </xsd:element>
                     <xsd:element maxOccurs="1" minOccurs="0" name="X-SI_BusinessFunctionChange"
                                  type="RelationChangeType">
                         <xsd:annotation>
                             <xsd:appinfo source="X_Write">User</xsd:appinfo>
-                            <xsd:appinfo source="X_Workflow">OM5_DataSteward#OM5_Generic_ClassCodeChange_1.0#Writable
-                            </xsd:appinfo>
-                            <xsd:appinfo source="X_Workflow">OM5_DataSteward#OM5_Generic_NameChange_1.0#Writable
-                            </xsd:appinfo>
-                            <xsd:appinfo source="X_Workflow">OM5_DataSteward#OM5_Generic_DeletionChange_1.0#Writable
-                            </xsd:appinfo>
                         </xsd:annotation>
                     </xsd:element>
                     <xsd:element maxOccurs="1" minOccurs="0" name="X-SI_ExpansionTermChange" type="RelationChangeType">
                         <xsd:annotation>
                             <xsd:appinfo source="X_Write">User</xsd:appinfo>
-                            <xsd:appinfo source="X_Workflow">OM5_DataSteward#OM5_Generic_ClassCodeChange_1.0#Writable
-                            </xsd:appinfo>
-                            <xsd:appinfo source="X_Workflow">OM5_DataSteward#OM5_Generic_NameChange_1.0#Writable
-                            </xsd:appinfo>
-                            <xsd:appinfo source="X_Workflow">OM5_DataSteward#OM5_Generic_DeletionChange_1.0#Writable
-                            </xsd:appinfo>
                         </xsd:annotation>
                     </xsd:element>
                 </xsd:sequence>
@@ -687,10 +371,6 @@
     </xsd:complexType>
     <xsd:element name="TaxonomySubCategory" type="TaxonomySubCategoryType">
         <xsd:annotation>
-
-            <xsd:appinfo source="X_Workflow">OM5_DataSteward#OM5_Generic_ClassCodeChange_1.0#Writable</xsd:appinfo>
-            <xsd:appinfo source="X_Workflow">OM5_DataSteward#OM5_Generic_NameChange_1.0#Writable</xsd:appinfo>
-            <xsd:appinfo source="X_Workflow">OM5_DataSteward#OM5_Generic_DeletionChange_1.0#Writable</xsd:appinfo>
             <xsd:appinfo source="X_Write">User</xsd:appinfo>
             <xsd:appinfo source="X_Write">OM5_DataSteward</xsd:appinfo>
         </xsd:annotation>
@@ -706,23 +386,11 @@
                     <xsd:element maxOccurs="1" minOccurs="1" name="TaxonomySubCategory" type="xsd:string">
                         <xsd:annotation>
                             <xsd:appinfo source="X_Write">User</xsd:appinfo>
-                            <xsd:appinfo source="X_Workflow">OM5_DataSteward#OM5_Generic_ClassCodeChange_1.0#Writable
-                            </xsd:appinfo>
-                            <xsd:appinfo source="X_Workflow">OM5_DataSteward#OM5_Generic_NameChange_1.0#Writable
-                            </xsd:appinfo>
-                            <xsd:appinfo source="X_Workflow">OM5_DataSteward#OM5_Generic_DeletionChange_1.0#Writable
-                            </xsd:appinfo>
                         </xsd:annotation>
                     </xsd:element>
                     <xsd:element maxOccurs="1" minOccurs="0" name="TaxonomySubCategoryChange" type="TermNameChangeType">
                         <xsd:annotation>
                             <xsd:appinfo source="X_Write">User</xsd:appinfo>
-                            <xsd:appinfo source="X_Workflow">OM5_DataSteward#OM5_Generic_ClassCodeChange_1.0#Writable
-                            </xsd:appinfo>
-                            <xsd:appinfo source="X_Workflow">OM5_DataSteward#OM5_Generic_NameChange_1.0#Writable
-                            </xsd:appinfo>
-                            <xsd:appinfo source="X_Workflow">OM5_DataSteward#OM5_Generic_DeletionChange_1.0#Writable
-                            </xsd:appinfo>
                         </xsd:annotation>
                     </xsd:element>
                     <xsd:element maxOccurs="1" minOccurs="0" name="X-SI_BusinessType" type="BusinessTypeFKType2">
@@ -730,12 +398,6 @@
                             <xsd:appinfo source="X_Label_EN">X-SI Taxonomy Term - Business Type</xsd:appinfo>
                             <xsd:appinfo source="X_AutoExpand">false</xsd:appinfo>
                             <xsd:appinfo source="X_Write">User</xsd:appinfo>
-                            <xsd:appinfo source="X_Workflow">OM5_DataSteward#OM5_Generic_ClassCodeChange_1.0#Writable
-                            </xsd:appinfo>
-                            <xsd:appinfo source="X_Workflow">OM5_DataSteward#OM5_Generic_NameChange_1.0#Writable
-                            </xsd:appinfo>
-                            <xsd:appinfo source="X_Workflow">OM5_DataSteward#OM5_Generic_DeletionChange_1.0#Writable
-                            </xsd:appinfo>
                         </xsd:annotation>
                     </xsd:element>
                     <xsd:element maxOccurs="1" minOccurs="0" name="X-SI_BusinessFunction"
@@ -744,12 +406,6 @@
                             <xsd:appinfo source="X_Label_EN">X-SI Taxonomy Term - Business Function</xsd:appinfo>
                             <xsd:appinfo source="X_AutoExpand">false</xsd:appinfo>
                             <xsd:appinfo source="X_Write">User</xsd:appinfo>
-                            <xsd:appinfo source="X_Workflow">OM5_DataSteward#OM5_Generic_ClassCodeChange_1.0#Writable
-                            </xsd:appinfo>
-                            <xsd:appinfo source="X_Workflow">OM5_DataSteward#OM5_Generic_NameChange_1.0#Writable
-                            </xsd:appinfo>
-                            <xsd:appinfo source="X_Workflow">OM5_DataSteward#OM5_Generic_DeletionChange_1.0#Writable
-                            </xsd:appinfo>
                         </xsd:annotation>
                     </xsd:element>
                     <xsd:element maxOccurs="1" minOccurs="0" name="X-SI_ExpansionTerm" type="ExpansionTermFKType">
@@ -757,46 +413,22 @@
                             <xsd:appinfo source="X_Label_EN">X-SI Taxonomy Term - Expansion Term</xsd:appinfo>
                             <xsd:appinfo source="X_AutoExpand">false</xsd:appinfo>
                             <xsd:appinfo source="X_Write">User</xsd:appinfo>
-                            <xsd:appinfo source="X_Workflow">OM5_DataSteward#OM5_Generic_ClassCodeChange_1.0#Writable
-                            </xsd:appinfo>
-                            <xsd:appinfo source="X_Workflow">OM5_DataSteward#OM5_Generic_NameChange_1.0#Writable
-                            </xsd:appinfo>
-                            <xsd:appinfo source="X_Workflow">OM5_DataSteward#OM5_Generic_DeletionChange_1.0#Writable
-                            </xsd:appinfo>
                         </xsd:annotation>
                     </xsd:element>
                     <xsd:element maxOccurs="1" minOccurs="0" name="X-SI_BusinessTypeChange" type="RelationChangeType">
                         <xsd:annotation>
                             <xsd:appinfo source="X_Write">User</xsd:appinfo>
-                            <xsd:appinfo source="X_Workflow">OM5_DataSteward#OM5_Generic_ClassCodeChange_1.0#Writable
-                            </xsd:appinfo>
-                            <xsd:appinfo source="X_Workflow">OM5_DataSteward#OM5_Generic_NameChange_1.0#Writable
-                            </xsd:appinfo>
-                            <xsd:appinfo source="X_Workflow">OM5_DataSteward#OM5_Generic_DeletionChange_1.0#Writable
-                            </xsd:appinfo>
                         </xsd:annotation>
                     </xsd:element>
                     <xsd:element maxOccurs="1" minOccurs="0" name="X-SI_BusinessFunctionChange"
                                  type="RelationChangeType">
                         <xsd:annotation>
                             <xsd:appinfo source="X_Write">User</xsd:appinfo>
-                            <xsd:appinfo source="X_Workflow">OM5_DataSteward#OM5_Generic_ClassCodeChange_1.0#Writable
-                            </xsd:appinfo>
-                            <xsd:appinfo source="X_Workflow">OM5_DataSteward#OM5_Generic_NameChange_1.0#Writable
-                            </xsd:appinfo>
-                            <xsd:appinfo source="X_Workflow">OM5_DataSteward#OM5_Generic_DeletionChange_1.0#Writable
-                            </xsd:appinfo>
                         </xsd:annotation>
                     </xsd:element>
                     <xsd:element maxOccurs="1" minOccurs="0" name="X-SI_ExpansionTermChange" type="RelationChangeType">
                         <xsd:annotation>
                             <xsd:appinfo source="X_Write">User</xsd:appinfo>
-                            <xsd:appinfo source="X_Workflow">OM5_DataSteward#OM5_Generic_ClassCodeChange_1.0#Writable
-                            </xsd:appinfo>
-                            <xsd:appinfo source="X_Workflow">OM5_DataSteward#OM5_Generic_NameChange_1.0#Writable
-                            </xsd:appinfo>
-                            <xsd:appinfo source="X_Workflow">OM5_DataSteward#OM5_Generic_DeletionChange_1.0#Writable
-                            </xsd:appinfo>
                         </xsd:annotation>
                     </xsd:element>
                 </xsd:sequence>
@@ -805,10 +437,6 @@
     </xsd:complexType>
     <xsd:element name="TradeAssociationGroup" type="TradeAssociationsType">
         <xsd:annotation>
-
-            <xsd:appinfo source="X_Workflow">OM5_DataSteward#OM5_Generic_ClassCodeChange_1.0#Writable</xsd:appinfo>
-            <xsd:appinfo source="X_Workflow">OM5_DataSteward#OM5_Generic_NameChange_1.0#Writable</xsd:appinfo>
-            <xsd:appinfo source="X_Workflow">OM5_DataSteward#OM5_Generic_DeletionChange_1.0#Writable</xsd:appinfo>
             <xsd:appinfo source="X_Write">User</xsd:appinfo>
             <xsd:appinfo source="X_Write">OM5_DataSteward</xsd:appinfo>
         </xsd:annotation>
@@ -824,35 +452,17 @@
                     <xsd:element maxOccurs="1" minOccurs="1" name="TradeAssociationGroup" type="xsd:string">
                         <xsd:annotation>
                             <xsd:appinfo source="X_Write">User</xsd:appinfo>
-                            <xsd:appinfo source="X_Workflow">OM5_DataSteward#OM5_Generic_ClassCodeChange_1.0#Writable
-                            </xsd:appinfo>
-                            <xsd:appinfo source="X_Workflow">OM5_DataSteward#OM5_Generic_NameChange_1.0#Writable
-                            </xsd:appinfo>
-                            <xsd:appinfo source="X_Workflow">OM5_DataSteward#OM5_Generic_DeletionChange_1.0#Writable
-                            </xsd:appinfo>
                         </xsd:annotation>
                     </xsd:element>
                     <xsd:element maxOccurs="1" minOccurs="0" name="TradeAssociationGroupChange"
                                  type="TermNameChangeType">
                         <xsd:annotation>
                             <xsd:appinfo source="X_Write">User</xsd:appinfo>
-                            <xsd:appinfo source="X_Workflow">OM5_DataSteward#OM5_Generic_ClassCodeChange_1.0#Writable
-                            </xsd:appinfo>
-                            <xsd:appinfo source="X_Workflow">OM5_DataSteward#OM5_Generic_NameChange_1.0#Writable
-                            </xsd:appinfo>
-                            <xsd:appinfo source="X_Workflow">OM5_DataSteward#OM5_Generic_DeletionChange_1.0#Writable
-                            </xsd:appinfo>
                         </xsd:annotation>
                     </xsd:element>
                     <xsd:element maxOccurs="1" minOccurs="0" name="NarrowTerms" type="TradeAssociationNameFKType">
                         <xsd:annotation>
                             <xsd:appinfo source="X_Write">User</xsd:appinfo>
-                            <xsd:appinfo source="X_Workflow">OM5_DataSteward#OM5_Generic_ClassCodeChange_1.0#Writable
-                            </xsd:appinfo>
-                            <xsd:appinfo source="X_Workflow">OM5_DataSteward#OM5_Generic_NameChange_1.0#Writable
-                            </xsd:appinfo>
-                            <xsd:appinfo source="X_Workflow">OM5_DataSteward#OM5_Generic_DeletionChange_1.0#Writable
-                            </xsd:appinfo>
                         </xsd:annotation>
                     </xsd:element>
                     <xsd:element maxOccurs="1" minOccurs="0" name="X-TradeAssociation-BusinessType"
@@ -860,12 +470,6 @@
                         <xsd:annotation>
                             <xsd:appinfo source="X_Label_EN">X-Trade Association - Business Type</xsd:appinfo>
                             <xsd:appinfo source="X_Write">User</xsd:appinfo>
-                            <xsd:appinfo source="X_Workflow">OM5_DataSteward#OM5_Generic_ClassCodeChange_1.0#Writable
-                            </xsd:appinfo>
-                            <xsd:appinfo source="X_Workflow">OM5_DataSteward#OM5_Generic_NameChange_1.0#Writable
-                            </xsd:appinfo>
-                            <xsd:appinfo source="X_Workflow">OM5_DataSteward#OM5_Generic_DeletionChange_1.0#Writable
-                            </xsd:appinfo>
                         </xsd:annotation>
                     </xsd:element>
                     <xsd:element maxOccurs="1" minOccurs="0" name="X-TradeAssociation-BusinessFunction"
@@ -873,71 +477,35 @@
                         <xsd:annotation>
                             <xsd:appinfo source="X_Label_EN">X-Trade Association - Business Function</xsd:appinfo>
                             <xsd:appinfo source="X_Write">User</xsd:appinfo>
-                            <xsd:appinfo source="X_Workflow">OM5_DataSteward#OM5_Generic_ClassCodeChange_1.0#Writable
-                            </xsd:appinfo>
-                            <xsd:appinfo source="X_Workflow">OM5_DataSteward#OM5_Generic_NameChange_1.0#Writable
-                            </xsd:appinfo>
-                            <xsd:appinfo source="X_Workflow">OM5_DataSteward#OM5_Generic_DeletionChange_1.0#Writable
-                            </xsd:appinfo>
                         </xsd:annotation>
                     </xsd:element>
                     <xsd:element maxOccurs="1" minOccurs="0" name="X-TradeAssociation-ExpansionTerm"
                                  type="ExpansionTermFKType">
                         <xsd:annotation>
                             <xsd:appinfo source="X_Write">User</xsd:appinfo>
-                            <xsd:appinfo source="X_Workflow">OM5_DataSteward#OM5_Generic_ClassCodeChange_1.0#Writable
-                            </xsd:appinfo>
-                            <xsd:appinfo source="X_Workflow">OM5_DataSteward#OM5_Generic_NameChange_1.0#Writable
-                            </xsd:appinfo>
-                            <xsd:appinfo source="X_Workflow">OM5_DataSteward#OM5_Generic_DeletionChange_1.0#Writable
-                            </xsd:appinfo>
                         </xsd:annotation>
                     </xsd:element>
                     <xsd:element maxOccurs="1" minOccurs="0" name="NarrowTermsChange" type="RelationChangeType">
                         <xsd:annotation>
                             <xsd:appinfo source="X_Write">User</xsd:appinfo>
-                            <xsd:appinfo source="X_Workflow">OM5_DataSteward#OM5_Generic_ClassCodeChange_1.0#Writable
-                            </xsd:appinfo>
-                            <xsd:appinfo source="X_Workflow">OM5_DataSteward#OM5_Generic_NameChange_1.0#Writable
-                            </xsd:appinfo>
-                            <xsd:appinfo source="X_Workflow">OM5_DataSteward#OM5_Generic_DeletionChange_1.0#Writable
-                            </xsd:appinfo>
                         </xsd:annotation>
                     </xsd:element>
                     <xsd:element maxOccurs="1" minOccurs="0" name="X-TradeAssociation-BusinessTypeChange"
                                  type="RelationChangeType">
                         <xsd:annotation>
                             <xsd:appinfo source="X_Write">User</xsd:appinfo>
-                            <xsd:appinfo source="X_Workflow">OM5_DataSteward#OM5_Generic_ClassCodeChange_1.0#Writable
-                            </xsd:appinfo>
-                            <xsd:appinfo source="X_Workflow">OM5_DataSteward#OM5_Generic_NameChange_1.0#Writable
-                            </xsd:appinfo>
-                            <xsd:appinfo source="X_Workflow">OM5_DataSteward#OM5_Generic_DeletionChange_1.0#Writable
-                            </xsd:appinfo>
                         </xsd:annotation>
                     </xsd:element>
                     <xsd:element maxOccurs="1" minOccurs="0" name="X-TradeAssociation-BusinessFunctionChange"
                                  type="RelationChangeType">
                         <xsd:annotation>
                             <xsd:appinfo source="X_Write">User</xsd:appinfo>
-                            <xsd:appinfo source="X_Workflow">OM5_DataSteward#OM5_Generic_ClassCodeChange_1.0#Writable
-                            </xsd:appinfo>
-                            <xsd:appinfo source="X_Workflow">OM5_DataSteward#OM5_Generic_NameChange_1.0#Writable
-                            </xsd:appinfo>
-                            <xsd:appinfo source="X_Workflow">OM5_DataSteward#OM5_Generic_DeletionChange_1.0#Writable
-                            </xsd:appinfo>
                         </xsd:annotation>
                     </xsd:element>
                     <xsd:element maxOccurs="1" minOccurs="0" name="X-TradeAssociation-ExpansionTermChange"
                                  type="RelationChangeType">
                         <xsd:annotation>
                             <xsd:appinfo source="X_Write">User</xsd:appinfo>
-                            <xsd:appinfo source="X_Workflow">OM5_DataSteward#OM5_Generic_ClassCodeChange_1.0#Writable
-                            </xsd:appinfo>
-                            <xsd:appinfo source="X_Workflow">OM5_DataSteward#OM5_Generic_NameChange_1.0#Writable
-                            </xsd:appinfo>
-                            <xsd:appinfo source="X_Workflow">OM5_DataSteward#OM5_Generic_DeletionChange_1.0#Writable
-                            </xsd:appinfo>
                         </xsd:annotation>
                     </xsd:element>
                 </xsd:sequence>
@@ -946,10 +514,6 @@
     </xsd:complexType>
     <xsd:element name="TradeAssociationName" type="TradeAssociationNameType">
         <xsd:annotation>
-
-            <xsd:appinfo source="X_Workflow">OM5_DataSteward#OM5_Generic_ClassCodeChange_1.0#Writable</xsd:appinfo>
-            <xsd:appinfo source="X_Workflow">OM5_DataSteward#OM5_Generic_NameChange_1.0#Writable</xsd:appinfo>
-            <xsd:appinfo source="X_Workflow">OM5_DataSteward#OM5_Generic_DeletionChange_1.0#Writable</xsd:appinfo>
             <xsd:appinfo source="X_Write">User</xsd:appinfo>
             <xsd:appinfo source="X_Write">OM5_DataSteward</xsd:appinfo>
         </xsd:annotation>
@@ -965,24 +529,12 @@
                     <xsd:element maxOccurs="1" minOccurs="1" name="TradeAssociationName" type="xsd:string">
                         <xsd:annotation>
                             <xsd:appinfo source="X_Write">User</xsd:appinfo>
-                            <xsd:appinfo source="X_Workflow">OM5_DataSteward#OM5_Generic_ClassCodeChange_1.0#Writable
-                            </xsd:appinfo>
-                            <xsd:appinfo source="X_Workflow">OM5_DataSteward#OM5_Generic_NameChange_1.0#Writable
-                            </xsd:appinfo>
-                            <xsd:appinfo source="X_Workflow">OM5_DataSteward#OM5_Generic_DeletionChange_1.0#Writable
-                            </xsd:appinfo>
                         </xsd:annotation>
                     </xsd:element>
                     <xsd:element maxOccurs="1" minOccurs="0" name="TradeAssociationNameChange"
                                  type="TermNameChangeType">
                         <xsd:annotation>
                             <xsd:appinfo source="X_Write">User</xsd:appinfo>
-                            <xsd:appinfo source="X_Workflow">OM5_DataSteward#OM5_Generic_ClassCodeChange_1.0#Writable
-                            </xsd:appinfo>
-                            <xsd:appinfo source="X_Workflow">OM5_DataSteward#OM5_Generic_NameChange_1.0#Writable
-                            </xsd:appinfo>
-                            <xsd:appinfo source="X_Workflow">OM5_DataSteward#OM5_Generic_DeletionChange_1.0#Writable
-                            </xsd:appinfo>
                         </xsd:annotation>
                     </xsd:element>
                 </xsd:sequence>
@@ -994,25 +546,11 @@
             <xsd:element maxOccurs="1" minOccurs="0" name="NewClassificationCode" type="xsd:string">
                 <xsd:annotation>
                     <xsd:appinfo source="X_Label_EN">New Classification Code</xsd:appinfo>
-
-                    <xsd:appinfo source="X_Workflow">OM5_DataSteward#OM5_Generic_ClassCodeChange_1.0#Writable
-                    </xsd:appinfo>
-                    <xsd:appinfo source="X_Workflow">OM5_DataSteward#OM5_Generic_NameChange_1.0#Writable</xsd:appinfo>
-                    <xsd:appinfo source="X_Workflow">OM5_DataSteward#OM5_Generic_DeletionChange_1.0#Writable
-                    </xsd:appinfo>
-
                     <xsd:appinfo source="X_Write">User</xsd:appinfo>
                 </xsd:annotation>
             </xsd:element>
             <xsd:element maxOccurs="1" minOccurs="1" name="Status" type="StatusApprovalType">
                 <xsd:annotation>
-
-                    <xsd:appinfo source="X_Workflow">OM5_DataSteward#OM5_Generic_ClassCodeChange_1.0#Writable
-                    </xsd:appinfo>
-                    <xsd:appinfo source="X_Workflow">OM5_DataSteward#OM5_Generic_NameChange_1.0#Writable</xsd:appinfo>
-                    <xsd:appinfo source="X_Workflow">OM5_DataSteward#OM5_Generic_DeletionChange_1.0#Writable
-                    </xsd:appinfo>
-
                     <xsd:appinfo source="X_Write">User</xsd:appinfo>
                 </xsd:annotation>
             </xsd:element>
@@ -1033,25 +571,11 @@
             <xsd:element maxOccurs="1" minOccurs="1" name="NewTermName" type="xsd:string">
                 <xsd:annotation>
                     <xsd:appinfo source="X_Label_EN">New Term Name</xsd:appinfo>
-
-                    <xsd:appinfo source="X_Workflow">OM5_DataSteward#OM5_Generic_ClassCodeChange_1.0#Writable
-                    </xsd:appinfo>
-                    <xsd:appinfo source="X_Workflow">OM5_DataSteward#OM5_Generic_NameChange_1.0#Writable</xsd:appinfo>
-                    <xsd:appinfo source="X_Workflow">OM5_DataSteward#OM5_Generic_DeletionChange_1.0#Writable
-                    </xsd:appinfo>
-
                     <xsd:appinfo source="X_Write">User</xsd:appinfo>
                 </xsd:annotation>
             </xsd:element>
             <xsd:element maxOccurs="1" minOccurs="1" name="Status" type="StatusApprovalType">
                 <xsd:annotation>
-
-                    <xsd:appinfo source="X_Workflow">OM5_DataSteward#OM5_Generic_ClassCodeChange_1.0#Writable
-                    </xsd:appinfo>
-                    <xsd:appinfo source="X_Workflow">OM5_DataSteward#OM5_Generic_NameChange_1.0#Writable</xsd:appinfo>
-                    <xsd:appinfo source="X_Workflow">OM5_DataSteward#OM5_Generic_DeletionChange_1.0#Writable
-                    </xsd:appinfo>
-
                     <xsd:appinfo source="X_Write">User</xsd:appinfo>
                 </xsd:annotation>
             </xsd:element>
@@ -1066,11 +590,6 @@
                     <xsd:appinfo source="X_Retrieve_FKinfos">true</xsd:appinfo>
                     <xsd:appinfo source="X_Label_EN">Brand Group</xsd:appinfo>
                     <xsd:appinfo source="X_Write">User</xsd:appinfo>
-                    <xsd:appinfo source="X_Workflow">OM5_DataSteward#OM5_Generic_ClassCodeChange_1.0#Writable
-                    </xsd:appinfo>
-                    <xsd:appinfo source="X_Workflow">OM5_DataSteward#OM5_Generic_NameChange_1.0#Writable</xsd:appinfo>
-                    <xsd:appinfo source="X_Workflow">OM5_DataSteward#OM5_Generic_DeletionChange_1.0#Writable
-                    </xsd:appinfo>
                 </xsd:annotation>
             </xsd:element>
         </xsd:sequence>
@@ -1084,11 +603,6 @@
                     <xsd:appinfo source="X_Retrieve_FKinfos">true</xsd:appinfo>
                     <xsd:appinfo source="X_Label_EN">Business Function</xsd:appinfo>
                     <xsd:appinfo source="X_Write">User</xsd:appinfo>
-                    <xsd:appinfo source="X_Workflow">OM5_DataSteward#OM5_Generic_ClassCodeChange_1.0#Writable
-                    </xsd:appinfo>
-                    <xsd:appinfo source="X_Workflow">OM5_DataSteward#OM5_Generic_NameChange_1.0#Writable</xsd:appinfo>
-                    <xsd:appinfo source="X_Workflow">OM5_DataSteward#OM5_Generic_DeletionChange_1.0#Writable
-                    </xsd:appinfo>
                 </xsd:annotation>
             </xsd:element>
         </xsd:sequence>
@@ -1102,11 +616,6 @@
                     <xsd:appinfo source="X_Retrieve_FKinfos">true</xsd:appinfo>
                     <xsd:appinfo source="X_Label_EN">Expansion Term</xsd:appinfo>
                     <xsd:appinfo source="X_Write">User</xsd:appinfo>
-                    <xsd:appinfo source="X_Workflow">OM5_DataSteward#OM5_Generic_ClassCodeChange_1.0#Writable
-                    </xsd:appinfo>
-                    <xsd:appinfo source="X_Workflow">OM5_DataSteward#OM5_Generic_NameChange_1.0#Writable</xsd:appinfo>
-                    <xsd:appinfo source="X_Workflow">OM5_DataSteward#OM5_Generic_DeletionChange_1.0#Writable
-                    </xsd:appinfo>
                 </xsd:annotation>
             </xsd:element>
         </xsd:sequence>
@@ -1119,13 +628,6 @@
                     <xsd:appinfo source="X_ForeignKey">BrandName/Id</xsd:appinfo>
                     <xsd:appinfo source="X_ForeignKeyInfo">BrandName/BrandName</xsd:appinfo>
                     <xsd:appinfo source="X_Label_EN">Brand Name</xsd:appinfo>
-
-                    <xsd:appinfo source="X_Workflow">OM5_DataSteward#OM5_Generic_ClassCodeChange_1.0#Writable
-                    </xsd:appinfo>
-                    <xsd:appinfo source="X_Workflow">OM5_DataSteward#OM5_Generic_NameChange_1.0#Writable</xsd:appinfo>
-                    <xsd:appinfo source="X_Workflow">OM5_DataSteward#OM5_Generic_DeletionChange_1.0#Writable
-                    </xsd:appinfo>
-
                     <xsd:appinfo source="X_Write">User</xsd:appinfo>
                 </xsd:annotation>
             </xsd:element>
@@ -1140,11 +642,6 @@
                     <xsd:appinfo source="X_ForeignKeyInfo">TradeAssociationName/TradeAssociationName</xsd:appinfo>
                     <xsd:appinfo source="X_Retrieve_FKinfos">true</xsd:appinfo>
                     <xsd:appinfo source="X_Write">User</xsd:appinfo>
-                    <xsd:appinfo source="X_Workflow">OM5_DataSteward#OM5_Generic_ClassCodeChange_1.0#Writable
-                    </xsd:appinfo>
-                    <xsd:appinfo source="X_Workflow">OM5_DataSteward#OM5_Generic_NameChange_1.0#Writable</xsd:appinfo>
-                    <xsd:appinfo source="X_Workflow">OM5_DataSteward#OM5_Generic_DeletionChange_1.0#Writable
-                    </xsd:appinfo>
                 </xsd:annotation>
             </xsd:element>
         </xsd:sequence>
@@ -1158,11 +655,6 @@
                     <xsd:appinfo source="X_Retrieve_FKinfos">true</xsd:appinfo>
                     <xsd:appinfo source="X_Label_EN">Business Type</xsd:appinfo>
                     <xsd:appinfo source="X_Write">User</xsd:appinfo>
-                    <xsd:appinfo source="X_Workflow">OM5_DataSteward#OM5_Generic_ClassCodeChange_1.0#Writable
-                    </xsd:appinfo>
-                    <xsd:appinfo source="X_Workflow">OM5_DataSteward#OM5_Generic_NameChange_1.0#Writable</xsd:appinfo>
-                    <xsd:appinfo source="X_Workflow">OM5_DataSteward#OM5_Generic_DeletionChange_1.0#Writable
-                    </xsd:appinfo>
                 </xsd:annotation>
             </xsd:element>
         </xsd:sequence>
@@ -1176,11 +668,6 @@
                     <xsd:appinfo source="X_Retrieve_FKinfos">true</xsd:appinfo>
                     <xsd:appinfo source="X_Label_EN">Taxonomy Sub Category</xsd:appinfo>
                     <xsd:appinfo source="X_Write">User</xsd:appinfo>
-                    <xsd:appinfo source="X_Workflow">OM5_DataSteward#OM5_Generic_ClassCodeChange_1.0#Writable
-                    </xsd:appinfo>
-                    <xsd:appinfo source="X_Workflow">OM5_DataSteward#OM5_Generic_NameChange_1.0#Writable</xsd:appinfo>
-                    <xsd:appinfo source="X_Workflow">OM5_DataSteward#OM5_Generic_DeletionChange_1.0#Writable
-                    </xsd:appinfo>
                 </xsd:annotation>
             </xsd:element>
         </xsd:sequence>
@@ -1189,25 +676,11 @@
         <xsd:all>
             <xsd:element maxOccurs="1" minOccurs="0" name="NewDeletedFlag" type="xsd:boolean">
                 <xsd:annotation>
-
-                    <xsd:appinfo source="X_Workflow">OM5_DataSteward#OM5_Generic_ClassCodeChange_1.0#Writable
-                    </xsd:appinfo>
-                    <xsd:appinfo source="X_Workflow">OM5_DataSteward#OM5_Generic_NameChange_1.0#Writable</xsd:appinfo>
-                    <xsd:appinfo source="X_Workflow">OM5_DataSteward#OM5_Generic_DeletionChange_1.0#Writable
-                    </xsd:appinfo>
-
                     <xsd:appinfo source="X_Write">User</xsd:appinfo>
                 </xsd:annotation>
             </xsd:element>
             <xsd:element maxOccurs="1" minOccurs="0" name="Status" type="StatusApprovalType">
                 <xsd:annotation>
-
-                    <xsd:appinfo source="X_Workflow">OM5_DataSteward#OM5_Generic_ClassCodeChange_1.0#Writable
-                    </xsd:appinfo>
-                    <xsd:appinfo source="X_Workflow">OM5_DataSteward#OM5_Generic_NameChange_1.0#Writable</xsd:appinfo>
-                    <xsd:appinfo source="X_Workflow">OM5_DataSteward#OM5_Generic_DeletionChange_1.0#Writable
-                    </xsd:appinfo>
-
                     <xsd:appinfo source="X_Write">User</xsd:appinfo>
                 </xsd:annotation>
             </xsd:element>
@@ -1217,41 +690,17 @@
         <xsd:all>
             <xsd:element maxOccurs="1" minOccurs="1" name="Created" type="xsd:dateTime">
                 <xsd:annotation>
-
-                    <xsd:appinfo source="X_Workflow">OM5_DataSteward#OM5_Generic_ClassCodeChange_1.0#Read-only
-                    </xsd:appinfo>
-                    <xsd:appinfo source="X_Workflow">OM5_DataSteward#OM5_Generic_NameChange_1.0#Read-only</xsd:appinfo>
-                    <xsd:appinfo source="X_Workflow">OM5_DataSteward#OM5_Generic_DeletionChange_1.0#Read-only
-                    </xsd:appinfo>
-
-
                     <xsd:appinfo source="X_Write">User</xsd:appinfo>
                 </xsd:annotation>
             </xsd:element>
             <xsd:element maxOccurs="1" minOccurs="0" name="Updated" type="xsd:dateTime">
                 <xsd:annotation>
-
-                    <xsd:appinfo source="X_Workflow">OM5_DataSteward#OM5_Generic_ClassCodeChange_1.0#Read-only
-                    </xsd:appinfo>
-                    <xsd:appinfo source="X_Workflow">OM5_DataSteward#OM5_Generic_NameChange_1.0#Read-only</xsd:appinfo>
-                    <xsd:appinfo source="X_Workflow">OM5_DataSteward#OM5_Generic_DeletionChange_1.0#Read-only
-                    </xsd:appinfo>
-
-
                     <xsd:appinfo source="X_Write">User</xsd:appinfo>
                 </xsd:annotation>
             </xsd:element>
             <xsd:element maxOccurs="1" minOccurs="1" name="Published" type="xsd:boolean">
                 <xsd:annotation>
                     <xsd:appinfo source="X_Default_Value_Rule">"false"</xsd:appinfo>
-
-                    <xsd:appinfo source="X_Workflow">OM5_DataSteward#OM5_Generic_ClassCodeChange_1.0#Read-only
-                    </xsd:appinfo>
-                    <xsd:appinfo source="X_Workflow">OM5_DataSteward#OM5_Generic_NameChange_1.0#Read-only</xsd:appinfo>
-                    <xsd:appinfo source="X_Workflow">OM5_DataSteward#OM5_Generic_DeletionChange_1.0#Read-only
-                    </xsd:appinfo>
-
-
                     <xsd:appinfo source="X_Write">User</xsd:appinfo>
                 </xsd:annotation>
             </xsd:element>
@@ -1261,27 +710,12 @@
                     <xsd:appinfo source="X_FKIntegrity">false</xsd:appinfo>
                     <xsd:appinfo source="X_FKIntegrity_Override">false</xsd:appinfo>
                     <xsd:appinfo source="X_Retrieve_FKinfos">true</xsd:appinfo>
-
-                    <xsd:appinfo source="X_Workflow">OM5_DataSteward#OM5_Generic_ClassCodeChange_1.0#Read-only
-                    </xsd:appinfo>
-                    <xsd:appinfo source="X_Workflow">OM5_DataSteward#OM5_Generic_NameChange_1.0#Read-only</xsd:appinfo>
-                    <xsd:appinfo source="X_Workflow">OM5_DataSteward#OM5_Generic_DeletionChange_1.0#Read-only
-                    </xsd:appinfo>
-
-
                     <xsd:appinfo source="X_Write">User</xsd:appinfo>
                 </xsd:annotation>
             </xsd:element>
             <xsd:element maxOccurs="1" minOccurs="1" name="UnpublishedAllApproved" type="xsd:boolean">
                 <xsd:annotation>
                     <xsd:appinfo source="X_Default_Value_Rule">"false"</xsd:appinfo>
-                    <xsd:appinfo source="X_Workflow">OM5_DataSteward#OM5_Generic_ClassCodeChange_1.0#Read-only
-                    </xsd:appinfo>
-                    <xsd:appinfo source="X_Workflow">OM5_DataSteward#OM5_Generic_NameChange_1.0#Read-only</xsd:appinfo>
-                    <xsd:appinfo source="X_Workflow">OM5_DataSteward#OM5_Generic_DeletionChange_1.0#Read-only
-                    </xsd:appinfo>
-
-
                     <xsd:appinfo source="X_Write">User</xsd:appinfo>
                     <xsd:appinfo source="X_Write">OM5_DataSteward</xsd:appinfo>
                 </xsd:annotation>
@@ -1330,39 +764,17 @@
         <xsd:sequence>
             <xsd:element maxOccurs="1" minOccurs="1" name="Id" type="AUTO_INCREMENT">
                 <xsd:annotation>
-
-                    <xsd:appinfo source="X_Workflow">OM5_DataSteward#OM5_Generic_ClassCodeChange_1.0#Read-only
-                    </xsd:appinfo>
-                    <xsd:appinfo source="X_Workflow">OM5_DataSteward#OM5_Generic_NameChange_1.0#Read-only</xsd:appinfo>
-                    <xsd:appinfo source="X_Workflow">OM5_DataSteward#OM5_Generic_DeletionChange_1.0#Read-only
-                    </xsd:appinfo>
-
-
                     <xsd:appinfo source="X_Write">User</xsd:appinfo>
                     <xsd:appinfo source="X_Write">OM5_DataSteward</xsd:appinfo>
                 </xsd:annotation>
             </xsd:element>
             <xsd:element maxOccurs="1" minOccurs="1" name="ZthesId" type="xsd:string">
                 <xsd:annotation>
-
-                    <xsd:appinfo source="X_Workflow">OM5_DataSteward#OM5_Generic_ClassCodeChange_1.0#Read-only
-                    </xsd:appinfo>
-                    <xsd:appinfo source="X_Workflow">OM5_DataSteward#OM5_Generic_NameChange_1.0#Read-only</xsd:appinfo>
-                    <xsd:appinfo source="X_Workflow">OM5_DataSteward#OM5_Generic_DeletionChange_1.0#Read-only
-                    </xsd:appinfo>
-
                     <xsd:appinfo source="X_Write">User</xsd:appinfo>
                 </xsd:annotation>
             </xsd:element>
             <xsd:element maxOccurs="1" minOccurs="1" name="Release" type="ReleaseType">
                 <xsd:annotation>
-
-                    <xsd:appinfo source="X_Workflow">OM5_DataSteward#OM5_Generic_ClassCodeChange_1.0#Read-only
-                    </xsd:appinfo>
-                    <xsd:appinfo source="X_Workflow">OM5_DataSteward#OM5_Generic_NameChange_1.0#Read-only</xsd:appinfo>
-                    <xsd:appinfo source="X_Workflow">OM5_DataSteward#OM5_Generic_DeletionChange_1.0#Read-only
-                    </xsd:appinfo>
-
 
                     <xsd:appinfo source="X_Write">User</xsd:appinfo>
                     <xsd:appinfo source="X_Write">OM5_DataSteward</xsd:appinfo>
@@ -1372,61 +784,27 @@
                 <xsd:annotation>
                     <xsd:appinfo source="X_Default_Value_Rule">"false"</xsd:appinfo>
 
-                    <xsd:appinfo source="X_Workflow">OM5_DataSteward#OM5_Generic_ClassCodeChange_1.0#Writable
-                    </xsd:appinfo>
-                    <xsd:appinfo source="X_Workflow">OM5_DataSteward#OM5_Generic_NameChange_1.0#Writable</xsd:appinfo>
-                    <xsd:appinfo source="X_Workflow">OM5_DataSteward#OM5_Generic_DeletionChange_1.0#Writable
-                    </xsd:appinfo>
-
                     <xsd:appinfo source="X_Write">User</xsd:appinfo>
                 </xsd:annotation>
             </xsd:element>
             <xsd:element maxOccurs="1" minOccurs="0" name="DeletedChange" type="DeletedChangeType">
                 <xsd:annotation>
-
-                    <xsd:appinfo source="X_Workflow">OM5_DataSteward#OM5_Generic_ClassCodeChange_1.0#Writable
-                    </xsd:appinfo>
-                    <xsd:appinfo source="X_Workflow">OM5_DataSteward#OM5_Generic_NameChange_1.0#Writable</xsd:appinfo>
-                    <xsd:appinfo source="X_Workflow">OM5_DataSteward#OM5_Generic_DeletionChange_1.0#Writable
-                    </xsd:appinfo>
-
                     <xsd:appinfo source="X_Write">User</xsd:appinfo>
                 </xsd:annotation>
             </xsd:element>
             <xsd:element maxOccurs="1" minOccurs="1" name="CrcCode" type="xsd:string">
                 <xsd:annotation>
-
-                    <xsd:appinfo source="X_Workflow">OM5_DataSteward#OM5_Generic_ClassCodeChange_1.0#Read-only
-                    </xsd:appinfo>
-                    <xsd:appinfo source="X_Workflow">OM5_DataSteward#OM5_Generic_NameChange_1.0#Read-only</xsd:appinfo>
-                    <xsd:appinfo source="X_Workflow">OM5_DataSteward#OM5_Generic_DeletionChange_1.0#Read-only
-                    </xsd:appinfo>
-
                     <xsd:appinfo source="X_Write">User</xsd:appinfo>
                 </xsd:annotation>
             </xsd:element>
             <xsd:element maxOccurs="1" minOccurs="0" name="ClassificationCode" type="xsd:string">
                 <xsd:annotation>
-
-                    <xsd:appinfo source="X_Workflow">OM5_DataSteward#OM5_Generic_ClassCodeChange_1.0#Writable
-                    </xsd:appinfo>
-                    <xsd:appinfo source="X_Workflow">OM5_DataSteward#OM5_Generic_NameChange_1.0#Writable</xsd:appinfo>
-                    <xsd:appinfo source="X_Workflow">OM5_DataSteward#OM5_Generic_DeletionChange_1.0#Writable
-                    </xsd:appinfo>
-
                     <xsd:appinfo source="X_Write">User</xsd:appinfo>
                 </xsd:annotation>
             </xsd:element>
             <xsd:element maxOccurs="1" minOccurs="0" name="ClassificationCodeChange"
                          type="ClassificationCodeChangeType">
                 <xsd:annotation>
-
-                    <xsd:appinfo source="X_Workflow">OM5_DataSteward#OM5_Generic_ClassCodeChange_1.0#Writable
-                    </xsd:appinfo>
-                    <xsd:appinfo source="X_Workflow">OM5_DataSteward#OM5_Generic_NameChange_1.0#Writable</xsd:appinfo>
-                    <xsd:appinfo source="X_Workflow">OM5_DataSteward#OM5_Generic_DeletionChange_1.0#Writable
-                    </xsd:appinfo>
-
                     <xsd:appinfo source="X_Write">User</xsd:appinfo>
                 </xsd:annotation>
             </xsd:element>
@@ -1438,73 +816,27 @@
                 <xsd:annotation>
                     <xsd:appinfo source="X_AutoExpand">false</xsd:appinfo>
 
-                    <xsd:appinfo source="X_Workflow">OM5_DataSteward#OM5_Generic_ClassCodeChange_1.0#Writable
-                    </xsd:appinfo>
-                    <xsd:appinfo source="X_Workflow">OM5_DataSteward#OM5_Generic_NameChange_1.0#Writable</xsd:appinfo>
-                    <xsd:appinfo source="X_Workflow">OM5_DataSteward#OM5_Generic_DeletionChange_1.0#Writable
-                    </xsd:appinfo>
-
                     <xsd:appinfo source="X_Write">User</xsd:appinfo>
                 </xsd:annotation>
                 <xsd:complexType>
                     <xsd:all>
                         <xsd:element maxOccurs="1" minOccurs="0" name="ForeignKey" type="xsd:string">
                             <xsd:annotation>
-
-                                <xsd:appinfo source="X_Workflow">
-                                    OM5_DataSteward#OM5_Generic_ClassCodeChange_1.0#Writable
-                                </xsd:appinfo>
-                                <xsd:appinfo source="X_Workflow">OM5_DataSteward#OM5_Generic_NameChange_1.0#Writable
-                                </xsd:appinfo>
-                                <xsd:appinfo source="X_Workflow">
-                                    OM5_DataSteward#OM5_Generic_DeletionChange_1.0#Writable
-                                </xsd:appinfo>
-
                                 <xsd:appinfo source="X_Write">User</xsd:appinfo>
                             </xsd:annotation>
                         </xsd:element>
                         <xsd:element maxOccurs="1" minOccurs="0" name="Action" type="xsd:string">
                             <xsd:annotation>
-
-                                <xsd:appinfo source="X_Workflow">
-                                    OM5_DataSteward#OM5_Generic_ClassCodeChange_1.0#Writable
-                                </xsd:appinfo>
-                                <xsd:appinfo source="X_Workflow">OM5_DataSteward#OM5_Generic_NameChange_1.0#Writable
-                                </xsd:appinfo>
-                                <xsd:appinfo source="X_Workflow">
-                                    OM5_DataSteward#OM5_Generic_DeletionChange_1.0#Writable
-                                </xsd:appinfo>
-
                                 <xsd:appinfo source="X_Write">User</xsd:appinfo>
                             </xsd:annotation>
                         </xsd:element>
                         <xsd:element maxOccurs="1" minOccurs="0" name="Preferred" type="xsd:boolean">
                             <xsd:annotation>
-
-                                <xsd:appinfo source="X_Workflow">
-                                    OM5_DataSteward#OM5_Generic_ClassCodeChange_1.0#Writable
-                                </xsd:appinfo>
-                                <xsd:appinfo source="X_Workflow">OM5_DataSteward#OM5_Generic_NameChange_1.0#Writable
-                                </xsd:appinfo>
-                                <xsd:appinfo source="X_Workflow">
-                                    OM5_DataSteward#OM5_Generic_DeletionChange_1.0#Writable
-                                </xsd:appinfo>
-
                                 <xsd:appinfo source="X_Write">User</xsd:appinfo>
                             </xsd:annotation>
                         </xsd:element>
                         <xsd:element maxOccurs="1" minOccurs="0" name="Status" type="StatusApprovalType">
                             <xsd:annotation>
-
-                                <xsd:appinfo source="X_Workflow">
-                                    OM5_DataSteward#OM5_Generic_ClassCodeChange_1.0#Writable
-                                </xsd:appinfo>
-                                <xsd:appinfo source="X_Workflow">OM5_DataSteward#OM5_Generic_NameChange_1.0#Writable
-                                </xsd:appinfo>
-                                <xsd:appinfo source="X_Workflow">
-                                    OM5_DataSteward#OM5_Generic_DeletionChange_1.0#Writable
-                                </xsd:appinfo>
-
                                 <xsd:appinfo source="X_Write">User</xsd:appinfo>
                             </xsd:annotation>
                         </xsd:element>
@@ -1518,11 +850,6 @@
             <xsd:element maxOccurs="unbounded" minOccurs="0" name="BTComplexRel">
                 <xsd:annotation>
                     <xsd:appinfo source="X_Write">User</xsd:appinfo>
-                    <xsd:appinfo source="X_Workflow">OM5_DataSteward#OM5_Generic_ClassCodeChange_1.0#Writable
-                    </xsd:appinfo>
-                    <xsd:appinfo source="X_Workflow">OM5_DataSteward#OM5_Generic_NameChange_1.0#Writable</xsd:appinfo>
-                    <xsd:appinfo source="X_Workflow">OM5_DataSteward#OM5_Generic_DeletionChange_1.0#Writable
-                    </xsd:appinfo>
                 </xsd:annotation>
                 <xsd:complexType>
                     <xsd:all>
@@ -1530,27 +857,11 @@
                             <xsd:annotation>
                                 <xsd:appinfo source="X_ForeignKey">BusinessType/Id</xsd:appinfo>
                                 <xsd:appinfo source="X_Write">User</xsd:appinfo>
-                                <xsd:appinfo source="X_Workflow">
-                                    OM5_DataSteward#OM5_Generic_ClassCodeChange_1.0#Writable
-                                </xsd:appinfo>
-                                <xsd:appinfo source="X_Workflow">OM5_DataSteward#OM5_Generic_NameChange_1.0#Writable
-                                </xsd:appinfo>
-                                <xsd:appinfo source="X_Workflow">
-                                    OM5_DataSteward#OM5_Generic_DeletionChange_1.0#Writable
-                                </xsd:appinfo>
                             </xsd:annotation>
                         </xsd:element>
                         <xsd:element maxOccurs="1" minOccurs="1" name="Preferred" type="xsd:boolean">
                             <xsd:annotation>
                                 <xsd:appinfo source="X_Write">User</xsd:appinfo>
-                                <xsd:appinfo source="X_Workflow">
-                                    OM5_DataSteward#OM5_Generic_ClassCodeChange_1.0#Writable
-                                </xsd:appinfo>
-                                <xsd:appinfo source="X_Workflow">OM5_DataSteward#OM5_Generic_NameChange_1.0#Writable
-                                </xsd:appinfo>
-                                <xsd:appinfo source="X_Workflow">
-                                    OM5_DataSteward#OM5_Generic_DeletionChange_1.0#Writable
-                                </xsd:appinfo>
                             </xsd:annotation>
                         </xsd:element>
                     </xsd:all>
@@ -1563,11 +874,6 @@
             <xsd:element maxOccurs="unbounded" minOccurs="0" name="BFComplexRel">
                 <xsd:annotation>
                     <xsd:appinfo source="X_Write">User</xsd:appinfo>
-                    <xsd:appinfo source="X_Workflow">OM5_DataSteward#OM5_Generic_ClassCodeChange_1.0#Writable
-                    </xsd:appinfo>
-                    <xsd:appinfo source="X_Workflow">OM5_DataSteward#OM5_Generic_NameChange_1.0#Writable</xsd:appinfo>
-                    <xsd:appinfo source="X_Workflow">OM5_DataSteward#OM5_Generic_DeletionChange_1.0#Writable
-                    </xsd:appinfo>
                 </xsd:annotation>
                 <xsd:complexType>
                     <xsd:all>
@@ -1575,28 +881,12 @@
                             <xsd:annotation>
                                 <xsd:appinfo source="X_ForeignKey">BusinessFunction/Id</xsd:appinfo>
                                 <xsd:appinfo source="X_Write">User</xsd:appinfo>
-                                <xsd:appinfo source="X_Workflow">
-                                    OM5_DataSteward#OM5_Generic_ClassCodeChange_1.0#Writable
-                                </xsd:appinfo>
-                                <xsd:appinfo source="X_Workflow">OM5_DataSteward#OM5_Generic_NameChange_1.0#Writable
-                                </xsd:appinfo>
-                                <xsd:appinfo source="X_Workflow">
-                                    OM5_DataSteward#OM5_Generic_DeletionChange_1.0#Writable
-                                </xsd:appinfo>
                             </xsd:annotation>
                         </xsd:element>
                         <xsd:element maxOccurs="1" minOccurs="0" name="Preferred" type="xsd:boolean">
                             <xsd:annotation>
                                 <xsd:appinfo source="X_Write">User</xsd:appinfo>
                                 <xsd:appinfo source="X_Default_Value_Rule">null</xsd:appinfo>
-                                <xsd:appinfo source="X_Workflow">
-                                    OM5_DataSteward#OM5_Generic_ClassCodeChange_1.0#Writable
-                                </xsd:appinfo>
-                                <xsd:appinfo source="X_Workflow">OM5_DataSteward#OM5_Generic_NameChange_1.0#Writable
-                                </xsd:appinfo>
-                                <xsd:appinfo source="X_Workflow">
-                                    OM5_DataSteward#OM5_Generic_DeletionChange_1.0#Writable
-                                </xsd:appinfo>
                             </xsd:annotation>
                         </xsd:element>
                     </xsd:all>
@@ -1610,11 +900,6 @@
                 <xsd:annotation>
                     <xsd:appinfo source="X_Write">User</xsd:appinfo>
                     <xsd:appinfo source="X_Default_Value_Rule">"false"</xsd:appinfo>
-                    <xsd:appinfo source="X_Workflow">OM5_DataSteward#OM5_Generic_ClassCodeChange_1.0#Writable
-                    </xsd:appinfo>
-                    <xsd:appinfo source="X_Workflow">OM5_DataSteward#OM5_Generic_NameChange_1.0#Writable</xsd:appinfo>
-                    <xsd:appinfo source="X_Workflow">OM5_DataSteward#OM5_Generic_DeletionChange_1.0#Writable
-                    </xsd:appinfo>
                 </xsd:annotation>
                 <xsd:complexType>
                     <xsd:all>
@@ -1622,27 +907,11 @@
                             <xsd:annotation>
                                 <xsd:appinfo source="X_ForeignKey">ExpansionTerm/Id</xsd:appinfo>
                                 <xsd:appinfo source="X_Write">User</xsd:appinfo>
-                                <xsd:appinfo source="X_Workflow">
-                                    OM5_DataSteward#OM5_Generic_ClassCodeChange_1.0#Writable
-                                </xsd:appinfo>
-                                <xsd:appinfo source="X_Workflow">OM5_DataSteward#OM5_Generic_NameChange_1.0#Writable
-                                </xsd:appinfo>
-                                <xsd:appinfo source="X_Workflow">
-                                    OM5_DataSteward#OM5_Generic_DeletionChange_1.0#Writable
-                                </xsd:appinfo>
                             </xsd:annotation>
                         </xsd:element>
                         <xsd:element maxOccurs="1" minOccurs="1" name="Preferred" type="xsd:boolean">
                             <xsd:annotation>
                                 <xsd:appinfo source="X_Write">User</xsd:appinfo>
-                                <xsd:appinfo source="X_Workflow">
-                                    OM5_DataSteward#OM5_Generic_ClassCodeChange_1.0#Writable
-                                </xsd:appinfo>
-                                <xsd:appinfo source="X_Workflow">OM5_DataSteward#OM5_Generic_NameChange_1.0#Writable
-                                </xsd:appinfo>
-                                <xsd:appinfo source="X_Workflow">
-                                    OM5_DataSteward#OM5_Generic_DeletionChange_1.0#Writable
-                                </xsd:appinfo>
                             </xsd:annotation>
                         </xsd:element>
                     </xsd:all>

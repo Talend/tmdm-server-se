@@ -346,8 +346,6 @@
     <xsd:element name="payer" type="PayerType">
         <xsd:annotation>
             <xsd:appinfo source="X_Label_EN">Payer</xsd:appinfo>
-            <xsd:appinfo source="X_Workflow">Demo_Manager#SABPlanning_Product_1.0#Writable</xsd:appinfo>
-            <xsd:appinfo source="X_Workflow">Team_Leader#SABPlanning_Product_1.0#Writable</xsd:appinfo>
             <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
             <xsd:appinfo source="X_Write">Power_User</xsd:appinfo>
             <xsd:appinfo source="X_Write">Access_Model</xsd:appinfo>
@@ -368,8 +366,6 @@
         <xsd:all maxOccurs="1" minOccurs="1">
             <xsd:element maxOccurs="1" minOccurs="1" name="key" type="UUID">
                 <xsd:annotation>
-                    <xsd:appinfo source="X_Workflow">Demo_Manager#SABPlanning_Product_1.0#Writable</xsd:appinfo>
-                    <xsd:appinfo source="X_Workflow">Team_Leader#SABPlanning_Product_1.0#Writable</xsd:appinfo>
                     <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
                     <xsd:appinfo source="X_Write">Access_Model</xsd:appinfo>
                     <xsd:appinfo source="X_Write">Power_User</xsd:appinfo>
@@ -379,8 +375,6 @@
             <xsd:element maxOccurs="1" minOccurs="0" name="createPayer" type="CreatePayerType">
                 <xsd:annotation>
                     <xsd:appinfo source="X_Label_EN">Create New Payer</xsd:appinfo>
-                    <xsd:appinfo source="X_Workflow">Demo_Manager#SABPlanning_Product_1.0#Writable</xsd:appinfo>
-                    <xsd:appinfo source="X_Workflow">Team_Leader#SABPlanning_Product_1.0#Writable</xsd:appinfo>
                     <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
                     <xsd:appinfo source="X_Write">Power_User</xsd:appinfo>
                     <xsd:appinfo source="X_Write">Access_Model</xsd:appinfo>
@@ -390,8 +384,6 @@
             <xsd:element maxOccurs="1" minOccurs="0" name="personalData" type="PersonalDataType">
                 <xsd:annotation>
                     <xsd:appinfo source="X_Label_EN">Personal Data</xsd:appinfo>
-                    <xsd:appinfo source="X_Workflow">Demo_Manager#SABPlanning_Product_1.0#Writable</xsd:appinfo>
-                    <xsd:appinfo source="X_Workflow">Team_Leader#SABPlanning_Product_1.0#Writable</xsd:appinfo>
                     <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
                     <xsd:appinfo source="X_Write">Power_User</xsd:appinfo>
                     <xsd:appinfo source="X_Write">Access_Model</xsd:appinfo>
@@ -401,8 +393,6 @@
             <xsd:element maxOccurs="1" minOccurs="0" name="addressData" type="PayerAddressData">
                 <xsd:annotation>
                     <xsd:appinfo source="X_Label_EN">Address</xsd:appinfo>
-                    <xsd:appinfo source="X_Workflow">Demo_Manager#SABPlanning_Product_1.0#Writable</xsd:appinfo>
-                    <xsd:appinfo source="X_Workflow">Team_Leader#SABPlanning_Product_1.0#Writable</xsd:appinfo>
                     <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
                     <xsd:appinfo source="X_Write">Power_User</xsd:appinfo>
                     <xsd:appinfo source="X_Write">Access_Model</xsd:appinfo>
@@ -412,8 +402,6 @@
             <xsd:element maxOccurs="1" minOccurs="0" name="identification" type="IdentificationType">
                 <xsd:annotation>
                     <xsd:appinfo source="X_Label_EN">Identification</xsd:appinfo>
-                    <xsd:appinfo source="X_Workflow">Demo_Manager#SABPlanning_Product_1.0#Writable</xsd:appinfo>
-                    <xsd:appinfo source="X_Workflow">Team_Leader#SABPlanning_Product_1.0#Writable</xsd:appinfo>
                     <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
                     <xsd:appinfo source="X_Write">Power_User</xsd:appinfo>
                     <xsd:appinfo source="X_Write">Access_Model</xsd:appinfo>
@@ -423,8 +411,6 @@
             <xsd:element maxOccurs="1" minOccurs="0" name="control" type="ControlType">
                 <xsd:annotation>
                     <xsd:appinfo source="X_Label_EN">Control</xsd:appinfo>
-                    <xsd:appinfo source="X_Workflow">Demo_Manager#SABPlanning_Product_1.0#Writable</xsd:appinfo>
-                    <xsd:appinfo source="X_Workflow">Team_Leader#SABPlanning_Product_1.0#Writable</xsd:appinfo>
 
 
                     <xsd:appinfo source="X_Hide">SAB_roles</xsd:appinfo>
@@ -435,8 +421,6 @@
             <xsd:element maxOccurs="1" minOccurs="0" name="bankDetail" type="BankDetailType">
                 <xsd:annotation>
                     <xsd:appinfo source="X_Label_EN">Payment Transactions</xsd:appinfo>
-                    <xsd:appinfo source="X_Workflow">Demo_Manager#SABPlanning_Product_1.0#Writable</xsd:appinfo>
-                    <xsd:appinfo source="X_Workflow">Team_Leader#SABPlanning_Product_1.0#Writable</xsd:appinfo>
                     <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
                     <xsd:appinfo source="X_Write">Access_Model</xsd:appinfo>
                     <xsd:appinfo source="X_Hide">Power_User</xsd:appinfo>
@@ -446,8 +430,6 @@
             <xsd:element maxOccurs="1" minOccurs="0" name="customer" type="CustomerType">
                 <xsd:annotation>
                     <xsd:appinfo source="X_Label_EN">Customer</xsd:appinfo>
-                    <xsd:appinfo source="X_Workflow">Demo_Manager#SABPlanning_Product_1.0#Writable</xsd:appinfo>
-                    <xsd:appinfo source="X_Workflow">Team_Leader#SABPlanning_Product_1.0#Writable</xsd:appinfo>
                     <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
                     <xsd:appinfo source="X_Write">Power_User</xsd:appinfo>
                     <xsd:appinfo source="X_Write">Access_Model</xsd:appinfo>
@@ -457,8 +439,6 @@
             <xsd:element maxOccurs="1" minOccurs="0" name="companyCodeData" type="CompanyCodeData">
                 <xsd:annotation>
                     <xsd:appinfo source="X_Label_EN">Company Code</xsd:appinfo>
-                    <xsd:appinfo source="X_Workflow">Demo_Manager#SABPlanning_Product_1.0#Writable</xsd:appinfo>
-                    <xsd:appinfo source="X_Workflow">Team_Leader#SABPlanning_Product_1.0#Writable</xsd:appinfo>
                     <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
                     <xsd:appinfo source="X_Write">Power_User</xsd:appinfo>
                     <xsd:appinfo source="X_Write">Access_Model</xsd:appinfo>
@@ -468,8 +448,6 @@
             <xsd:element maxOccurs="1" minOccurs="0" name="salesOrgInfo" type="SalesOrgType">
                 <xsd:annotation>
                     <xsd:appinfo source="X_Label_EN">Sales and Distribution</xsd:appinfo>
-                    <xsd:appinfo source="X_Workflow">Demo_Manager#SABPlanning_Product_1.0#Writable</xsd:appinfo>
-                    <xsd:appinfo source="X_Workflow">Team_Leader#SABPlanning_Product_1.0#Writable</xsd:appinfo>
                     <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
                     <xsd:appinfo source="X_Write">Power_User</xsd:appinfo>
                     <xsd:appinfo source="X_Write">Access_Model</xsd:appinfo>
@@ -478,8 +456,6 @@
             </xsd:element>
             <xsd:element maxOccurs="1" minOccurs="0" name="partnerFunction" type="PartnerFunctionType">
                 <xsd:annotation>
-                    <xsd:appinfo source="X_Workflow">Demo_Manager#SABPlanning_Product_1.0#Writable</xsd:appinfo>
-                    <xsd:appinfo source="X_Workflow">Team_Leader#SABPlanning_Product_1.0#Writable</xsd:appinfo>
                     <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
                     <xsd:appinfo source="X_Write">Power_User</xsd:appinfo>
                     <xsd:appinfo source="X_Write">Access_Model</xsd:appinfo>
@@ -489,8 +465,6 @@
             <xsd:element maxOccurs="1" minOccurs="0" name="controlData" type="ControlDataType">
                 <xsd:annotation>
                     <xsd:appinfo source="X_Label_EN">Control Data</xsd:appinfo>
-                    <xsd:appinfo source="X_Workflow">Demo_Manager#SABPlanning_Product_1.0#Writable</xsd:appinfo>
-                    <xsd:appinfo source="X_Workflow">Team_Leader#SABPlanning_Product_1.0#Writable</xsd:appinfo>
                     <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
                     <xsd:appinfo source="X_Write">Power_User</xsd:appinfo>
                     <xsd:appinfo source="X_Write">Access_Model</xsd:appinfo>
@@ -567,8 +541,6 @@
                         used to settle the customer's charges for the given sales organization.
                     </xsd:appinfo>
                     <xsd:appinfo source="X_ForeignKey_Filter">currency/currency$$Strict Contains$$ZAR$$#</xsd:appinfo>
-                    <xsd:appinfo source="X_Workflow">Demo_Manager#SABPlanning_Product_1.0#Writable</xsd:appinfo>
-                    <xsd:appinfo source="X_Workflow">Team_Leader#SABPlanning_Product_1.0#Writable</xsd:appinfo>
                     <xsd:appinfo source="X_Hide">Power_User</xsd:appinfo>
                     <xsd:appinfo source="X_Hide">SAB_roles</xsd:appinfo>
                     <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
@@ -587,8 +559,6 @@
                         procedures the system should apply when you create a Sales Document. e.g. Standard Pricing, Can
                         Vending ABI, internal FBI only, etc.
                     </xsd:appinfo>
-                    <xsd:appinfo source="X_Workflow">Demo_Manager#SABPlanning_Product_1.0#Writable</xsd:appinfo>
-                    <xsd:appinfo source="X_Workflow">Team_Leader#SABPlanning_Product_1.0#Writable</xsd:appinfo>
                     <xsd:appinfo source="X_Hide">Power_User</xsd:appinfo>
                     <xsd:appinfo source="X_Hide">SAB_roles</xsd:appinfo>
                     <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
@@ -605,8 +575,6 @@
                     <xsd:appinfo source="X_Description_EN">Specifies a statistics group for this customer and helps
                         determine which data the system updates in the logistics information system
                     </xsd:appinfo>
-                    <xsd:appinfo source="X_Workflow">Demo_Manager#SABPlanning_Product_1.0#Writable</xsd:appinfo>
-                    <xsd:appinfo source="X_Workflow">Team_Leader#SABPlanning_Product_1.0#Writable</xsd:appinfo>
                     <xsd:appinfo source="X_Hide">Power_User</xsd:appinfo>
                     <xsd:appinfo source="X_Hide">SAB_roles</xsd:appinfo>
                     <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
@@ -615,8 +583,6 @@
             </xsd:element>
             <xsd:element maxOccurs="1" minOccurs="0" name="rebate" type="xsd:string">
                 <xsd:annotation>
-                    <xsd:appinfo source="X_Workflow">Demo_Manager#SABPlanning_Product_1.0#Writable</xsd:appinfo>
-                    <xsd:appinfo source="X_Workflow">Team_Leader#SABPlanning_Product_1.0#Writable</xsd:appinfo>
                     <xsd:appinfo source="X_Hide">Power_User</xsd:appinfo>
                     <xsd:appinfo source="X_Hide">SAB_roles</xsd:appinfo>
                     <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
@@ -625,8 +591,6 @@
             </xsd:element>
             <xsd:element maxOccurs="1" minOccurs="0" name="pricing" type="xsd:string">
                 <xsd:annotation>
-                    <xsd:appinfo source="X_Workflow">Demo_Manager#SABPlanning_Product_1.0#Writable</xsd:appinfo>
-                    <xsd:appinfo source="X_Workflow">Team_Leader#SABPlanning_Product_1.0#Writable</xsd:appinfo>
                     <xsd:appinfo source="X_Hide">Power_User</xsd:appinfo>
                     <xsd:appinfo source="X_Hide">SAB_roles</xsd:appinfo>
                     <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
@@ -640,8 +604,6 @@
                     <xsd:appinfo source="X_ForeignKeyInfo">termsOfPayment/description</xsd:appinfo>
                     <xsd:appinfo source="X_Retrieve_FKinfos">true</xsd:appinfo>
                     <xsd:appinfo source="X_Label_EN">Payment Terms (Billing)</xsd:appinfo>
-                    <xsd:appinfo source="X_Workflow">Demo_Manager#SABPlanning_Product_1.0#Writable</xsd:appinfo>
-                    <xsd:appinfo source="X_Workflow">Team_Leader#SABPlanning_Product_1.0#Writable</xsd:appinfo>
                     <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
                     <xsd:appinfo source="X_Write">Power_User</xsd:appinfo>
                 </xsd:annotation>
@@ -657,8 +619,6 @@
                         during the automatic determination of revenue accounts like, Domestic Revenue or Foreign
                         Revenue"
                     </xsd:appinfo>
-                    <xsd:appinfo source="X_Workflow">Demo_Manager#SABPlanning_Product_1.0#Writable</xsd:appinfo>
-                    <xsd:appinfo source="X_Workflow">Team_Leader#SABPlanning_Product_1.0#Writable</xsd:appinfo>
                     <xsd:appinfo source="X_Hide">Power_User</xsd:appinfo>
                     <xsd:appinfo source="X_Hide">SAB_roles</xsd:appinfo>
                     <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
@@ -667,8 +627,6 @@
             </xsd:element>
             <xsd:element maxOccurs="1" minOccurs="0" name="outputTaxCountry" type="xsd:string">
                 <xsd:annotation>
-                    <xsd:appinfo source="X_Workflow">Demo_Manager#SABPlanning_Product_1.0#Writable</xsd:appinfo>
-                    <xsd:appinfo source="X_Workflow">Team_Leader#SABPlanning_Product_1.0#Writable</xsd:appinfo>
                     <xsd:appinfo source="X_Hide">Power_User</xsd:appinfo>
                     <xsd:appinfo source="X_Hide">SAB_roles</xsd:appinfo>
                     <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
@@ -677,8 +635,6 @@
             </xsd:element>
             <xsd:element maxOccurs="1" minOccurs="0" name="outputTaxCategory" type="xsd:string">
                 <xsd:annotation>
-                    <xsd:appinfo source="X_Workflow">Demo_Manager#SABPlanning_Product_1.0#Writable</xsd:appinfo>
-                    <xsd:appinfo source="X_Workflow">Team_Leader#SABPlanning_Product_1.0#Writable</xsd:appinfo>
                     <xsd:appinfo source="X_Hide">Power_User</xsd:appinfo>
                     <xsd:appinfo source="X_Hide">SAB_roles</xsd:appinfo>
                     <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
@@ -696,8 +652,6 @@
                     <xsd:appinfo source="X_Description_EN">Tax classification is used to specify, for example, whether a
                         customer is liable for sales taxes, such as VAT or Output Tax etc.
                     </xsd:appinfo>
-                    <xsd:appinfo source="X_Workflow">Demo_Manager#SABPlanning_Product_1.0#Writable</xsd:appinfo>
-                    <xsd:appinfo source="X_Workflow">Team_Leader#SABPlanning_Product_1.0#Writable</xsd:appinfo>
                     <xsd:appinfo source="X_Hide">Power_User</xsd:appinfo>
                     <xsd:appinfo source="X_Hide">SAB_roles</xsd:appinfo>
                     <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
@@ -714,8 +668,6 @@
                     <xsd:appinfo source="X_Description_EN">Vending Commission, Specifies a customer-defined group of
                         customers.
                     </xsd:appinfo>
-                    <xsd:appinfo source="X_Workflow">Demo_Manager#SABPlanning_Product_1.0#Writable</xsd:appinfo>
-                    <xsd:appinfo source="X_Workflow">Team_Leader#SABPlanning_Product_1.0#Writable</xsd:appinfo>
                     <xsd:appinfo source="X_Hide">SAB_roles</xsd:appinfo>
                     <xsd:appinfo source="X_Hide">Power_User</xsd:appinfo>
                     <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
@@ -729,8 +681,6 @@
                     <xsd:appinfo source="X_Description_EN">Material Listing, Specifies a customer-defined group of
                         customers
                     </xsd:appinfo>
-                    <xsd:appinfo source="X_Workflow">Demo_Manager#SABPlanning_Product_1.0#Writable</xsd:appinfo>
-                    <xsd:appinfo source="X_Workflow">Team_Leader#SABPlanning_Product_1.0#Writable</xsd:appinfo>
                     <xsd:appinfo source="X_ForeignKeyInfo">materialListing/marterialListing</xsd:appinfo>
                     <xsd:appinfo source="X_ForeignKeyInfo">materialListing/description</xsd:appinfo>
                     <xsd:appinfo source="X_Retrieve_FKinfos">true</xsd:appinfo>
@@ -746,8 +696,6 @@
                     <xsd:appinfo source="X_Label_EN">Price Type</xsd:appinfo>
                     <xsd:appinfo source="X_Description_EN">Price Type, Specifies a customer-defined group of customers
                     </xsd:appinfo>
-                    <xsd:appinfo source="X_Workflow">Demo_Manager#SABPlanning_Product_1.0#Writable</xsd:appinfo>
-                    <xsd:appinfo source="X_Workflow">Team_Leader#SABPlanning_Product_1.0#Writable</xsd:appinfo>
                     <xsd:appinfo source="X_ForeignKeyInfo">priceType/priceType</xsd:appinfo>
                     <xsd:appinfo source="X_ForeignKeyInfo">priceType/description</xsd:appinfo>
                     <xsd:appinfo source="X_Retrieve_FKinfos">true</xsd:appinfo>
@@ -765,8 +713,6 @@
                     <xsd:appinfo source="X_Description_EN">Charge Container, Specifies a customer-defined group of
                         customers
                     </xsd:appinfo>
-                    <xsd:appinfo source="X_Workflow">Demo_Manager#SABPlanning_Product_1.0#Writable</xsd:appinfo>
-                    <xsd:appinfo source="X_Workflow">Team_Leader#SABPlanning_Product_1.0#Writable</xsd:appinfo>
                     <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
                     <xsd:appinfo source="X_Write">Power_User</xsd:appinfo>
                 </xsd:annotation>
@@ -778,8 +724,6 @@
                     <xsd:appinfo source="X_Description_EN">Freigh Recovery, Specifies a customer-defined group of
                         customers
                     </xsd:appinfo>
-                    <xsd:appinfo source="X_Workflow">Demo_Manager#SABPlanning_Product_1.0#Writable</xsd:appinfo>
-                    <xsd:appinfo source="X_Workflow">Team_Leader#SABPlanning_Product_1.0#Writable</xsd:appinfo>
                     <xsd:appinfo source="X_ForeignKeyInfo">freightRecovery/freightRecovery</xsd:appinfo>
                     <xsd:appinfo source="X_ForeignKeyInfo">freightRecovery/description</xsd:appinfo>
                     <xsd:appinfo source="X_Retrieve_FKinfos">true</xsd:appinfo>
@@ -794,8 +738,6 @@
             <xsd:element maxOccurs="1" minOccurs="1" name="key" type="UUID">
                 <xsd:annotation>
                     <xsd:appinfo source="X_Retrieve_FKinfos">true</xsd:appinfo>
-                    <xsd:appinfo source="X_Workflow">Demo_Manager#SABPlanning_Product_1.0#Writable</xsd:appinfo>
-                    <xsd:appinfo source="X_Workflow">Team_Leader#SABPlanning_Product_1.0#Writable</xsd:appinfo>
                     <xsd:appinfo source="X_Hide">Demo_Manager</xsd:appinfo>
                     <xsd:appinfo source="X_Hide">Power_User</xsd:appinfo>
                     <xsd:appinfo source="X_Hide">SAB_roles</xsd:appinfo>
@@ -814,8 +756,6 @@
                     <xsd:appinfo source="X_Description_EN">All Businesses in South Africa must conform to One of the
                         following legal Business types E.G. Closed Corporation, Sole Trader, Partner Ship etc.
                     </xsd:appinfo>
-                    <xsd:appinfo source="X_Workflow">Demo_Manager#SABPlanning_Product_1.0#Writable</xsd:appinfo>
-                    <xsd:appinfo source="X_Workflow">Team_Leader#SABPlanning_Product_1.0#Writable</xsd:appinfo>
 
 
                     <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
@@ -830,8 +770,6 @@
                         is used to determine the age of the business (note that this is not the date that SAB started
                         dealing with the business)
                     </xsd:appinfo>
-                    <xsd:appinfo source="X_Workflow">Demo_Manager#SABPlanning_Product_1.0#Writable</xsd:appinfo>
-                    <xsd:appinfo source="X_Workflow">Team_Leader#SABPlanning_Product_1.0#Writable</xsd:appinfo>
 
 
                     <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
@@ -845,8 +783,6 @@
                     <xsd:appinfo source="X_Description_EN">Liquidation Date. Indicating the end of bankruptcy
                         proceedings. If this date is filled in it implies that the firm no longer exists
                     </xsd:appinfo>
-                    <xsd:appinfo source="X_Workflow">Demo_Manager#SABPlanning_Product_1.0#Writable</xsd:appinfo>
-                    <xsd:appinfo source="X_Workflow">Team_Leader#SABPlanning_Product_1.0#Writable</xsd:appinfo>
                     <xsd:appinfo source="X_Hide">SAB_roles</xsd:appinfo>
                     <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
                     <xsd:appinfo source="X_Write">Power_User</xsd:appinfo>
@@ -859,8 +795,6 @@
             <xsd:element maxOccurs="1" minOccurs="0" name="searchTerm" type="SearchTermType">
                 <xsd:annotation>
                     <xsd:appinfo source="X_Label_EN">Search Terms</xsd:appinfo>
-                    <xsd:appinfo source="X_Workflow">Demo_Manager#SABPlanning_Product_1.0#Writable</xsd:appinfo>
-                    <xsd:appinfo source="X_Workflow">Team_Leader#SABPlanning_Product_1.0#Writable</xsd:appinfo>
                     <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
                     <xsd:appinfo source="X_Write">Power_User</xsd:appinfo>
                 </xsd:annotation>
@@ -868,8 +802,6 @@
             <xsd:element maxOccurs="1" minOccurs="0" name="streetAddress" type="StreetAddressType">
                 <xsd:annotation>
                     <xsd:appinfo source="X_Label_EN">Street Address</xsd:appinfo>
-                    <xsd:appinfo source="X_Workflow">Demo_Manager#SABPlanning_Product_1.0#Writable</xsd:appinfo>
-                    <xsd:appinfo source="X_Workflow">Team_Leader#SABPlanning_Product_1.0#Writable</xsd:appinfo>
                     <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
                     <xsd:appinfo source="X_Write">Power_User</xsd:appinfo>
                 </xsd:annotation>
@@ -877,8 +809,6 @@
             <xsd:element maxOccurs="1" minOccurs="0" name="poBoxAddress" type="POBoxAddressType">
                 <xsd:annotation>
                     <xsd:appinfo source="X_Label_EN">PO Box Address</xsd:appinfo>
-                    <xsd:appinfo source="X_Workflow">Demo_Manager#SABPlanning_Product_1.0#Writable</xsd:appinfo>
-                    <xsd:appinfo source="X_Workflow">Team_Leader#SABPlanning_Product_1.0#Writable</xsd:appinfo>
                     <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
                     <xsd:appinfo source="X_Write">Power_User</xsd:appinfo>
                 </xsd:annotation>
@@ -886,8 +816,6 @@
             <xsd:element maxOccurs="1" minOccurs="0" name="contactInformation" type="ContactInformation">
                 <xsd:annotation>
                     <xsd:appinfo source="X_Label_EN">Communication</xsd:appinfo>
-                    <xsd:appinfo source="X_Workflow">Demo_Manager#SABPlanning_Product_1.0#Writable</xsd:appinfo>
-                    <xsd:appinfo source="X_Workflow">Team_Leader#SABPlanning_Product_1.0#Writable</xsd:appinfo>
                     <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
                     <xsd:appinfo source="X_Write">Power_User</xsd:appinfo>
                 </xsd:annotation>
@@ -895,8 +823,6 @@
             <xsd:element maxOccurs="1" minOccurs="0" name="Comments" type="xsd:string">
                 <xsd:annotation>
                     <xsd:appinfo source="X_Label_EN">Comments</xsd:appinfo>
-                    <xsd:appinfo source="X_Workflow">Demo_Manager#SABPlanning_Product_1.0#Writable</xsd:appinfo>
-                    <xsd:appinfo source="X_Workflow">Team_Leader#SABPlanning_Product_1.0#Writable</xsd:appinfo>
                     <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
                     <xsd:appinfo source="X_Write">Power_User</xsd:appinfo>
                 </xsd:annotation>
@@ -904,8 +830,6 @@
             <xsd:element maxOccurs="1" minOccurs="0" name="differentCity" type="xsd:string">
                 <xsd:annotation>
                     <xsd:appinfo source="X_Label_EN">Different City</xsd:appinfo>
-                    <xsd:appinfo source="X_Workflow">Demo_Manager#SABPlanning_Product_1.0#Writable</xsd:appinfo>
-                    <xsd:appinfo source="X_Workflow">Team_Leader#SABPlanning_Product_1.0#Writable</xsd:appinfo>
                     <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
                     <xsd:appinfo source="X_Write">Power_User</xsd:appinfo>
                 </xsd:annotation>
@@ -923,8 +847,6 @@
                     <xsd:appinfo source="X_Retrieve_FKinfos">true</xsd:appinfo>
                     <xsd:appinfo source="X_Label_EN">Language</xsd:appinfo>
                     <xsd:appinfo source="X_ForeignKey_Filter">language/language2$$Contains$$E$$#</xsd:appinfo>
-                    <xsd:appinfo source="X_Workflow">Demo_Manager#SABPlanning_Product_1.0#Writable</xsd:appinfo>
-                    <xsd:appinfo source="X_Workflow">Team_Leader#SABPlanning_Product_1.0#Writable</xsd:appinfo>
                     <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
                     <xsd:appinfo source="X_Write">Power_User</xsd:appinfo>
                 </xsd:annotation>
@@ -932,8 +854,6 @@
             <xsd:element maxOccurs="1" minOccurs="0" name="contactNumber" type="xsd:integer">
                 <xsd:annotation>
                     <xsd:appinfo source="X_Label_EN">Telephone</xsd:appinfo>
-                    <xsd:appinfo source="X_Workflow">Demo_Manager#SABPlanning_Product_1.0#Writable</xsd:appinfo>
-                    <xsd:appinfo source="X_Workflow">Team_Leader#SABPlanning_Product_1.0#Writable</xsd:appinfo>
                     <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
                     <xsd:appinfo source="X_Write">Power_User</xsd:appinfo>
                 </xsd:annotation>
@@ -941,8 +861,6 @@
             <xsd:element maxOccurs="1" minOccurs="0" name="contactExtensionID" type="xsd:integer">
                 <xsd:annotation>
                     <xsd:appinfo source="X_Label_EN">Extension</xsd:appinfo>
-                    <xsd:appinfo source="X_Workflow">Demo_Manager#SABPlanning_Product_1.0#Writable</xsd:appinfo>
-                    <xsd:appinfo source="X_Workflow">Team_Leader#SABPlanning_Product_1.0#Writable</xsd:appinfo>
                     <xsd:appinfo source="X_Hide">Power_User</xsd:appinfo>
                     <xsd:appinfo source="X_Hide">SAB_roles</xsd:appinfo>
                     <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
@@ -951,8 +869,6 @@
             </xsd:element>
             <xsd:element maxOccurs="1" minOccurs="0" name="completeContactNumber" type="xsd:integer">
                 <xsd:annotation>
-                    <xsd:appinfo source="X_Workflow">Demo_Manager#SABPlanning_Product_1.0#Writable</xsd:appinfo>
-                    <xsd:appinfo source="X_Workflow">Team_Leader#SABPlanning_Product_1.0#Writable</xsd:appinfo>
                     <xsd:appinfo source="X_Label_EN">Mobile Number</xsd:appinfo>
                     <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
                     <xsd:appinfo source="X_Write">Power_User</xsd:appinfo>
@@ -961,8 +877,6 @@
             <xsd:element maxOccurs="1" minOccurs="0" name="emailAddress" type="xsd:string">
                 <xsd:annotation>
                     <xsd:appinfo source="X_Label_EN">E-mail</xsd:appinfo>
-                    <xsd:appinfo source="X_Workflow">Demo_Manager#SABPlanning_Product_1.0#Writable</xsd:appinfo>
-                    <xsd:appinfo source="X_Workflow">Team_Leader#SABPlanning_Product_1.0#Writable</xsd:appinfo>
                     <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
                     <xsd:appinfo source="X_Write">Power_User</xsd:appinfo>
                 </xsd:annotation>
@@ -978,8 +892,6 @@
                         allows you to specify a standard communication method for sending messages e.g. One business
                         partner wants all messages by fax, another by e-mail.
                     </xsd:appinfo>
-                    <xsd:appinfo source="X_Workflow">Demo_Manager#SABPlanning_Product_1.0#Writable</xsd:appinfo>
-                    <xsd:appinfo source="X_Workflow">Team_Leader#SABPlanning_Product_1.0#Writable</xsd:appinfo>
                     <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
                     <xsd:appinfo source="X_Write">Power_User</xsd:appinfo>
                 </xsd:annotation>
@@ -992,8 +904,6 @@
                     <xsd:appinfo source="X_ForeignKeyInfo">country/name</xsd:appinfo>
                     <xsd:appinfo source="X_ForeignKeyInfo">country/nationality</xsd:appinfo>
                     <xsd:appinfo source="X_Retrieve_FKinfos">true</xsd:appinfo>
-                    <xsd:appinfo source="X_Workflow">Demo_Manager#SABPlanning_Product_1.0#Writable</xsd:appinfo>
-                    <xsd:appinfo source="X_Workflow">Team_Leader#SABPlanning_Product_1.0#Writable</xsd:appinfo>
                     <xsd:appinfo source="X_ForeignKey_Filter">country/country$$=$$ZA$$#</xsd:appinfo>
                     <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
                     <xsd:appinfo source="X_Write">Power_User</xsd:appinfo>
@@ -1010,8 +920,6 @@
                     <xsd:appinfo source="X_ForeignKeyInfo">companyCode/name</xsd:appinfo>
                     <xsd:appinfo source="X_Retrieve_FKinfos">true</xsd:appinfo>
                     <xsd:appinfo source="X_Label_EN">Company Code</xsd:appinfo>
-                    <xsd:appinfo source="X_Workflow">Demo_Manager#SABPlanning_Product_1.0#Writable</xsd:appinfo>
-                    <xsd:appinfo source="X_Workflow">Team_Leader#SABPlanning_Product_1.0#Writable</xsd:appinfo>
                     <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
                     <xsd:appinfo source="X_Write">Power_User</xsd:appinfo>
                 </xsd:annotation>
@@ -1023,8 +931,6 @@
                         which is updated parallel to the subledger account for normal postings (for example, invoice or
                         payment).
                     </xsd:appinfo>
-                    <xsd:appinfo source="X_Workflow">Demo_Manager#SABPlanning_Product_1.0#Writable</xsd:appinfo>
-                    <xsd:appinfo source="X_Workflow">Team_Leader#SABPlanning_Product_1.0#Writable</xsd:appinfo>
                     <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
                     <xsd:appinfo source="X_Write">Power_User</xsd:appinfo>
                 </xsd:annotation>
@@ -1045,8 +951,6 @@
                         rules can be stored in the master record of an account which enables you to determine the
                         standard sort sequence on an account-specific basis.
                     </xsd:appinfo>
-                    <xsd:appinfo source="X_Workflow">Demo_Manager#SABPlanning_Product_1.0#Writable</xsd:appinfo>
-                    <xsd:appinfo source="X_Workflow">Team_Leader#SABPlanning_Product_1.0#Writable</xsd:appinfo>
                     <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
                     <xsd:appinfo source="X_Write">Power_User</xsd:appinfo>
                 </xsd:annotation>
@@ -1062,8 +966,6 @@
                         customers. By using the release approval group, you can determine release approval paths and
                         those people with release approval authorisation.
                     </xsd:appinfo>
-                    <xsd:appinfo source="X_Workflow">Demo_Manager#SABPlanning_Product_1.0#Writable</xsd:appinfo>
-                    <xsd:appinfo source="X_Workflow">Team_Leader#SABPlanning_Product_1.0#Writable</xsd:appinfo>
                     <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
                     <xsd:appinfo source="X_Write">Power_User</xsd:appinfo>
                 </xsd:annotation>
@@ -1078,8 +980,6 @@
                     <xsd:appinfo source="X_Description_EN">Key for defining payment terms composed of cash discount
                         percentages and payment periods.
                     </xsd:appinfo>
-                    <xsd:appinfo source="X_Workflow">Demo_Manager#SABPlanning_Product_1.0#Writable</xsd:appinfo>
-                    <xsd:appinfo source="X_Workflow">Team_Leader#SABPlanning_Product_1.0#Writable</xsd:appinfo>
                     <xsd:appinfo source="X_Hide">Power_User</xsd:appinfo>
                     <xsd:appinfo source="X_Hide">SAB_roles</xsd:appinfo>
                     <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
@@ -1088,8 +988,6 @@
             </xsd:element>
             <xsd:element maxOccurs="1" minOccurs="0" name="creditMemoPaymentTerms" type="xsd:string">
                 <xsd:annotation>
-                    <xsd:appinfo source="X_Workflow">Demo_Manager#SABPlanning_Product_1.0#Writable</xsd:appinfo>
-                    <xsd:appinfo source="X_Workflow">Team_Leader#SABPlanning_Product_1.0#Writable</xsd:appinfo>
                     <xsd:appinfo source="X_Label_EN">Credit Memo Payment Terms</xsd:appinfo>
                     <xsd:appinfo source="X_Hide">Power_User</xsd:appinfo>
                     <xsd:appinfo source="X_Hide">SAB_roles</xsd:appinfo>
@@ -1108,8 +1006,6 @@
                         group contains settings that affect cash discount and payment difference processing. e.g.
                         Tolerance FLX payment term, Up to one day discount grace, Distributor tolerance group.
                     </xsd:appinfo>
-                    <xsd:appinfo source="X_Workflow">Demo_Manager#SABPlanning_Product_1.0#Writable</xsd:appinfo>
-                    <xsd:appinfo source="X_Workflow">Team_Leader#SABPlanning_Product_1.0#Writable</xsd:appinfo>
                     <xsd:appinfo source="X_Label_EN">Tolerance Group</xsd:appinfo>
                     <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
                     <xsd:appinfo source="X_Write">Power_User</xsd:appinfo>
@@ -1123,8 +1019,6 @@
                         subsequent processing (order, delivery, billing document...) for condition determination and
                         pricing. E.G. Cash, EFT, Direct Cheque deposit, account etc.
                     </xsd:appinfo>
-                    <xsd:appinfo source="X_Workflow">Demo_Manager#SABPlanning_Product_1.0#Writable</xsd:appinfo>
-                    <xsd:appinfo source="X_Workflow">Team_Leader#SABPlanning_Product_1.0#Writable</xsd:appinfo>
                     <xsd:appinfo source="X_ForeignKeyInfo">paymentMethodOutGoing/land1</xsd:appinfo>
                     <xsd:appinfo source="X_ForeignKeyInfo">paymentMethodOutGoing/zlsch</xsd:appinfo>
                     <xsd:appinfo source="X_ForeignKeyInfo">paymentMethodOutGoing/text1</xsd:appinfo>
@@ -1144,8 +1038,6 @@
                     <xsd:appinfo source="X_Description_EN">Short Key for a Hous bank. All bank All bank data is
                         determined using this key.
                     </xsd:appinfo>
-                    <xsd:appinfo source="X_Workflow">Demo_Manager#SABPlanning_Product_1.0#Writable</xsd:appinfo>
-                    <xsd:appinfo source="X_Workflow">Team_Leader#SABPlanning_Product_1.0#Writable</xsd:appinfo>
                     <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
                     <xsd:appinfo source="X_Write">Power_User</xsd:appinfo>
                 </xsd:annotation>
@@ -1157,8 +1049,6 @@
                     <xsd:appinfo source="X_Description_EN">Payment Block. Block key used to block an open item or an
                         account for payment transactions.
                     </xsd:appinfo>
-                    <xsd:appinfo source="X_Workflow">Demo_Manager#SABPlanning_Product_1.0#Writable</xsd:appinfo>
-                    <xsd:appinfo source="X_Workflow">Team_Leader#SABPlanning_Product_1.0#Writable</xsd:appinfo>
                     <xsd:appinfo source="X_ForeignKeyInfo">paymentBlock/paymentBlock</xsd:appinfo>
                     <xsd:appinfo source="X_ForeignKeyInfo">paymentBlock/description</xsd:appinfo>
                     <xsd:appinfo source="X_Retrieve_FKinfos">true</xsd:appinfo>
@@ -1178,8 +1068,6 @@
                     <xsd:appinfo source="X_Description_EN">The Accounting clerk defined by this identification code is
                         used in the payment functions for correspondence and reporting e.g. open item lists
                     </xsd:appinfo>
-                    <xsd:appinfo source="X_Workflow">Demo_Manager#SABPlanning_Product_1.0#Writable</xsd:appinfo>
-                    <xsd:appinfo source="X_Workflow">Team_Leader#SABPlanning_Product_1.0#Writable</xsd:appinfo>
                     <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
                     <xsd:appinfo source="X_Write">Power_User</xsd:appinfo>
                 </xsd:annotation>
@@ -1190,8 +1078,6 @@
                     <xsd:appinfo source="X_Description_EN">User at customer. Name or identification code of the
                         accounting clerk at the customer
                     </xsd:appinfo>
-                    <xsd:appinfo source="X_Workflow">Demo_Manager#SABPlanning_Product_1.0#Writable</xsd:appinfo>
-                    <xsd:appinfo source="X_Workflow">Team_Leader#SABPlanning_Product_1.0#Writable</xsd:appinfo>
                     <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
                     <xsd:appinfo source="X_Write">Power_User</xsd:appinfo>
                 </xsd:annotation>
@@ -1200,8 +1086,6 @@
                 <xsd:annotation>
                     <xsd:appinfo source="X_Description_EN">Accounting Clerk's telephone number at the Business partner
                     </xsd:appinfo>
-                    <xsd:appinfo source="X_Workflow">Demo_Manager#SABPlanning_Product_1.0#Writable</xsd:appinfo>
-                    <xsd:appinfo source="X_Workflow">Team_Leader#SABPlanning_Product_1.0#Writable</xsd:appinfo>
                     <xsd:appinfo source="X_Label_EN">Manager Telephone</xsd:appinfo>
                     <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
                     <xsd:appinfo source="X_Write">Power_User</xsd:appinfo>
@@ -1211,8 +1095,6 @@
                 <xsd:annotation>
                     <xsd:appinfo source="X_Description_EN">Accounting Clerk's Fax number at the Business partner
                     </xsd:appinfo>
-                    <xsd:appinfo source="X_Workflow">Demo_Manager#SABPlanning_Product_1.0#Writable</xsd:appinfo>
-                    <xsd:appinfo source="X_Workflow">Team_Leader#SABPlanning_Product_1.0#Writable</xsd:appinfo>
                     <xsd:appinfo source="X_Label_EN">Manager Fax</xsd:appinfo>
                     <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
                     <xsd:appinfo source="X_Write">Power_User</xsd:appinfo>
@@ -1222,8 +1104,6 @@
                 <xsd:annotation>
                     <xsd:appinfo source="X_Description_EN">Accounting Clerk's internet address at the Business partner
                     </xsd:appinfo>
-                    <xsd:appinfo source="X_Workflow">Demo_Manager#SABPlanning_Product_1.0#Writable</xsd:appinfo>
-                    <xsd:appinfo source="X_Workflow">Team_Leader#SABPlanning_Product_1.0#Writable</xsd:appinfo>
                     <xsd:appinfo source="X_Label_EN">Manager Internet</xsd:appinfo>
                     <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
                     <xsd:appinfo source="X_Write">Power_User</xsd:appinfo>
@@ -1236,8 +1116,6 @@
                         dunning notices are created for the branch. Normally automatic payment transactions and dunning
                         notices are created for the HEAD OFFICE
                     </xsd:appinfo>
-                    <xsd:appinfo source="X_Workflow">Demo_Manager#SABPlanning_Product_1.0#Writable</xsd:appinfo>
-                    <xsd:appinfo source="X_Workflow">Team_Leader#SABPlanning_Product_1.0#Writable</xsd:appinfo>
                     <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
                     <xsd:appinfo source="X_Write">Power_User</xsd:appinfo>
                 </xsd:annotation>
@@ -1253,8 +1131,6 @@
                         different ID's, you can divide customers into groups with different account statement intervals.
                         E.G weekly account statements or monthly account statements
                     </xsd:appinfo>
-                    <xsd:appinfo source="X_Workflow">Demo_Manager#SABPlanning_Product_1.0#Writable</xsd:appinfo>
-                    <xsd:appinfo source="X_Workflow">Team_Leader#SABPlanning_Product_1.0#Writable</xsd:appinfo>
                     <xsd:appinfo source="X_Hide">Power_User</xsd:appinfo>
                     <xsd:appinfo source="X_Hide">SAB_roles</xsd:appinfo>
                     <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
@@ -1265,8 +1141,6 @@
                 <xsd:annotation>
                     <xsd:appinfo source="X_Label_EN">Account Memo</xsd:appinfo>
                     <xsd:appinfo source="X_Description_EN">Internal memo of the accounting department.</xsd:appinfo>
-                    <xsd:appinfo source="X_Workflow">Demo_Manager#SABPlanning_Product_1.0#Writable</xsd:appinfo>
-                    <xsd:appinfo source="X_Workflow">Team_Leader#SABPlanning_Product_1.0#Writable</xsd:appinfo>
                     <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
                     <xsd:appinfo source="X_Write">Power_User</xsd:appinfo>
                 </xsd:annotation>
@@ -1287,8 +1161,6 @@
                     <xsd:appinfo source="X_Description_EN">Tax Category Specifies the applicable tax number required
                         e.g. South Africa: VAT Registration Number
                     </xsd:appinfo>
-                    <xsd:appinfo source="X_Workflow">Demo_Manager#SABPlanning_Product_1.0#Writable</xsd:appinfo>
-                    <xsd:appinfo source="X_Workflow">Team_Leader#SABPlanning_Product_1.0#Writable</xsd:appinfo>
 
 
                     <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
@@ -1302,8 +1174,6 @@
                     <xsd:appinfo source="X_Description_EN">Specifies the Tax Number Note: If not registered for VAT, the
                         convention is to capture NOT REGISTERED in the tax number field
                     </xsd:appinfo>
-                    <xsd:appinfo source="X_Workflow">Demo_Manager#SABPlanning_Product_1.0#Writable</xsd:appinfo>
-                    <xsd:appinfo source="X_Workflow">Team_Leader#SABPlanning_Product_1.0#Writable</xsd:appinfo>
 
 
                     <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
@@ -1328,8 +1198,6 @@
                         the ID number is related to the South African Company Registration Number or Citizen Personal
                         Number "
                     </xsd:appinfo>
-                    <xsd:appinfo source="X_Workflow">Demo_Manager#SABPlanning_Product_1.0#Writable</xsd:appinfo>
-                    <xsd:appinfo source="X_Workflow">Team_Leader#SABPlanning_Product_1.0#Writable</xsd:appinfo>
 
 
                     <xsd:appinfo source="X_Write">SAB_roles</xsd:appinfo>
@@ -1341,8 +1209,6 @@
                     <xsd:appinfo source="X_Description_EN">"Identification Number, that serves to identify a business
                         partner, such as driver's license, or ID card/book number. "
                     </xsd:appinfo>
-                    <xsd:appinfo source="X_Workflow">Demo_Manager#SABPlanning_Product_1.0#Writable</xsd:appinfo>
-                    <xsd:appinfo source="X_Workflow">Team_Leader#SABPlanning_Product_1.0#Writable</xsd:appinfo>
 
 
                     <xsd:appinfo source="X_Write">SAB_roles</xsd:appinfo>
@@ -1351,8 +1217,6 @@
             <xsd:element maxOccurs="1" minOccurs="0" name="idIstitute" type="xsd:string">
                 <xsd:annotation>
                     <xsd:appinfo source="X_Label_EN">Responsible Institution</xsd:appinfo>
-                    <xsd:appinfo source="X_Workflow">Demo_Manager#SABPlanning_Product_1.0#Writable</xsd:appinfo>
-                    <xsd:appinfo source="X_Workflow">Team_Leader#SABPlanning_Product_1.0#Writable</xsd:appinfo>
                     <xsd:appinfo source="X_Hide">SAB_roles</xsd:appinfo>
                     <xsd:appinfo source="X_Hide">Power_User</xsd:appinfo>
                     <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
@@ -1362,8 +1226,6 @@
             <xsd:element maxOccurs="1" minOccurs="0" name="idEntryDate" type="xsd:string">
                 <xsd:annotation>
                     <xsd:appinfo source="X_Label_EN">Entry Date</xsd:appinfo>
-                    <xsd:appinfo source="X_Workflow">Demo_Manager#SABPlanning_Product_1.0#Writable</xsd:appinfo>
-                    <xsd:appinfo source="X_Workflow">Team_Leader#SABPlanning_Product_1.0#Writable</xsd:appinfo>
                     <xsd:appinfo source="X_Hide">SAB_roles</xsd:appinfo>
                     <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
                     <xsd:appinfo source="X_Write">Power_User</xsd:appinfo>
@@ -1372,8 +1234,6 @@
             <xsd:element maxOccurs="1" minOccurs="0" name="idStartDate" type="xsd:string">
                 <xsd:annotation>
                     <xsd:appinfo source="X_Label_EN">Valid from</xsd:appinfo>
-                    <xsd:appinfo source="X_Workflow">Demo_Manager#SABPlanning_Product_1.0#Writable</xsd:appinfo>
-                    <xsd:appinfo source="X_Workflow">Team_Leader#SABPlanning_Product_1.0#Writable</xsd:appinfo>
                     <xsd:appinfo source="X_Hide">SAB_roles</xsd:appinfo>
                     <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
                     <xsd:appinfo source="X_Write">Power_User</xsd:appinfo>
@@ -1382,8 +1242,6 @@
             <xsd:element maxOccurs="1" minOccurs="0" name="idEndDate" type="xsd:string">
                 <xsd:annotation>
                     <xsd:appinfo source="X_Label_EN">Valid To</xsd:appinfo>
-                    <xsd:appinfo source="X_Workflow">Demo_Manager#SABPlanning_Product_1.0#Writable</xsd:appinfo>
-                    <xsd:appinfo source="X_Workflow">Team_Leader#SABPlanning_Product_1.0#Writable</xsd:appinfo>
                     <xsd:appinfo source="X_Hide">SAB_roles</xsd:appinfo>
                     <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
                     <xsd:appinfo source="X_Write">Power_User</xsd:appinfo>
@@ -1400,8 +1258,6 @@
                     <xsd:appinfo source="X_Description_EN">The Name of the Country as part of the City and Street
                         address.
                     </xsd:appinfo>
-                    <xsd:appinfo source="X_Workflow">Demo_Manager#SABPlanning_Product_1.0#Writable</xsd:appinfo>
-                    <xsd:appinfo source="X_Workflow">Team_Leader#SABPlanning_Product_1.0#Writable</xsd:appinfo>
                     <xsd:appinfo source="X_Hide">SAB_roles</xsd:appinfo>
                     <xsd:appinfo source="X_Hide">Power_User</xsd:appinfo>
                     <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
@@ -1416,8 +1272,6 @@
                     <xsd:appinfo source="X_ForeignKeyInfo">region/region</xsd:appinfo>
                     <xsd:appinfo source="X_ForeignKeyInfo">region/description</xsd:appinfo>
                     <xsd:appinfo source="X_Retrieve_FKinfos">true</xsd:appinfo>
-                    <xsd:appinfo source="X_Workflow">Demo_Manager#SABPlanning_Product_1.0#Writable</xsd:appinfo>
-                    <xsd:appinfo source="X_Workflow">Team_Leader#SABPlanning_Product_1.0#Writable</xsd:appinfo>
                     <xsd:appinfo source="X_Hide">SAB_roles</xsd:appinfo>
                     <xsd:appinfo source="X_Hide">Power_User</xsd:appinfo>
                     <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
@@ -1440,8 +1294,6 @@
                     <xsd:appinfo source="X_ForeignKeyInfo">accDiscount/accDiscount</xsd:appinfo>
                     <xsd:appinfo source="X_ForeignKeyInfo">accDiscount/description</xsd:appinfo>
                     <xsd:appinfo source="X_Retrieve_FKinfos">true</xsd:appinfo>
-                    <xsd:appinfo source="X_Workflow">Demo_Manager#SABPlanning_Product_1.0#Writable</xsd:appinfo>
-                    <xsd:appinfo source="X_Workflow">Team_Leader#SABPlanning_Product_1.0#Writable</xsd:appinfo>
                     <xsd:appinfo source="X_Hide">Power_User</xsd:appinfo>
 
 
@@ -1459,8 +1311,6 @@
                     <xsd:appinfo source="X_ForeignKeyInfo">investOption/investOption</xsd:appinfo>
                     <xsd:appinfo source="X_ForeignKeyInfo">investOption/description</xsd:appinfo>
                     <xsd:appinfo source="X_Retrieve_FKinfos">true</xsd:appinfo>
-                    <xsd:appinfo source="X_Workflow">Demo_Manager#SABPlanning_Product_1.0#Writable</xsd:appinfo>
-                    <xsd:appinfo source="X_Workflow">Team_Leader#SABPlanning_Product_1.0#Writable</xsd:appinfo>
                     <xsd:appinfo source="X_Hide">Power_User</xsd:appinfo>
 
 
@@ -1478,8 +1328,6 @@
                     <xsd:appinfo source="X_ForeignKeyInfo">allocationLevel/allocationLevel</xsd:appinfo>
                     <xsd:appinfo source="X_ForeignKeyInfo">allocationLevel/description</xsd:appinfo>
                     <xsd:appinfo source="X_Retrieve_FKinfos">true</xsd:appinfo>
-                    <xsd:appinfo source="X_Workflow">Demo_Manager#SABPlanning_Product_1.0#Writable</xsd:appinfo>
-                    <xsd:appinfo source="X_Workflow">Team_Leader#SABPlanning_Product_1.0#Writable</xsd:appinfo>
                     <xsd:appinfo source="X_Hide">Power_User</xsd:appinfo>
 
 
@@ -1496,8 +1344,6 @@
                     <xsd:appinfo source="X_ForeignKeyInfo">groupCode/groupCode</xsd:appinfo>
                     <xsd:appinfo source="X_ForeignKeyInfo">groupCode/description</xsd:appinfo>
                     <xsd:appinfo source="X_Retrieve_FKinfos">true</xsd:appinfo>
-                    <xsd:appinfo source="X_Workflow">Demo_Manager#SABPlanning_Product_1.0#Writable</xsd:appinfo>
-                    <xsd:appinfo source="X_Workflow">Team_Leader#SABPlanning_Product_1.0#Writable</xsd:appinfo>
                     <xsd:appinfo source="X_Hide">Power_User</xsd:appinfo>
 
 
@@ -1515,8 +1361,6 @@
                     <xsd:appinfo source="X_ForeignKeyInfo">attribute6/attribute6</xsd:appinfo>
                     <xsd:appinfo source="X_ForeignKeyInfo">attribute6/description</xsd:appinfo>
                     <xsd:appinfo source="X_Retrieve_FKinfos">true</xsd:appinfo>
-                    <xsd:appinfo source="X_Workflow">Demo_Manager#SABPlanning_Product_1.0#Writable</xsd:appinfo>
-                    <xsd:appinfo source="X_Workflow">Team_Leader#SABPlanning_Product_1.0#Writable</xsd:appinfo>
                     <xsd:appinfo source="X_Hide">Power_User</xsd:appinfo>
 
 
@@ -1531,8 +1375,6 @@
                     <xsd:appinfo source="X_ForeignKeyInfo">strategicInd/strategicInd</xsd:appinfo>
                     <xsd:appinfo source="X_ForeignKeyInfo">strategicInd/description</xsd:appinfo>
                     <xsd:appinfo source="X_Retrieve_FKinfos">true</xsd:appinfo>
-                    <xsd:appinfo source="X_Workflow">Demo_Manager#SABPlanning_Product_1.0#Writable</xsd:appinfo>
-                    <xsd:appinfo source="X_Workflow">Team_Leader#SABPlanning_Product_1.0#Writable</xsd:appinfo>
                     <xsd:appinfo source="X_Hide">Power_User</xsd:appinfo>
 
 
@@ -1550,8 +1392,6 @@
                     <xsd:appinfo source="X_ForeignKeyInfo">tavernTraining/tavernTraining</xsd:appinfo>
                     <xsd:appinfo source="X_ForeignKeyInfo">tavernTraining/description</xsd:appinfo>
                     <xsd:appinfo source="X_Retrieve_FKinfos">true</xsd:appinfo>
-                    <xsd:appinfo source="X_Workflow">Demo_Manager#SABPlanning_Product_1.0#Writable</xsd:appinfo>
-                    <xsd:appinfo source="X_Workflow">Team_Leader#SABPlanning_Product_1.0#Writable</xsd:appinfo>
                     <xsd:appinfo source="X_Hide">Power_User</xsd:appinfo>
 
 
@@ -1566,8 +1406,6 @@
                     <xsd:appinfo source="X_ForeignKeyInfo">attribute10/attribute10</xsd:appinfo>
                     <xsd:appinfo source="X_ForeignKeyInfo">attribute10/description</xsd:appinfo>
                     <xsd:appinfo source="X_Retrieve_FKinfos">true</xsd:appinfo>
-                    <xsd:appinfo source="X_Workflow">Demo_Manager#SABPlanning_Product_1.0#Writable</xsd:appinfo>
-                    <xsd:appinfo source="X_Workflow">Team_Leader#SABPlanning_Product_1.0#Writable</xsd:appinfo>
                     <xsd:appinfo source="X_Hide">Power_User</xsd:appinfo>
 
 
@@ -1585,8 +1423,6 @@
                     </xsd:appinfo>
                     <xsd:appinfo source="X_ForeignKeyInfo">paymentMethod/description</xsd:appinfo>
                     <xsd:appinfo source="X_Retrieve_FKinfos">true</xsd:appinfo>
-                    <xsd:appinfo source="X_Workflow">Demo_Manager#SABPlanning_Product_1.0#Writable</xsd:appinfo>
-                    <xsd:appinfo source="X_Workflow">Team_Leader#SABPlanning_Product_1.0#Writable</xsd:appinfo>
                     <xsd:appinfo source="X_Hide">Power_User</xsd:appinfo>
 
 
@@ -1779,8 +1615,6 @@
                     <xsd:appinfo source="X_Label_EN">ID</xsd:appinfo>
                     <xsd:appinfo source="X_Description_EN">Bank ID. Key identifying a business partner's bank details
                     </xsd:appinfo>
-                    <xsd:appinfo source="X_Workflow">Demo_Manager#SABPlanning_Product_1.0#Writable</xsd:appinfo>
-                    <xsd:appinfo source="X_Workflow">Team_Leader#SABPlanning_Product_1.0#Writable</xsd:appinfo>
                     <xsd:appinfo source="X_Hide">Power_User</xsd:appinfo>
                     <xsd:appinfo source="X_Hide">SAB_roles</xsd:appinfo>
                     <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
@@ -1799,8 +1633,6 @@
                         located. The country key defines the rules according to which bank data, such as the bank and
                         account numbers, are to be validated
                     </xsd:appinfo>
-                    <xsd:appinfo source="X_Workflow">Demo_Manager#SABPlanning_Product_1.0#Writable</xsd:appinfo>
-                    <xsd:appinfo source="X_Workflow">Team_Leader#SABPlanning_Product_1.0#Writable</xsd:appinfo>
                     <xsd:appinfo source="X_Hide">Power_User</xsd:appinfo>
                     <xsd:appinfo source="X_Hide">SAB_roles</xsd:appinfo>
                     <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
@@ -1815,8 +1647,6 @@
                         bank number in the control data for the bank is then displayed twice, i.e. as the bank key as
                         well.
                     </xsd:appinfo>
-                    <xsd:appinfo source="X_Workflow">Demo_Manager#SABPlanning_Product_1.0#Writable</xsd:appinfo>
-                    <xsd:appinfo source="X_Workflow">Team_Leader#SABPlanning_Product_1.0#Writable</xsd:appinfo>
                     <xsd:appinfo source="X_Hide">Power_User</xsd:appinfo>
                     <xsd:appinfo source="X_Hide">SAB_roles</xsd:appinfo>
                     <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
@@ -1826,8 +1656,6 @@
             <xsd:element maxOccurs="1" minOccurs="0" name="bankAccount" type="xsd:string">
                 <xsd:annotation>
                     <xsd:appinfo source="X_Label_EN">Bank Account</xsd:appinfo>
-                    <xsd:appinfo source="X_Workflow">Demo_Manager#SABPlanning_Product_1.0#Writable</xsd:appinfo>
-                    <xsd:appinfo source="X_Workflow">Team_Leader#SABPlanning_Product_1.0#Writable</xsd:appinfo>
                     <xsd:appinfo source="X_Hide">Power_User</xsd:appinfo>
                     <xsd:appinfo source="X_Hide">SAB_roles</xsd:appinfo>
                     <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
@@ -1842,8 +1670,6 @@
                         specifies the type of account e.g. 01 Current (Cheque) Account, 02 Savings Account, 03
                         Transmission Account etc.
                     </xsd:appinfo>
-                    <xsd:appinfo source="X_Workflow">Demo_Manager#SABPlanning_Product_1.0#Writable</xsd:appinfo>
-                    <xsd:appinfo source="X_Workflow">Team_Leader#SABPlanning_Product_1.0#Writable</xsd:appinfo>
                     <xsd:appinfo source="X_Hide">Power_User</xsd:appinfo>
                     <xsd:appinfo source="X_Hide">SAB_roles</xsd:appinfo>
                     <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
@@ -1856,8 +1682,6 @@
                     <xsd:appinfo source="X_Description_EN">Reference Details for Additional specifications for the
                         customer/vendor bank details
                     </xsd:appinfo>
-                    <xsd:appinfo source="X_Workflow">Demo_Manager#SABPlanning_Product_1.0#Writable</xsd:appinfo>
-                    <xsd:appinfo source="X_Workflow">Team_Leader#SABPlanning_Product_1.0#Writable</xsd:appinfo>
                     <xsd:appinfo source="X_Hide">Power_User</xsd:appinfo>
                     <xsd:appinfo source="X_Hide">SAB_roles</xsd:appinfo>
                     <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
@@ -1870,8 +1694,6 @@
                     <xsd:appinfo source="X_Description_EN">External Bank ID. If the current bank details are known under
                         a different ID in an external system, you can store this ID here
                     </xsd:appinfo>
-                    <xsd:appinfo source="X_Workflow">Demo_Manager#SABPlanning_Product_1.0#Writable</xsd:appinfo>
-                    <xsd:appinfo source="X_Workflow">Team_Leader#SABPlanning_Product_1.0#Writable</xsd:appinfo>
                     <xsd:appinfo source="X_Hide">Power_User</xsd:appinfo>
                     <xsd:appinfo source="X_Hide">SAB_roles</xsd:appinfo>
                     <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
@@ -1881,8 +1703,6 @@
             <xsd:element maxOccurs="1" minOccurs="0" name="collectionAuthorization" type="xsd:string">
                 <xsd:annotation>
                     <xsd:appinfo source="X_Label_EN">Collection Authorization</xsd:appinfo>
-                    <xsd:appinfo source="X_Workflow">Demo_Manager#SABPlanning_Product_1.0#Writable</xsd:appinfo>
-                    <xsd:appinfo source="X_Workflow">Team_Leader#SABPlanning_Product_1.0#Writable</xsd:appinfo>
                     <xsd:appinfo source="X_Hide">Power_User</xsd:appinfo>
                     <xsd:appinfo source="X_Hide">SAB_roles</xsd:appinfo>
                     <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
@@ -1893,8 +1713,6 @@
                 <xsd:annotation>
                     <xsd:appinfo source="X_Label_EN">Account Holder</xsd:appinfo>
                     <xsd:appinfo source="X_Description_EN">Account Holder Name. Name on the bank account</xsd:appinfo>
-                    <xsd:appinfo source="X_Workflow">Demo_Manager#SABPlanning_Product_1.0#Writable</xsd:appinfo>
-                    <xsd:appinfo source="X_Workflow">Team_Leader#SABPlanning_Product_1.0#Writable</xsd:appinfo>
                     <xsd:appinfo source="X_Hide">Power_User</xsd:appinfo>
                     <xsd:appinfo source="X_Hide">SAB_roles</xsd:appinfo>
                     <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
@@ -1907,8 +1725,6 @@
                     <xsd:appinfo source="X_Description_EN">Name of Bank Account. The name of the bank is comprised of
                         the bank name &amp;amp; the name of the branch office
                     </xsd:appinfo>
-                    <xsd:appinfo source="X_Workflow">Demo_Manager#SABPlanning_Product_1.0#Writable</xsd:appinfo>
-                    <xsd:appinfo source="X_Workflow">Team_Leader#SABPlanning_Product_1.0#Writable</xsd:appinfo>
                     <xsd:appinfo source="X_Hide">Power_User</xsd:appinfo>
                     <xsd:appinfo source="X_Hide">SAB_roles</xsd:appinfo>
                     <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
@@ -1935,8 +1751,6 @@
                     <xsd:appinfo source="X_Description_EN">The abbreviated form of the name that identifies the Business
                         Partner
                     </xsd:appinfo>
-                    <xsd:appinfo source="X_Workflow">Demo_Manager#SABPlanning_Product_1.0#Writable</xsd:appinfo>
-                    <xsd:appinfo source="X_Workflow">Team_Leader#SABPlanning_Product_1.0#Writable</xsd:appinfo>
                     <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
                     <xsd:appinfo source="X_Write">Power_User</xsd:appinfo>
                 </xsd:annotation>
@@ -1947,8 +1761,6 @@
                     <xsd:appinfo source="X_Description_EN">The number that uniquely identifies the contact person at the
                         customer.
                     </xsd:appinfo>
-                    <xsd:appinfo source="X_Workflow">Demo_Manager#SABPlanning_Product_1.0#Writable</xsd:appinfo>
-                    <xsd:appinfo source="X_Workflow">Team_Leader#SABPlanning_Product_1.0#Writable</xsd:appinfo>
                     <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
                     <xsd:appinfo source="X_Write">Power_User</xsd:appinfo>
                 </xsd:annotation>
@@ -1957,8 +1769,6 @@
                 <xsd:annotation>
                     <xsd:appinfo source="X_ForeignKey">salesOrganization</xsd:appinfo>
                     <xsd:appinfo source="X_Label_EN">Sales Organization</xsd:appinfo>
-                    <xsd:appinfo source="X_Workflow">Demo_Manager#SABPlanning_Product_1.0#Writable</xsd:appinfo>
-                    <xsd:appinfo source="X_Workflow">Team_Leader#SABPlanning_Product_1.0#Writable</xsd:appinfo>
                     <xsd:appinfo source="X_ForeignKeyInfo">salesOrganization/sale</xsd:appinfo>
                     <xsd:appinfo source="X_ForeignKeyInfo">salesOrganization/name</xsd:appinfo>
                     <xsd:appinfo source="X_Retrieve_FKinfos">true</xsd:appinfo>
@@ -1970,8 +1780,6 @@
                 <xsd:annotation>
                     <xsd:appinfo source="X_ForeignKey">distributionChannel</xsd:appinfo>
                     <xsd:appinfo source="X_Label_EN">Distribution Channel</xsd:appinfo>
-                    <xsd:appinfo source="X_Workflow">Demo_Manager#SABPlanning_Product_1.0#Writable</xsd:appinfo>
-                    <xsd:appinfo source="X_Workflow">Team_Leader#SABPlanning_Product_1.0#Writable</xsd:appinfo>
                     <xsd:appinfo source="X_ForeignKeyInfo">distributionChannel/channel</xsd:appinfo>
                     <xsd:appinfo source="X_ForeignKeyInfo">distributionChannel/name</xsd:appinfo>
                     <xsd:appinfo source="X_Retrieve_FKinfos">true</xsd:appinfo>
@@ -1983,8 +1791,6 @@
                 <xsd:annotation>
                     <xsd:appinfo source="X_ForeignKey">division</xsd:appinfo>
                     <xsd:appinfo source="X_Label_EN">Division</xsd:appinfo>
-                    <xsd:appinfo source="X_Workflow">Demo_Manager#SABPlanning_Product_1.0#Writable</xsd:appinfo>
-                    <xsd:appinfo source="X_Workflow">Team_Leader#SABPlanning_Product_1.0#Writable</xsd:appinfo>
                     <xsd:appinfo source="X_ForeignKeyInfo">division/code</xsd:appinfo>
                     <xsd:appinfo source="X_ForeignKeyInfo">division/description</xsd:appinfo>
                     <xsd:appinfo source="X_Retrieve_FKinfos">true</xsd:appinfo>
@@ -2122,8 +1928,6 @@
             <xsd:element maxOccurs="1" minOccurs="1" name="key" type="UUID">
                 <xsd:annotation>
                     <xsd:appinfo source="X_Hide">Demo_Manager</xsd:appinfo>
-                    <xsd:appinfo source="X_Workflow">Demo_Manager#SABPlanning_Product_1.0#Writable</xsd:appinfo>
-                    <xsd:appinfo source="X_Workflow">Team_Leader#SABPlanning_Product_1.0#Writable</xsd:appinfo>
                     <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
                     <xsd:appinfo source="X_Write">Power_User</xsd:appinfo>
                 </xsd:annotation>
@@ -2135,8 +1939,6 @@
                         you can restrict the search for a Business Partner. The term that you define should be unique
                         for a specific business partner.
                     </xsd:appinfo>
-                    <xsd:appinfo source="X_Workflow">Demo_Manager#SABPlanning_Product_1.0#Writable</xsd:appinfo>
-                    <xsd:appinfo source="X_Workflow">Team_Leader#SABPlanning_Product_1.0#Writable</xsd:appinfo>
                     <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
                     <xsd:appinfo source="X_Write">Power_User</xsd:appinfo>
                 </xsd:annotation>
@@ -2154,8 +1956,6 @@
             <xsd:element maxOccurs="1" minOccurs="1" name="key" type="UUID">
                 <xsd:annotation>
                     <xsd:appinfo source="X_Hide">Demo_Manager</xsd:appinfo>
-                    <xsd:appinfo source="X_Workflow">Demo_Manager#SABPlanning_Product_1.0#Writable</xsd:appinfo>
-                    <xsd:appinfo source="X_Workflow">Team_Leader#SABPlanning_Product_1.0#Writable</xsd:appinfo>
                     <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
                     <xsd:appinfo source="X_Write">Power_User</xsd:appinfo>
                 </xsd:annotation>
@@ -2163,8 +1963,6 @@
             <xsd:element maxOccurs="1" minOccurs="0" name="building" type="xsd:string">
                 <xsd:annotation>
                     <xsd:appinfo source="X_Label_EN">Building</xsd:appinfo>
-                    <xsd:appinfo source="X_Workflow">Demo_Manager#SABPlanning_Product_1.0#Writable</xsd:appinfo>
-                    <xsd:appinfo source="X_Workflow">Team_Leader#SABPlanning_Product_1.0#Writable</xsd:appinfo>
                     <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
                     <xsd:appinfo source="X_Write">Power_User</xsd:appinfo>
                 </xsd:annotation>
@@ -2172,8 +1970,6 @@
             <xsd:element maxOccurs="1" minOccurs="0" name="floor" type="xsd:integer">
                 <xsd:annotation>
                     <xsd:appinfo source="X_Label_EN">Floor</xsd:appinfo>
-                    <xsd:appinfo source="X_Workflow">Demo_Manager#SABPlanning_Product_1.0#Writable</xsd:appinfo>
-                    <xsd:appinfo source="X_Workflow">Team_Leader#SABPlanning_Product_1.0#Writable</xsd:appinfo>
                     <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
                     <xsd:appinfo source="X_Write">Power_User</xsd:appinfo>
                 </xsd:annotation>
@@ -2181,8 +1977,6 @@
             <xsd:element maxOccurs="1" minOccurs="0" name="room" type="xsd:integer">
                 <xsd:annotation>
                     <xsd:appinfo source="X_Label_EN">Room</xsd:appinfo>
-                    <xsd:appinfo source="X_Workflow">Demo_Manager#SABPlanning_Product_1.0#Writable</xsd:appinfo>
-                    <xsd:appinfo source="X_Workflow">Team_Leader#SABPlanning_Product_1.0#Writable</xsd:appinfo>
                     <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
                     <xsd:appinfo source="X_Write">Power_User</xsd:appinfo>
                 </xsd:annotation>
@@ -2193,8 +1987,6 @@
                     <xsd:appinfo source="X_Description_EN">The House Number and other supplements are usually maintained
                         in their own field and not as part of the Street "name"
                     </xsd:appinfo>
-                    <xsd:appinfo source="X_Workflow">Demo_Manager#SABPlanning_Product_1.0#Writable</xsd:appinfo>
-                    <xsd:appinfo source="X_Workflow">Team_Leader#SABPlanning_Product_1.0#Writable</xsd:appinfo>
                     <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
                     <xsd:appinfo source="X_Write">Power_User</xsd:appinfo>
                 </xsd:annotation>
@@ -2205,8 +1997,6 @@
                     <xsd:appinfo source="X_Description_EN">Street name forms part of the address. This must not contain
                         the house number as there is a separate field to record the number.
                     </xsd:appinfo>
-                    <xsd:appinfo source="X_Workflow">Demo_Manager#SABPlanning_Product_1.0#Writable</xsd:appinfo>
-                    <xsd:appinfo source="X_Workflow">Team_Leader#SABPlanning_Product_1.0#Writable</xsd:appinfo>
                     <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
                     <xsd:appinfo source="X_Write">Power_User</xsd:appinfo>
                 </xsd:annotation>
@@ -2214,8 +2004,6 @@
             <xsd:element maxOccurs="1" minOccurs="0" name="street2" type="xsd:string">
                 <xsd:annotation>
                     <xsd:appinfo source="X_Label_EN">Street 2</xsd:appinfo>
-                    <xsd:appinfo source="X_Workflow">Demo_Manager#SABPlanning_Product_1.0#Writable</xsd:appinfo>
-                    <xsd:appinfo source="X_Workflow">Team_Leader#SABPlanning_Product_1.0#Writable</xsd:appinfo>
                     <xsd:appinfo source="X_Display_Format_EN">grey Out</xsd:appinfo>
                     <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
                     <xsd:appinfo source="X_Write">Power_User</xsd:appinfo>
@@ -2227,8 +2015,6 @@
                     <xsd:appinfo source="X_Description_EN">Additional address field which is printed above the street
                         line. The Street address contains two lines above the street and two lines below the street.
                     </xsd:appinfo>
-                    <xsd:appinfo source="X_Workflow">Demo_Manager#SABPlanning_Product_1.0#Writable</xsd:appinfo>
-                    <xsd:appinfo source="X_Workflow">Team_Leader#SABPlanning_Product_1.0#Writable</xsd:appinfo>
                     <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
                     <xsd:appinfo source="X_Write">Power_User</xsd:appinfo>
                 </xsd:annotation>
@@ -2239,8 +2025,6 @@
                     <xsd:appinfo source="X_Description_EN">Additional address field which is printed above the Street
                         line
                     </xsd:appinfo>
-                    <xsd:appinfo source="X_Workflow">Demo_Manager#SABPlanning_Product_1.0#Writable</xsd:appinfo>
-                    <xsd:appinfo source="X_Workflow">Team_Leader#SABPlanning_Product_1.0#Writable</xsd:appinfo>
                     <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
                     <xsd:appinfo source="X_Write">Power_User</xsd:appinfo>
                 </xsd:annotation>
@@ -2251,8 +2035,6 @@
                     <xsd:appinfo source="X_Description_EN">Additional address field which is printed above the Street
                         line
                     </xsd:appinfo>
-                    <xsd:appinfo source="X_Workflow">Demo_Manager#SABPlanning_Product_1.0#Writable</xsd:appinfo>
-                    <xsd:appinfo source="X_Workflow">Team_Leader#SABPlanning_Product_1.0#Writable</xsd:appinfo>
                     <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
                     <xsd:appinfo source="X_Write">Power_User</xsd:appinfo>
                 </xsd:annotation>
@@ -2263,8 +2045,6 @@
                     <xsd:appinfo source="X_Description_EN">Postal Codes relates to Postal Addresses as well as Street
                         addresses. This field contains the Street address postal code.
                     </xsd:appinfo>
-                    <xsd:appinfo source="X_Workflow">Demo_Manager#SABPlanning_Product_1.0#Writable</xsd:appinfo>
-                    <xsd:appinfo source="X_Workflow">Team_Leader#SABPlanning_Product_1.0#Writable</xsd:appinfo>
                     <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
                     <xsd:appinfo source="X_Write">Power_User</xsd:appinfo>
                 </xsd:annotation>
@@ -2274,8 +2054,6 @@
                     <xsd:appinfo source="X_Label_EN">City</xsd:appinfo>
                     <xsd:appinfo source="X_Description_EN">The Name of the City as part of the Street address.
                     </xsd:appinfo>
-                    <xsd:appinfo source="X_Workflow">Demo_Manager#SABPlanning_Product_1.0#Writable</xsd:appinfo>
-                    <xsd:appinfo source="X_Workflow">Team_Leader#SABPlanning_Product_1.0#Writable</xsd:appinfo>
                     <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
                     <xsd:appinfo source="X_Write">Power_User</xsd:appinfo>
                 </xsd:annotation>
@@ -2291,8 +2069,6 @@
                     <xsd:appinfo source="X_Description_EN">The Name of the Country as part of the City and Street
                         address.
                     </xsd:appinfo>
-                    <xsd:appinfo source="X_Workflow">Demo_Manager#SABPlanning_Product_1.0#Writable</xsd:appinfo>
-                    <xsd:appinfo source="X_Workflow">Team_Leader#SABPlanning_Product_1.0#Writable</xsd:appinfo>
                     <xsd:appinfo source="X_ForeignKey_Filter">country/country$$=$$ZA$$#</xsd:appinfo>
                     <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
                     <xsd:appinfo source="X_Write">Power_User</xsd:appinfo>
@@ -2306,8 +2082,6 @@
                     <xsd:appinfo source="X_ForeignKeyInfo">region/region</xsd:appinfo>
                     <xsd:appinfo source="X_ForeignKeyInfo">region/description</xsd:appinfo>
                     <xsd:appinfo source="X_Retrieve_FKinfos">true</xsd:appinfo>
-                    <xsd:appinfo source="X_Workflow">Demo_Manager#SABPlanning_Product_1.0#Writable</xsd:appinfo>
-                    <xsd:appinfo source="X_Workflow">Team_Leader#SABPlanning_Product_1.0#Writable</xsd:appinfo>
                     <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
                     <xsd:appinfo source="X_Write">Power_User</xsd:appinfo>
                 </xsd:annotation>
@@ -2325,8 +2099,6 @@
             <xsd:element maxOccurs="1" minOccurs="1" name="key" type="UUID">
                 <xsd:annotation>
                     <xsd:appinfo source="X_Hide">Demo_Manager</xsd:appinfo>
-                    <xsd:appinfo source="X_Workflow">Demo_Manager#SABPlanning_Product_1.0#Writable</xsd:appinfo>
-                    <xsd:appinfo source="X_Workflow">Team_Leader#SABPlanning_Product_1.0#Writable</xsd:appinfo>
                     <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
                     <xsd:appinfo source="X_Write">Power_User</xsd:appinfo>
                 </xsd:annotation>
@@ -2337,8 +2109,6 @@
                     <xsd:appinfo source="X_Description_EN">PO Box number as part of an address. Only enter the PO Box
                         number in this field. E.G. 1234 Do NOT enter P.O.Box 1234
                     </xsd:appinfo>
-                    <xsd:appinfo source="X_Workflow">Demo_Manager#SABPlanning_Product_1.0#Writable</xsd:appinfo>
-                    <xsd:appinfo source="X_Workflow">Team_Leader#SABPlanning_Product_1.0#Writable</xsd:appinfo>
                     <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
                     <xsd:appinfo source="X_Write">Power_User</xsd:appinfo>
                 </xsd:annotation>
@@ -2349,8 +2119,6 @@
                     <xsd:appinfo source="X_Description_EN">Postal Codes relates to Postal Addresses as well as Street
                         addresses. This field contains the Street address postal code.
                     </xsd:appinfo>
-                    <xsd:appinfo source="X_Workflow">Demo_Manager#SABPlanning_Product_1.0#Writable</xsd:appinfo>
-                    <xsd:appinfo source="X_Workflow">Team_Leader#SABPlanning_Product_1.0#Writable</xsd:appinfo>
                     <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
                     <xsd:appinfo source="X_Write">Power_User</xsd:appinfo>
                 </xsd:annotation>
@@ -2358,8 +2126,6 @@
             <xsd:element maxOccurs="1" minOccurs="0" name="diffirentCity" type="xsd:string">
                 <xsd:annotation>
                     <xsd:appinfo source="X_Label_EN">Other City</xsd:appinfo>
-                    <xsd:appinfo source="X_Workflow">Demo_Manager#SABPlanning_Product_1.0#Writable</xsd:appinfo>
-                    <xsd:appinfo source="X_Workflow">Team_Leader#SABPlanning_Product_1.0#Writable</xsd:appinfo>
                     <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
                     <xsd:appinfo source="X_Write">Power_User</xsd:appinfo>
                 </xsd:annotation>
@@ -2382,8 +2148,6 @@
         <xsd:all maxOccurs="1" minOccurs="1">
             <xsd:element maxOccurs="1" minOccurs="1" name="key" type="UUID">
                 <xsd:annotation>
-                    <xsd:appinfo source="X_Workflow">Demo_Manager#SABPlanning_Product_1.0#Writable</xsd:appinfo>
-                    <xsd:appinfo source="X_Workflow">Team_Leader#SABPlanning_Product_1.0#Writable</xsd:appinfo>
                     <xsd:appinfo source="X_Hide">Demo_Manager</xsd:appinfo>
                     <xsd:appinfo source="X_Hide">Power_User</xsd:appinfo>
                     <xsd:appinfo source="X_Hide">SAB_roles</xsd:appinfo>
@@ -2394,8 +2158,6 @@
             <xsd:element maxOccurs="1" minOccurs="0" name="organizationalData" type="OrganizationDataType">
                 <xsd:annotation>
                     <xsd:appinfo source="X_Label_EN">Organizational Data</xsd:appinfo>
-                    <xsd:appinfo source="X_Workflow">Demo_Manager#SABPlanning_Product_1.0#Writable</xsd:appinfo>
-                    <xsd:appinfo source="X_Workflow">Team_Leader#SABPlanning_Product_1.0#Writable</xsd:appinfo>
                     <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
                     <xsd:appinfo source="X_Write">Power_User</xsd:appinfo>
                 </xsd:annotation>
@@ -2403,8 +2165,6 @@
             <xsd:element maxOccurs="1" minOccurs="0" name="identificationNumbers" type="Identification">
                 <xsd:annotation>
                     <xsd:appinfo source="X_Label_EN">Identification Numbers</xsd:appinfo>
-                    <xsd:appinfo source="X_Workflow">Demo_Manager#SABPlanning_Product_1.0#Writable</xsd:appinfo>
-                    <xsd:appinfo source="X_Workflow">Team_Leader#SABPlanning_Product_1.0#Writable</xsd:appinfo>
                     <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
                     <xsd:appinfo source="X_Write">Power_User</xsd:appinfo>
                 </xsd:annotation>
@@ -2412,10 +2172,6 @@
             <xsd:element maxOccurs="1" minOccurs="0" name="taxIdentification" type="TaxIdentification">
                 <xsd:annotation>
                     <xsd:appinfo source="X_Label_EN">Tax Numbers</xsd:appinfo>
-                    <xsd:appinfo source="X_Workflow">Demo_Manager#SABPlanning_Product_1.0#Writable</xsd:appinfo>
-                    <xsd:appinfo source="X_Workflow">Team_Leader#SABPlanning_Product_1.0#Writable</xsd:appinfo>
-
-
                     <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
                     <xsd:appinfo source="X_Write">Power_User</xsd:appinfo>
                     <xsd:appinfo source="X_Write">SAB_roles</xsd:appinfo>
@@ -2424,8 +2180,6 @@
             <xsd:element maxOccurs="1" minOccurs="0" name="industries" type="IndustryType">
                 <xsd:annotation>
                     <xsd:appinfo source="X_Label_EN">Industries</xsd:appinfo>
-                    <xsd:appinfo source="X_Workflow">Demo_Manager#SABPlanning_Product_1.0#Writable</xsd:appinfo>
-                    <xsd:appinfo source="X_Workflow">Team_Leader#SABPlanning_Product_1.0#Writable</xsd:appinfo>
                     <xsd:appinfo source="X_Hide">SAB_roles</xsd:appinfo>
                     <xsd:appinfo source="X_Hide">Power_User</xsd:appinfo>
                     <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
@@ -2444,10 +2198,6 @@
         <xsd:all maxOccurs="1" minOccurs="1">
             <xsd:element maxOccurs="1" minOccurs="1" name="key" type="UUID">
                 <xsd:annotation>
-                    <xsd:appinfo source="X_Workflow">Demo_Manager#SABPlanning_Product_1.0#Writable</xsd:appinfo>
-                    <xsd:appinfo source="X_Workflow">Team_Leader#SABPlanning_Product_1.0#Writable</xsd:appinfo>
-
-
                     <xsd:appinfo source="X_Hide">SAB_roles</xsd:appinfo>
                     <xsd:appinfo source="X_Hide">Power_User</xsd:appinfo>
                     <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
@@ -2456,10 +2206,6 @@
             <xsd:element maxOccurs="1" minOccurs="0" name="controlParameters" type="ControlParameters">
                 <xsd:annotation>
                     <xsd:appinfo source="X_Label_EN">Control Parameters</xsd:appinfo>
-                    <xsd:appinfo source="X_Workflow">Demo_Manager#SABPlanning_Product_1.0#Writable</xsd:appinfo>
-                    <xsd:appinfo source="X_Workflow">Team_Leader#SABPlanning_Product_1.0#Writable</xsd:appinfo>
-
-
                     <xsd:appinfo source="X_Hide">SAB_roles</xsd:appinfo>
                     <xsd:appinfo source="X_Hide">Power_User</xsd:appinfo>
                     <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
@@ -2468,10 +2214,6 @@
             <xsd:element maxOccurs="1" minOccurs="0" name="dataOrigin" type="DataOrigin">
                 <xsd:annotation>
                     <xsd:appinfo source="X_Label_EN">Data Origin</xsd:appinfo>
-                    <xsd:appinfo source="X_Workflow">Demo_Manager#SABPlanning_Product_1.0#Writable</xsd:appinfo>
-                    <xsd:appinfo source="X_Workflow">Team_Leader#SABPlanning_Product_1.0#Writable</xsd:appinfo>
-
-
                     <xsd:appinfo source="X_Hide">SAB_roles</xsd:appinfo>
                     <xsd:appinfo source="X_Hide">Power_User</xsd:appinfo>
                     <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
@@ -2489,8 +2231,6 @@
                         comes into the system. The origin type is only for information purposes. e.g. Bought address
                         lists or Trans Union ITC
                     </xsd:appinfo>
-                    <xsd:appinfo source="X_Workflow">Demo_Manager#SABPlanning_Product_1.0#Writable</xsd:appinfo>
-                    <xsd:appinfo source="X_Workflow">Team_Leader#SABPlanning_Product_1.0#Writable</xsd:appinfo>
                     <xsd:appinfo source="X_ForeignKey">dataOriginSource</xsd:appinfo>
                     <xsd:appinfo source="X_ForeignKeyInfo">dataOriginSource/client</xsd:appinfo>
                     <xsd:appinfo source="X_ForeignKeyInfo">dataOriginSource/spras</xsd:appinfo>
@@ -2517,8 +2257,6 @@
                         according to your own criteria. Examples of Business Partner Types defined for SAB Customers
                         are: Outlet owner, Soled to party, Ship to party, Telleseller, Stake holder etc.
                     </xsd:appinfo>
-                    <xsd:appinfo source="X_Workflow">Demo_Manager#SABPlanning_Product_1.0#Writable</xsd:appinfo>
-                    <xsd:appinfo source="X_Workflow">Team_Leader#SABPlanning_Product_1.0#Writable</xsd:appinfo>
                     <xsd:appinfo source="X_ForeignKeyInfo">acountGroupsB/type</xsd:appinfo>
                     <xsd:appinfo source="X_ForeignKeyInfo">acountGroupsB/description</xsd:appinfo>
                     <xsd:appinfo source="X_Retrieve_FKinfos">true</xsd:appinfo>
@@ -2542,8 +2280,6 @@
                     <xsd:appinfo source="X_Description_EN">The Company ID of the Trading Partner. E.G. On Business
                         partners = Distributors the Trading partner ID will be Added
                     </xsd:appinfo>
-                    <xsd:appinfo source="X_Workflow">Demo_Manager#SABPlanning_Product_1.0#Writable</xsd:appinfo>
-                    <xsd:appinfo source="X_Workflow">Team_Leader#SABPlanning_Product_1.0#Writable</xsd:appinfo>
 
 
                     <xsd:appinfo source="X_Hide">SAB_roles</xsd:appinfo>
@@ -2554,10 +2290,6 @@
             <xsd:element maxOccurs="1" minOccurs="0" name="endDate" type="xsd:date">
                 <xsd:annotation>
                     <xsd:appinfo source="X_Label_EN">End Date</xsd:appinfo>
-                    <xsd:appinfo source="X_Workflow">Demo_Manager#SABPlanning_Product_1.0#Writable</xsd:appinfo>
-                    <xsd:appinfo source="X_Workflow">Team_Leader#SABPlanning_Product_1.0#Writable</xsd:appinfo>
-
-
                     <xsd:appinfo source="X_Hide">SAB_roles</xsd:appinfo>
                     <xsd:appinfo source="X_Hide">Power_User</xsd:appinfo>
                     <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
@@ -2591,8 +2323,6 @@
         <xsd:all maxOccurs="1" minOccurs="1">
             <xsd:element maxOccurs="1" minOccurs="1" name="key" type="UUID">
                 <xsd:annotation>
-                    <xsd:appinfo source="X_Workflow">Demo_Manager#SABPlanning_Product_1.0#Writable</xsd:appinfo>
-                    <xsd:appinfo source="X_Workflow">Team_Leader#SABPlanning_Product_1.0#Writable</xsd:appinfo>
                     <xsd:appinfo source="X_Hide">Demo_Manager</xsd:appinfo>
                     <xsd:appinfo source="X_Hide">Power_User</xsd:appinfo>
                     <xsd:appinfo source="X_Hide">SAB_roles</xsd:appinfo>
@@ -2603,8 +2333,6 @@
             <xsd:element maxOccurs="1" minOccurs="0" name="generalData" type="GeneralData">
                 <xsd:annotation>
                     <xsd:appinfo source="X_Label_EN">General Data</xsd:appinfo>
-                    <xsd:appinfo source="X_Workflow">Demo_Manager#SABPlanning_Product_1.0#Writable</xsd:appinfo>
-                    <xsd:appinfo source="X_Workflow">Team_Leader#SABPlanning_Product_1.0#Writable</xsd:appinfo>
                     <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
                     <xsd:appinfo source="X_Write">Power_User</xsd:appinfo>
                 </xsd:annotation>
@@ -2612,8 +2340,6 @@
             <xsd:element maxOccurs="1" minOccurs="0" name="centralData" type="CentralData">
                 <xsd:annotation>
                     <xsd:appinfo source="X_Label_EN">Additional Data</xsd:appinfo>
-                    <xsd:appinfo source="X_Workflow">Demo_Manager#SABPlanning_Product_1.0#Writable</xsd:appinfo>
-                    <xsd:appinfo source="X_Workflow">Team_Leader#SABPlanning_Product_1.0#Writable</xsd:appinfo>
                     <xsd:appinfo source="X_Hide">Power_User</xsd:appinfo>
 
 
@@ -2628,8 +2354,6 @@
             <xsd:element maxOccurs="1" minOccurs="1" name="vendor" type="xsd:string">
                 <xsd:annotation>
                     <xsd:appinfo source="X_Label_EN">Vendor</xsd:appinfo>
-                    <xsd:appinfo source="X_Workflow">Demo_Manager#SABPlanning_Product_1.0#Writable</xsd:appinfo>
-                    <xsd:appinfo source="X_Workflow">Team_Leader#SABPlanning_Product_1.0#Writable</xsd:appinfo>
                     <xsd:appinfo source="X_Hide">Power_User</xsd:appinfo>
                     <xsd:appinfo source="X_Hide">SAB_roles</xsd:appinfo>
                     <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
@@ -2643,10 +2367,6 @@
                         protection for particular objects. The authorization groups usually occur in authorization
                         objects
                     </xsd:appinfo>
-                    <xsd:appinfo source="X_Workflow">Demo_Manager#SABPlanning_Product_1.0#Writable</xsd:appinfo>
-                    <xsd:appinfo source="X_Workflow">Team_Leader#SABPlanning_Product_1.0#Writable</xsd:appinfo>
-
-
                     <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
                     <xsd:appinfo source="X_Write">Power_User</xsd:appinfo>
                     <xsd:appinfo source="X_Write">SAB_roles</xsd:appinfo>
@@ -2659,10 +2379,6 @@
                     <xsd:appinfo source="X_Retrieve_FKinfos">true</xsd:appinfo>
                     <xsd:appinfo source="X_Label_EN">Customer Classification</xsd:appinfo>
                     <xsd:appinfo source="X_ForeignKey">customerClassification</xsd:appinfo>
-                    <xsd:appinfo source="X_Workflow">Demo_Manager#SABPlanning_Product_1.0#Writable</xsd:appinfo>
-                    <xsd:appinfo source="X_Workflow">Team_Leader#SABPlanning_Product_1.0#Writable</xsd:appinfo>
-
-
                     <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
                     <xsd:appinfo source="X_Write">Power_User</xsd:appinfo>
                     <xsd:appinfo source="X_Write">SAB_roles</xsd:appinfo>
@@ -2719,8 +2435,6 @@
         <xsd:all maxOccurs="1" minOccurs="1">
             <xsd:element maxOccurs="1" minOccurs="1" name="key" type="UUID">
                 <xsd:annotation>
-                    <xsd:appinfo source="X_Workflow">Demo_Manager#SABPlanning_Product_1.0#Writable</xsd:appinfo>
-                    <xsd:appinfo source="X_Workflow">Team_Leader#SABPlanning_Product_1.0#Writable</xsd:appinfo>
                     <xsd:appinfo source="X_Hide">Demo_Manager</xsd:appinfo>
                     <xsd:appinfo source="X_Hide">Power_User</xsd:appinfo>
                     <xsd:appinfo source="X_Hide">SAB_roles</xsd:appinfo>
@@ -2737,8 +2451,6 @@
                     <xsd:appinfo source="X_Description_EN">The company code is assigned to an organisational unit within
                         financial accounting. e.g. SA Breweries Limited
                     </xsd:appinfo>
-                    <xsd:appinfo source="X_Workflow">Demo_Manager#SABPlanning_Product_1.0#Writable</xsd:appinfo>
-                    <xsd:appinfo source="X_Workflow">Team_Leader#SABPlanning_Product_1.0#Writable</xsd:appinfo>
                     <xsd:appinfo source="X_ForeignKey_Filter">companyCode/code$$=$$1000$$Or#</xsd:appinfo>
                     <xsd:appinfo source="X_Label_EN">Company Code</xsd:appinfo>
                     <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
@@ -2759,8 +2471,6 @@
                     <xsd:appinfo source="X_Description_EN">Business Partner Roles defines the basis of a business
                         process. e.g Payer, Principal credit, Outlet
                     </xsd:appinfo>
-                    <xsd:appinfo source="X_Workflow">Demo_Manager#SABPlanning_Product_1.0#Writable</xsd:appinfo>
-                    <xsd:appinfo source="X_Workflow">Team_Leader#SABPlanning_Product_1.0#Writable</xsd:appinfo>
                     <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
                     <xsd:appinfo source="X_Write">Power_User</xsd:appinfo>
                 </xsd:annotation>
@@ -2777,8 +2487,6 @@
                         structure around groups of similar products or product lines. This allows the people in a
                         Division
                     </xsd:appinfo>
-                    <xsd:appinfo source="X_Workflow">Demo_Manager#SABPlanning_Product_1.0#Writable</xsd:appinfo>
-                    <xsd:appinfo source="X_Workflow">Team_Leader#SABPlanning_Product_1.0#Writable</xsd:appinfo>
                     <xsd:appinfo source="X_ForeignKey_Filter">division/code$$=$$01$$Or#division/code$$=$$04$$Or#
                     </xsd:appinfo>
                     <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
@@ -2795,8 +2503,6 @@
                     <xsd:appinfo source="X_Description_EN">A Sales Organisation is the organisational unit responsible
                         for the sale. A Sales organisation can have many Divisions and Distribution Channels
                     </xsd:appinfo>
-                    <xsd:appinfo source="X_Workflow">Demo_Manager#SABPlanning_Product_1.0#Writable</xsd:appinfo>
-                    <xsd:appinfo source="X_Workflow">Team_Leader#SABPlanning_Product_1.0#Writable</xsd:appinfo>
                     <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
                     <xsd:appinfo source="X_Write">Power_User</xsd:appinfo>
                 </xsd:annotation>
@@ -2812,8 +2518,6 @@
                         reach the customer e.g. delivery to: Domestic customer, Distributor and Internal Stock transport
                         delivery etc.
                     </xsd:appinfo>
-                    <xsd:appinfo source="X_Workflow">Demo_Manager#SABPlanning_Product_1.0#Writable</xsd:appinfo>
-                    <xsd:appinfo source="X_Workflow">Team_Leader#SABPlanning_Product_1.0#Writable</xsd:appinfo>
                     <xsd:appinfo source="X_Hide">Power_User</xsd:appinfo>
                     <xsd:appinfo source="X_Hide">SAB_roles</xsd:appinfo>
                     <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
@@ -2827,8 +2531,6 @@
                     <xsd:appinfo source="X_ForeignKeyInfo">customerType/description</xsd:appinfo>
                     <xsd:appinfo source="X_Retrieve_FKinfos">true</xsd:appinfo>
                     <xsd:appinfo source="X_ForeignKey_Filter">customerType/code$$Strict Contains$$2$$#</xsd:appinfo>
-                    <xsd:appinfo source="X_Workflow">Demo_Manager#SABPlanning_Product_1.0#Writable</xsd:appinfo>
-                    <xsd:appinfo source="X_Workflow">Team_Leader#SABPlanning_Product_1.0#Writable</xsd:appinfo>
                     <xsd:appinfo source="X_ForeignKey">customerType</xsd:appinfo>
                     <xsd:appinfo source="X_Hide">Power_User</xsd:appinfo>
                     <xsd:appinfo source="X_Hide">SAB_roles</xsd:appinfo>
@@ -2838,8 +2540,6 @@
             </xsd:element>
             <xsd:element maxOccurs="1" minOccurs="0" name="partnerID" type="xsd:string">
                 <xsd:annotation>
-                    <xsd:appinfo source="X_Workflow">Demo_Manager#SABPlanning_Product_1.0#Writable</xsd:appinfo>
-                    <xsd:appinfo source="X_Workflow">Team_Leader#SABPlanning_Product_1.0#Writable</xsd:appinfo>
                     <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
                     <xsd:appinfo source="X_Write">Power_User</xsd:appinfo>
                 </xsd:annotation>
@@ -3288,48 +2988,36 @@
             <xsd:element maxOccurs="1" minOccurs="1" name="key" type="UUID">
                 <xsd:annotation>
                     <xsd:appinfo source="X_Hide">Demo_Manager</xsd:appinfo>
-                    <xsd:appinfo source="X_Workflow">Demo_Manager#SABPlanning_Product_1.0#Writable</xsd:appinfo>
-                    <xsd:appinfo source="X_Workflow">Team_Leader#SABPlanning_Product_1.0#Writable</xsd:appinfo>
                     <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
                 </xsd:annotation>
             </xsd:element>
             <xsd:element maxOccurs="1" minOccurs="0" name="maxStackHeight" type="xsd:string">
                 <xsd:annotation>
                     <xsd:appinfo source="X_Label_EN">Max. Stacking Height</xsd:appinfo>
-                    <xsd:appinfo source="X_Workflow">Demo_Manager#SABPlanning_Product_1.0#Writable</xsd:appinfo>
-                    <xsd:appinfo source="X_Workflow">Team_Leader#SABPlanning_Product_1.0#Writable</xsd:appinfo>
                     <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
                 </xsd:annotation>
             </xsd:element>
             <xsd:element maxOccurs="1" minOccurs="0" name="packMatCustomer" type="xsd:string">
                 <xsd:annotation>
                     <xsd:appinfo source="X_Label_EN">PackMat.Customer</xsd:appinfo>
-                    <xsd:appinfo source="X_Workflow">Demo_Manager#SABPlanning_Product_1.0#Writable</xsd:appinfo>
-                    <xsd:appinfo source="X_Workflow">Team_Leader#SABPlanning_Product_1.0#Writable</xsd:appinfo>
                     <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
                 </xsd:annotation>
             </xsd:element>
             <xsd:element maxOccurs="1" minOccurs="0" name="collUnloadPoint" type="xsd:string">
                 <xsd:annotation>
                     <xsd:appinfo source="X_Label_EN">ColUnload.Point</xsd:appinfo>
-                    <xsd:appinfo source="X_Workflow">Demo_Manager#SABPlanning_Product_1.0#Writable</xsd:appinfo>
-                    <xsd:appinfo source="X_Workflow">Team_Leader#SABPlanning_Product_1.0#Writable</xsd:appinfo>
                     <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
                 </xsd:annotation>
             </xsd:element>
             <xsd:element maxOccurs="1" minOccurs="0" name="sidePreference" type="xsd:string">
                 <xsd:annotation>
                     <xsd:appinfo source="X_Label_EN">Side Preference</xsd:appinfo>
-                    <xsd:appinfo source="X_Workflow">Demo_Manager#SABPlanning_Product_1.0#Writable</xsd:appinfo>
-                    <xsd:appinfo source="X_Workflow">Team_Leader#SABPlanning_Product_1.0#Writable</xsd:appinfo>
                     <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
                 </xsd:annotation>
             </xsd:element>
             <xsd:element maxOccurs="1" minOccurs="0" name="FBPreference" type="xsd:string">
                 <xsd:annotation>
                     <xsd:appinfo source="X_Label_EN">F/B Preference</xsd:appinfo>
-                    <xsd:appinfo source="X_Workflow">Demo_Manager#SABPlanning_Product_1.0#Writable</xsd:appinfo>
-                    <xsd:appinfo source="X_Workflow">Team_Leader#SABPlanning_Product_1.0#Writable</xsd:appinfo>
                     <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
                 </xsd:annotation>
             </xsd:element>
@@ -3456,8 +3144,6 @@
         <xsd:all maxOccurs="1" minOccurs="1">
             <xsd:element maxOccurs="1" minOccurs="1" name="key" type="UUID">
                 <xsd:annotation>
-                    <xsd:appinfo source="X_Workflow">Demo_Manager#SABPlanning_Product_1.0#Writable</xsd:appinfo>
-                    <xsd:appinfo source="X_Workflow">Team_Leader#SABPlanning_Product_1.0#Writable</xsd:appinfo>
                     <xsd:appinfo source="X_Hide">Demo_Manager</xsd:appinfo>
                     <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
                     <xsd:appinfo source="X_Write">Power_User</xsd:appinfo>
@@ -3466,8 +3152,6 @@
             <xsd:element maxOccurs="1" minOccurs="0" name="unloadingPoint" type="xsd:string">
                 <xsd:annotation>
                     <xsd:appinfo source="X_Label_EN">Unloading Point</xsd:appinfo>
-                    <xsd:appinfo source="X_Workflow">Demo_Manager#SABPlanning_Product_1.0#Writable</xsd:appinfo>
-                    <xsd:appinfo source="X_Workflow">Team_Leader#SABPlanning_Product_1.0#Writable</xsd:appinfo>
                     <xsd:appinfo source="X_Hide">Demo_Manager</xsd:appinfo>
                     <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
                     <xsd:appinfo source="X_Write">Power_User</xsd:appinfo>
@@ -3476,8 +3160,6 @@
             <xsd:element maxOccurs="1" minOccurs="0" name="default" type="xsd:string">
                 <xsd:annotation>
                     <xsd:appinfo source="X_Label_EN">Default</xsd:appinfo>
-                    <xsd:appinfo source="X_Workflow">Demo_Manager#SABPlanning_Product_1.0#Writable</xsd:appinfo>
-                    <xsd:appinfo source="X_Workflow">Team_Leader#SABPlanning_Product_1.0#Writable</xsd:appinfo>
                     <xsd:appinfo source="X_Hide">Demo_Manager</xsd:appinfo>
                     <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
                     <xsd:appinfo source="X_Write">Power_User</xsd:appinfo>
@@ -3486,8 +3168,6 @@
             <xsd:element maxOccurs="1" minOccurs="0" name="calender" type="xsd:string">
                 <xsd:annotation>
                     <xsd:appinfo source="X_Label_EN">Calender</xsd:appinfo>
-                    <xsd:appinfo source="X_Workflow">Demo_Manager#SABPlanning_Product_1.0#Writable</xsd:appinfo>
-                    <xsd:appinfo source="X_Workflow">Team_Leader#SABPlanning_Product_1.0#Writable</xsd:appinfo>
                     <xsd:appinfo source="X_Hide">Demo_Manager</xsd:appinfo>
                     <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
                     <xsd:appinfo source="X_Write">Power_User</xsd:appinfo>
@@ -3496,8 +3176,6 @@
             <xsd:element maxOccurs="1" minOccurs="0" name="custCalender" type="xsd:string">
                 <xsd:annotation>
                     <xsd:appinfo source="X_Label_EN">Cust.Calender</xsd:appinfo>
-                    <xsd:appinfo source="X_Workflow">Demo_Manager#SABPlanning_Product_1.0#Writable</xsd:appinfo>
-                    <xsd:appinfo source="X_Workflow">Team_Leader#SABPlanning_Product_1.0#Writable</xsd:appinfo>
                     <xsd:appinfo source="X_Hide">Demo_Manager</xsd:appinfo>
                     <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
                     <xsd:appinfo source="X_Write">Power_User</xsd:appinfo>
@@ -3506,8 +3184,6 @@
             <xsd:element maxOccurs="1" minOccurs="0" name="goodsReceevingHrs" type="xsd:string">
                 <xsd:annotation>
                     <xsd:appinfo source="X_Label_EN">Goods Receiving Hrs</xsd:appinfo>
-                    <xsd:appinfo source="X_Workflow">Demo_Manager#SABPlanning_Product_1.0#Writable</xsd:appinfo>
-                    <xsd:appinfo source="X_Workflow">Team_Leader#SABPlanning_Product_1.0#Writable</xsd:appinfo>
                     <xsd:appinfo source="X_Hide">Demo_Manager</xsd:appinfo>
                     <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
                     <xsd:appinfo source="X_Write">Power_User</xsd:appinfo>
@@ -3590,8 +3266,6 @@
             <xsd:element maxOccurs="1" minOccurs="1" name="key" type="UUID">
                 <xsd:annotation>
                     <xsd:appinfo source="X_Hide">Demo_Manager</xsd:appinfo>
-                    <xsd:appinfo source="X_Workflow">Demo_Manager#SABPlanning_Product_1.0#Writable</xsd:appinfo>
-                    <xsd:appinfo source="X_Workflow">Team_Leader#SABPlanning_Product_1.0#Writable</xsd:appinfo>
                     <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
                     <xsd:appinfo source="X_Write">Power_User</xsd:appinfo>
                 </xsd:annotation>
@@ -3599,8 +3273,6 @@
             <xsd:element maxOccurs="1" minOccurs="0" name="productStorageCap" type="xsd:string">
                 <xsd:annotation>
                     <xsd:appinfo source="X_Label_EN">Product Storage Cap</xsd:appinfo>
-                    <xsd:appinfo source="X_Workflow">Demo_Manager#SABPlanning_Product_1.0#Writable</xsd:appinfo>
-                    <xsd:appinfo source="X_Workflow">Team_Leader#SABPlanning_Product_1.0#Writable</xsd:appinfo>
                     <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
                     <xsd:appinfo source="X_Write">Power_User</xsd:appinfo>
                 </xsd:annotation>
@@ -3617,8 +3289,6 @@
         <xsd:all maxOccurs="1" minOccurs="1">
             <xsd:element maxOccurs="1" minOccurs="1" name="key" type="UUID">
                 <xsd:annotation>
-                    <xsd:appinfo source="X_Workflow">Demo_Manager#SABPlanning_Product_1.0#Writable</xsd:appinfo>
-                    <xsd:appinfo source="X_Workflow">Team_Leader#SABPlanning_Product_1.0#Writable</xsd:appinfo>
                     <xsd:appinfo source="X_Hide">SAB_roles</xsd:appinfo>
                     <xsd:appinfo source="X_Hide">Power_User</xsd:appinfo>
                     <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
@@ -3633,8 +3303,6 @@
                     <xsd:appinfo source="X_ForeignKeyInfo">industries/industry</xsd:appinfo>
                     <xsd:appinfo source="X_ForeignKeyInfo">industries/description</xsd:appinfo>
                     <xsd:appinfo source="X_Retrieve_FKinfos">true</xsd:appinfo>
-                    <xsd:appinfo source="X_Workflow">Demo_Manager#SABPlanning_Product_1.0#Writable</xsd:appinfo>
-                    <xsd:appinfo source="X_Workflow">Team_Leader#SABPlanning_Product_1.0#Writable</xsd:appinfo>
                     <xsd:appinfo source="X_Hide">SAB_roles</xsd:appinfo>
                     <xsd:appinfo source="X_Hide">Power_User</xsd:appinfo>
                     <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
@@ -3644,8 +3312,6 @@
             <xsd:element maxOccurs="1" minOccurs="0" name="stndIndustry" type="xsd:string">
                 <xsd:annotation>
                     <xsd:appinfo source="X_Label_EN">Standard Industry</xsd:appinfo>
-                    <xsd:appinfo source="X_Workflow">Demo_Manager#SABPlanning_Product_1.0#Writable</xsd:appinfo>
-                    <xsd:appinfo source="X_Workflow">Team_Leader#SABPlanning_Product_1.0#Writable</xsd:appinfo>
                     <xsd:appinfo source="X_Hide">SAB_roles</xsd:appinfo>
                     <xsd:appinfo source="X_Hide">Power_User</xsd:appinfo>
                     <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
@@ -3674,8 +3340,6 @@
             <xsd:element maxOccurs="1" minOccurs="0" name="ControlData">
                 <xsd:annotation>
                     <xsd:appinfo source="X_Label_EN">Control Data</xsd:appinfo>
-                    <xsd:appinfo source="X_Workflow">Demo_Manager#SABPlanning_Product_1.0#Writable</xsd:appinfo>
-                    <xsd:appinfo source="X_Workflow">Team_Leader#SABPlanning_Product_1.0#Writable</xsd:appinfo>
                     <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
                     <xsd:appinfo source="X_Write">Power_User</xsd:appinfo>
                 </xsd:annotation>
@@ -3911,8 +3575,6 @@
                     <xsd:appinfo source="X_Description_EN">The company code is assigned to an organisational unit within
                         financial accounting. e.g. SA Breweries Limited
                     </xsd:appinfo>
-                    <xsd:appinfo source="X_Workflow">Demo_Manager#SABPlanning_Product_1.0#Writable</xsd:appinfo>
-                    <xsd:appinfo source="X_Workflow">Team_Leader#SABPlanning_Product_1.0#Writable</xsd:appinfo>
                     <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
                 </xsd:annotation>
             </xsd:element>
@@ -3928,8 +3590,6 @@
                     <xsd:appinfo source="X_Description_EN">Business Partner Roles defines the basis of a business
                         process. e.g Payer, Principal credit, Outlet
                     </xsd:appinfo>
-                    <xsd:appinfo source="X_Workflow">Demo_Manager#SABPlanning_Product_1.0#Writable</xsd:appinfo>
-                    <xsd:appinfo source="X_Workflow">Team_Leader#SABPlanning_Product_1.0#Writable</xsd:appinfo>
                     <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
                 </xsd:annotation>
             </xsd:element>
@@ -3945,8 +3605,6 @@
                         structure around groups of similar products or product lines. This allows the people in a
                         Division
                     </xsd:appinfo>
-                    <xsd:appinfo source="X_Workflow">Demo_Manager#SABPlanning_Product_1.0#Writable</xsd:appinfo>
-                    <xsd:appinfo source="X_Workflow">Team_Leader#SABPlanning_Product_1.0#Writable</xsd:appinfo>
                     <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
                 </xsd:annotation>
             </xsd:element>
@@ -3960,8 +3618,6 @@
                     <xsd:appinfo source="X_Description_EN">A Sales Organisation is the organisational unit responsible
                         for the sale. A Sales organisation can have many Divisions and Distribution Channels
                     </xsd:appinfo>
-                    <xsd:appinfo source="X_Workflow">Demo_Manager#SABPlanning_Product_1.0#Writable</xsd:appinfo>
-                    <xsd:appinfo source="X_Workflow">Team_Leader#SABPlanning_Product_1.0#Writable</xsd:appinfo>
                     <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
                 </xsd:annotation>
             </xsd:element>
@@ -3976,8 +3632,6 @@
                         reach the customer e.g. delivery to: Domestic customer, Distributor and Internal Stock transport
                         delivery etc.
                     </xsd:appinfo>
-                    <xsd:appinfo source="X_Workflow">Demo_Manager#SABPlanning_Product_1.0#Writable</xsd:appinfo>
-                    <xsd:appinfo source="X_Workflow">Team_Leader#SABPlanning_Product_1.0#Writable</xsd:appinfo>
                     <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
                 </xsd:annotation>
             </xsd:element>
@@ -3987,8 +3641,6 @@
                     <xsd:appinfo source="X_ForeignKeyInfo">customerType/code</xsd:appinfo>
                     <xsd:appinfo source="X_ForeignKeyInfo">customerType/description</xsd:appinfo>
                     <xsd:appinfo source="X_Retrieve_FKinfos">true</xsd:appinfo>
-                    <xsd:appinfo source="X_Workflow">Demo_Manager#SABPlanning_Product_1.0#Writable</xsd:appinfo>
-                    <xsd:appinfo source="X_Workflow">Team_Leader#SABPlanning_Product_1.0#Writable</xsd:appinfo>
                     <xsd:appinfo source="X_ForeignKey">customerType</xsd:appinfo>
                     <xsd:appinfo source="X_ForeignKey_Filter">customerType/code$$=$$1$$#</xsd:appinfo>
                     <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
@@ -4013,8 +3665,6 @@
                     <xsd:appinfo source="X_ForeignKey_Filter">
                         title/code$$=$$01$$Or#title/code$$=$$02$$Or#title/code$$=$$03$$Or#title/code$$=$$04$$Or#title/code$$=$$05$$Or#title/code$$=$$06$$Or#title/code$$=$$07$$Or#title/code$$=$$08$$Or#
                     </xsd:appinfo>
-                    <xsd:appinfo source="X_Workflow">Demo_Manager#SABPlanning_Product_1.0#Writable</xsd:appinfo>
-                    <xsd:appinfo source="X_Workflow">Team_Leader#SABPlanning_Product_1.0#Writable</xsd:appinfo>
                     <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
                     <xsd:appinfo source="X_Write">Power_User</xsd:appinfo>
                 </xsd:annotation>
@@ -4023,8 +3673,6 @@
                 <xsd:annotation>
                     <xsd:appinfo source="X_Label_EN">Name 1</xsd:appinfo>
                     <xsd:appinfo source="X_Description_EN">Trading name of the organisation</xsd:appinfo>
-                    <xsd:appinfo source="X_Workflow">Demo_Manager#SABPlanning_Product_1.0#Writable</xsd:appinfo>
-                    <xsd:appinfo source="X_Workflow">Team_Leader#SABPlanning_Product_1.0#Writable</xsd:appinfo>
                     <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
                     <xsd:appinfo source="X_Write">Power_User</xsd:appinfo>
                 </xsd:annotation>
@@ -4034,8 +3682,6 @@
                     <xsd:appinfo source="X_Label_EN">Name 2</xsd:appinfo>
                     <xsd:appinfo source="X_Description_EN">This is typically used to enter the name of the Payer e.g.
                     </xsd:appinfo>
-                    <xsd:appinfo source="X_Workflow">Demo_Manager#SABPlanning_Product_1.0#Writable</xsd:appinfo>
-                    <xsd:appinfo source="X_Workflow">Team_Leader#SABPlanning_Product_1.0#Writable</xsd:appinfo>
                     <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
                     <xsd:appinfo source="X_Write">Power_User</xsd:appinfo>
                 </xsd:annotation>
@@ -4380,8 +4026,6 @@
         <xsd:all maxOccurs="1" minOccurs="1">
             <xsd:element maxOccurs="1" minOccurs="1" name="key" type="UUID">
                 <xsd:annotation>
-                    <xsd:appinfo source="X_Workflow">Demo_Manager#SABPlanning_Product_1.0#Writable</xsd:appinfo>
-                    <xsd:appinfo source="X_Workflow">Team_Leader#SABPlanning_Product_1.0#Writable</xsd:appinfo>
                     <xsd:appinfo source="X_Hide">Demo_Manager</xsd:appinfo>
                     <xsd:appinfo source="X_Hide">Power_User</xsd:appinfo>
                     <xsd:appinfo source="X_Hide">SAB_roles</xsd:appinfo>
@@ -4404,8 +4048,6 @@
                     <xsd:appinfo source="X_ForeignKey_Filter">
                         title/code$$=$$01$$Or#title/code$$=$$02$$Or#title/code$$=$$03$$Or#title/code$$=$$04$$Or#title/code$$=$$05$$Or#title/code$$=$$06$$Or#title/code$$=$$07$$Or#title/code$$=$$08$$Or#
                     </xsd:appinfo>
-                    <xsd:appinfo source="X_Workflow">Demo_Manager#SABPlanning_Product_1.0#Writable</xsd:appinfo>
-                    <xsd:appinfo source="X_Workflow">Team_Leader#SABPlanning_Product_1.0#Writable</xsd:appinfo>
 
 
                     <xsd:appinfo source="X_Write">SAB_roles</xsd:appinfo>
@@ -4414,8 +4056,6 @@
             <xsd:element maxOccurs="1" minOccurs="1" name="name1" type="xsd:string">
                 <xsd:annotation>
                     <xsd:appinfo source="X_Description_EN">Trading name of the organisation</xsd:appinfo>
-                    <xsd:appinfo source="X_Workflow">Demo_Manager#SABPlanning_Product_1.0#Writable</xsd:appinfo>
-                    <xsd:appinfo source="X_Workflow">Team_Leader#SABPlanning_Product_1.0#Writable</xsd:appinfo>
                     <xsd:appinfo source="X_Label_EN">Trading Name</xsd:appinfo>
 
 
@@ -4426,8 +4066,6 @@
                 <xsd:annotation>
                     <xsd:appinfo source="X_Description_EN">This is typically used to enter the name of the Payer e.g.
                     </xsd:appinfo>
-                    <xsd:appinfo source="X_Workflow">Demo_Manager#SABPlanning_Product_1.0#Writable</xsd:appinfo>
-                    <xsd:appinfo source="X_Workflow">Team_Leader#SABPlanning_Product_1.0#Writable</xsd:appinfo>
                     <xsd:appinfo source="X_Label_EN">Legal Entity Name</xsd:appinfo>
 
 
@@ -4436,8 +4074,6 @@
             </xsd:element>
             <xsd:element maxOccurs="1" minOccurs="0" name="nameCo" type="xsd:string">
                 <xsd:annotation>
-                    <xsd:appinfo source="X_Workflow">Demo_Manager#SABPlanning_Product_1.0#Writable</xsd:appinfo>
-                    <xsd:appinfo source="X_Workflow">Team_Leader#SABPlanning_Product_1.0#Writable</xsd:appinfo>
                     <xsd:appinfo source="X_Label_EN">Name Co</xsd:appinfo>
                     <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
                     <xsd:appinfo source="X_Write">Power_User</xsd:appinfo>
@@ -4445,8 +4081,6 @@
             </xsd:element>
             <xsd:element maxOccurs="1" minOccurs="0" name="deliveryService" type="xsd:string">
                 <xsd:annotation>
-                    <xsd:appinfo source="X_Workflow">Demo_Manager#SABPlanning_Product_1.0#Writable</xsd:appinfo>
-                    <xsd:appinfo source="X_Workflow">Team_Leader#SABPlanning_Product_1.0#Writable</xsd:appinfo>
                     <xsd:appinfo source="X_Label_EN">Delivery Service</xsd:appinfo>
                     <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
                     <xsd:appinfo source="X_Write">Power_User</xsd:appinfo>
@@ -4454,8 +4088,6 @@
             </xsd:element>
             <xsd:element maxOccurs="1" minOccurs="0" name="deliveryServiceNumber" type="xsd:string">
                 <xsd:annotation>
-                    <xsd:appinfo source="X_Workflow">Demo_Manager#SABPlanning_Product_1.0#Writable</xsd:appinfo>
-                    <xsd:appinfo source="X_Workflow">Team_Leader#SABPlanning_Product_1.0#Writable</xsd:appinfo>
                     <xsd:appinfo source="X_Label_EN">Delivery Service Number</xsd:appinfo>
                     <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
                     <xsd:appinfo source="X_Write">Power_User</xsd:appinfo>
@@ -4469,8 +4101,6 @@
                 <xsd:annotation>
                     <xsd:appinfo source="X_Label_EN">Name 1</xsd:appinfo>
                     <xsd:appinfo source="X_Description_EN">Trading name of the organisation</xsd:appinfo>
-                    <xsd:appinfo source="X_Workflow">Demo_Manager#SABPlanning_Product_1.0#Writable</xsd:appinfo>
-                    <xsd:appinfo source="X_Workflow">Team_Leader#SABPlanning_Product_1.0#Writable</xsd:appinfo>
                     <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
                 </xsd:annotation>
             </xsd:element>
@@ -4479,8 +4109,6 @@
                     <xsd:appinfo source="X_Label_EN">Name 2</xsd:appinfo>
                     <xsd:appinfo source="X_Description_EN">This is typically used to enter the name of the Payer e.g.
                     </xsd:appinfo>
-                    <xsd:appinfo source="X_Workflow">Demo_Manager#SABPlanning_Product_1.0#Writable</xsd:appinfo>
-                    <xsd:appinfo source="X_Workflow">Team_Leader#SABPlanning_Product_1.0#Writable</xsd:appinfo>
                     <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
                 </xsd:annotation>
             </xsd:element>
@@ -4491,24 +4119,18 @@
             <xsd:element maxOccurs="1" minOccurs="0" name="searchTerm" type="SearchTermType">
                 <xsd:annotation>
                     <xsd:appinfo source="X_Label_EN">Search Terms</xsd:appinfo>
-                    <xsd:appinfo source="X_Workflow">Demo_Manager#SABPlanning_Product_1.0#Writable</xsd:appinfo>
-                    <xsd:appinfo source="X_Workflow">Team_Leader#SABPlanning_Product_1.0#Writable</xsd:appinfo>
                     <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
                 </xsd:annotation>
             </xsd:element>
             <xsd:element maxOccurs="1" minOccurs="0" name="streetAddress" type="StreetAddressPartnerFunction">
                 <xsd:annotation>
                     <xsd:appinfo source="X_Label_EN">Street Address</xsd:appinfo>
-                    <xsd:appinfo source="X_Workflow">Demo_Manager#SABPlanning_Product_1.0#Writable</xsd:appinfo>
-                    <xsd:appinfo source="X_Workflow">Team_Leader#SABPlanning_Product_1.0#Writable</xsd:appinfo>
                     <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
                 </xsd:annotation>
             </xsd:element>
             <xsd:element maxOccurs="1" minOccurs="0" name="contactInformation" type="ContactInformationPartnerFunction">
                 <xsd:annotation>
                     <xsd:appinfo source="X_Label_EN">Communication</xsd:appinfo>
-                    <xsd:appinfo source="X_Workflow">Demo_Manager#SABPlanning_Product_1.0#Writable</xsd:appinfo>
-                    <xsd:appinfo source="X_Workflow">Team_Leader#SABPlanning_Product_1.0#Writable</xsd:appinfo>
                     <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
                 </xsd:annotation>
             </xsd:element>
@@ -4522,8 +4144,6 @@
                     <xsd:appinfo source="X_Description_EN">The House Number and other supplements are usually maintained
                         in their own field and not as part of the Street "name"
                     </xsd:appinfo>
-                    <xsd:appinfo source="X_Workflow">Demo_Manager#SABPlanning_Product_1.0#Writable</xsd:appinfo>
-                    <xsd:appinfo source="X_Workflow">Team_Leader#SABPlanning_Product_1.0#Writable</xsd:appinfo>
                     <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
                 </xsd:annotation>
             </xsd:element>
@@ -4533,8 +4153,6 @@
                     <xsd:appinfo source="X_Description_EN">Street name forms part of the address. This must not contain
                         the house number as there is a separate field to record the number.
                     </xsd:appinfo>
-                    <xsd:appinfo source="X_Workflow">Demo_Manager#SABPlanning_Product_1.0#Writable</xsd:appinfo>
-                    <xsd:appinfo source="X_Workflow">Team_Leader#SABPlanning_Product_1.0#Writable</xsd:appinfo>
                     <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
                 </xsd:annotation>
             </xsd:element>
@@ -4544,8 +4162,6 @@
                     <xsd:appinfo source="X_Description_EN">Additional address field which is printed above the Street
                         line
                     </xsd:appinfo>
-                    <xsd:appinfo source="X_Workflow">Demo_Manager#SABPlanning_Product_1.0#Writable</xsd:appinfo>
-                    <xsd:appinfo source="X_Workflow">Team_Leader#SABPlanning_Product_1.0#Writable</xsd:appinfo>
                     <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
                 </xsd:annotation>
             </xsd:element>
@@ -4555,8 +4171,6 @@
                     <xsd:appinfo source="X_Description_EN">Additional address field which is printed above the Street
                         line
                     </xsd:appinfo>
-                    <xsd:appinfo source="X_Workflow">Demo_Manager#SABPlanning_Product_1.0#Writable</xsd:appinfo>
-                    <xsd:appinfo source="X_Workflow">Team_Leader#SABPlanning_Product_1.0#Writable</xsd:appinfo>
                     <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
                 </xsd:annotation>
             </xsd:element>
@@ -4571,8 +4185,6 @@
                     <xsd:appinfo source="X_Description_EN">The Name of the Country as part of the City and Street
                         address.
                     </xsd:appinfo>
-                    <xsd:appinfo source="X_Workflow">Demo_Manager#SABPlanning_Product_1.0#Writable</xsd:appinfo>
-                    <xsd:appinfo source="X_Workflow">Team_Leader#SABPlanning_Product_1.0#Writable</xsd:appinfo>
                     <xsd:appinfo source="X_ForeignKey_Filter">country/country$$=$$ZA$$#</xsd:appinfo>
                     <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
                 </xsd:annotation>
@@ -4590,54 +4202,40 @@
                     <xsd:appinfo source="X_Retrieve_FKinfos">true</xsd:appinfo>
                     <xsd:appinfo source="X_Label_EN">Language</xsd:appinfo>
                     <xsd:appinfo source="X_ForeignKey_Filter">language/language2$$Contains$$E$$#</xsd:appinfo>
-                    <xsd:appinfo source="X_Workflow">Demo_Manager#SABPlanning_Product_1.0#Writable</xsd:appinfo>
-                    <xsd:appinfo source="X_Workflow">Team_Leader#SABPlanning_Product_1.0#Writable</xsd:appinfo>
                     <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
                 </xsd:annotation>
             </xsd:element>
             <xsd:element maxOccurs="1" minOccurs="0" name="contactNumber" type="xsd:string">
                 <xsd:annotation>
                     <xsd:appinfo source="X_Label_EN">Telephone</xsd:appinfo>
-                    <xsd:appinfo source="X_Workflow">Demo_Manager#SABPlanning_Product_1.0#Writable</xsd:appinfo>
-                    <xsd:appinfo source="X_Workflow">Team_Leader#SABPlanning_Product_1.0#Writable</xsd:appinfo>
                     <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
                 </xsd:annotation>
             </xsd:element>
             <xsd:element maxOccurs="1" minOccurs="0" name="contactExtensionID" type="xsd:string">
                 <xsd:annotation>
                     <xsd:appinfo source="X_Label_EN">Extension</xsd:appinfo>
-                    <xsd:appinfo source="X_Workflow">Demo_Manager#SABPlanning_Product_1.0#Writable</xsd:appinfo>
-                    <xsd:appinfo source="X_Workflow">Team_Leader#SABPlanning_Product_1.0#Writable</xsd:appinfo>
                     <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
                 </xsd:annotation>
             </xsd:element>
             <xsd:element maxOccurs="1" minOccurs="0" name="mobileNumber" type="xsd:string">
                 <xsd:annotation>
                     <xsd:appinfo source="X_Label_EN">Complete Tel Nr</xsd:appinfo>
-                    <xsd:appinfo source="X_Workflow">Demo_Manager#SABPlanning_Product_1.0#Writable</xsd:appinfo>
-                    <xsd:appinfo source="X_Workflow">Team_Leader#SABPlanning_Product_1.0#Writable</xsd:appinfo>
                     <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
                 </xsd:annotation>
             </xsd:element>
             <xsd:element maxOccurs="1" minOccurs="0" name="faxNr" type="xsd:string">
                 <xsd:annotation>
-                    <xsd:appinfo source="X_Workflow">Demo_Manager#SABPlanning_Product_1.0#Writable</xsd:appinfo>
-                    <xsd:appinfo source="X_Workflow">Team_Leader#SABPlanning_Product_1.0#Writable</xsd:appinfo>
                     <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
                 </xsd:annotation>
             </xsd:element>
             <xsd:element maxOccurs="1" minOccurs="0" name="faxNrExtension" type="xsd:string">
                 <xsd:annotation>
-                    <xsd:appinfo source="X_Workflow">Demo_Manager#SABPlanning_Product_1.0#Writable</xsd:appinfo>
-                    <xsd:appinfo source="X_Workflow">Team_Leader#SABPlanning_Product_1.0#Writable</xsd:appinfo>
                     <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
                 </xsd:annotation>
             </xsd:element>
             <xsd:element maxOccurs="1" minOccurs="0" name="emailAddress" type="xsd:string">
                 <xsd:annotation>
                     <xsd:appinfo source="X_Label_EN">E-mail</xsd:appinfo>
-                    <xsd:appinfo source="X_Workflow">Demo_Manager#SABPlanning_Product_1.0#Writable</xsd:appinfo>
-                    <xsd:appinfo source="X_Workflow">Team_Leader#SABPlanning_Product_1.0#Writable</xsd:appinfo>
                     <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
                 </xsd:annotation>
             </xsd:element>
@@ -4652,8 +4250,6 @@
                         allows you to specify a standard communication method for sending messages e.g. One business
                         partner wants all messages by fax, another by e-mail.
                     </xsd:appinfo>
-                    <xsd:appinfo source="X_Workflow">Demo_Manager#SABPlanning_Product_1.0#Writable</xsd:appinfo>
-                    <xsd:appinfo source="X_Workflow">Team_Leader#SABPlanning_Product_1.0#Writable</xsd:appinfo>
                     <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
                 </xsd:annotation>
             </xsd:element>
@@ -4664,32 +4260,24 @@
             <xsd:element maxOccurs="1" minOccurs="0" name="organizationalData" type="OrganizationDataType">
                 <xsd:annotation>
                     <xsd:appinfo source="X_Label_EN">Organizational Data</xsd:appinfo>
-                    <xsd:appinfo source="X_Workflow">Demo_Manager#SABPlanning_Product_1.0#Writable</xsd:appinfo>
-                    <xsd:appinfo source="X_Workflow">Team_Leader#SABPlanning_Product_1.0#Writable</xsd:appinfo>
                     <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
                 </xsd:annotation>
             </xsd:element>
             <xsd:element maxOccurs="1" minOccurs="0" name="identificationNumbers" type="Identification">
                 <xsd:annotation>
                     <xsd:appinfo source="X_Label_EN">Identification Numbers</xsd:appinfo>
-                    <xsd:appinfo source="X_Workflow">Demo_Manager#SABPlanning_Product_1.0#Writable</xsd:appinfo>
-                    <xsd:appinfo source="X_Workflow">Team_Leader#SABPlanning_Product_1.0#Writable</xsd:appinfo>
                     <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
                 </xsd:annotation>
             </xsd:element>
             <xsd:element maxOccurs="1" minOccurs="0" name="taxIdentification" type="TaxIdentification">
                 <xsd:annotation>
                     <xsd:appinfo source="X_Label_EN">Tax Numbers</xsd:appinfo>
-                    <xsd:appinfo source="X_Workflow">Demo_Manager#SABPlanning_Product_1.0#Writable</xsd:appinfo>
-                    <xsd:appinfo source="X_Workflow">Team_Leader#SABPlanning_Product_1.0#Writable</xsd:appinfo>
                     <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
                 </xsd:annotation>
             </xsd:element>
             <xsd:element maxOccurs="1" minOccurs="0" name="industries" type="IndustryType">
                 <xsd:annotation>
                     <xsd:appinfo source="X_Label_EN">Industries</xsd:appinfo>
-                    <xsd:appinfo source="X_Workflow">Demo_Manager#SABPlanning_Product_1.0#Writable</xsd:appinfo>
-                    <xsd:appinfo source="X_Workflow">Team_Leader#SABPlanning_Product_1.0#Writable</xsd:appinfo>
                     <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
                 </xsd:annotation>
             </xsd:element>
@@ -4701,8 +4289,6 @@
                 <xsd:annotation>
                     <xsd:appinfo source="X_Retrieve_FKinfos">true</xsd:appinfo>
                     <xsd:appinfo source="X_Hide">Demo_Manager</xsd:appinfo>
-                    <xsd:appinfo source="X_Workflow">Demo_Manager#SABPlanning_Product_1.0#Writable</xsd:appinfo>
-                    <xsd:appinfo source="X_Workflow">Team_Leader#SABPlanning_Product_1.0#Writable</xsd:appinfo>
                     <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
                 </xsd:annotation>
             </xsd:element>
@@ -4717,8 +4303,6 @@
                     <xsd:appinfo source="X_Description_EN">All Businesses in South Africa must conform to One of the
                         following legal Business types E.G. Closed Corporation, Sole Trader, Partner Ship etc.
                     </xsd:appinfo>
-                    <xsd:appinfo source="X_Workflow">Demo_Manager#SABPlanning_Product_1.0#Writable</xsd:appinfo>
-                    <xsd:appinfo source="X_Workflow">Team_Leader#SABPlanning_Product_1.0#Writable</xsd:appinfo>
                     <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
                 </xsd:annotation>
             </xsd:element>
@@ -4729,8 +4313,6 @@
                         is used to determine the age of the business (note that this is not the date that SAB started
                         dealing with the business)
                     </xsd:appinfo>
-                    <xsd:appinfo source="X_Workflow">Demo_Manager#SABPlanning_Product_1.0#Writable</xsd:appinfo>
-                    <xsd:appinfo source="X_Workflow">Team_Leader#SABPlanning_Product_1.0#Writable</xsd:appinfo>
                     <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
                 </xsd:annotation>
             </xsd:element>
@@ -4740,8 +4322,6 @@
                     <xsd:appinfo source="X_Description_EN">Liquidation Date. Indicating the end of bankruptcy
                         proceedings. If this date is filled in it implies that the firm no longer exists
                     </xsd:appinfo>
-                    <xsd:appinfo source="X_Workflow">Demo_Manager#SABPlanning_Product_1.0#Writable</xsd:appinfo>
-                    <xsd:appinfo source="X_Workflow">Team_Leader#SABPlanning_Product_1.0#Writable</xsd:appinfo>
                     <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
                 </xsd:annotation>
             </xsd:element>
@@ -4802,8 +4382,6 @@
                     <xsd:appinfo source="X_Description_EN">The company code is assigned to an organisational unit within
                         financial accounting. e.g. SA Breweries Limited
                     </xsd:appinfo>
-                    <xsd:appinfo source="X_Workflow">Demo_Manager#SABPlanning_Product_1.0#Writable</xsd:appinfo>
-                    <xsd:appinfo source="X_Workflow">Team_Leader#SABPlanning_Product_1.0#Writable</xsd:appinfo>
                     <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
                     <xsd:appinfo source="X_Write">Power_User</xsd:appinfo>
                     <xsd:appinfo source="X_Write">SAB_roles</xsd:appinfo>
@@ -4823,8 +4401,6 @@
                     <xsd:appinfo source="X_Description_EN">Business Partner Roles defines the basis of a business
                         process. e.g Payer, Principal credit, Outlet
                     </xsd:appinfo>
-                    <xsd:appinfo source="X_Workflow">Demo_Manager#SABPlanning_Product_1.0#Writable</xsd:appinfo>
-                    <xsd:appinfo source="X_Workflow">Team_Leader#SABPlanning_Product_1.0#Writable</xsd:appinfo>
                     <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
                     <xsd:appinfo source="X_Write">Power_User</xsd:appinfo>
                     <xsd:appinfo source="X_Write">SAB_roles</xsd:appinfo>
@@ -4842,8 +4418,6 @@
                         structure around groups of similar products or product lines. This allows the people in a
                         Division
                     </xsd:appinfo>
-                    <xsd:appinfo source="X_Workflow">Demo_Manager#SABPlanning_Product_1.0#Writable</xsd:appinfo>
-                    <xsd:appinfo source="X_Workflow">Team_Leader#SABPlanning_Product_1.0#Writable</xsd:appinfo>
                     <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
                     <xsd:appinfo source="X_Write">Power_User</xsd:appinfo>
                     <xsd:appinfo source="X_Write">SAB_roles</xsd:appinfo>
@@ -4859,8 +4433,6 @@
                     <xsd:appinfo source="X_Description_EN">A Sales Organisation is the organisational unit responsible
                         for the sale. A Sales organisation can have many Divisions and Distribution Channels
                     </xsd:appinfo>
-                    <xsd:appinfo source="X_Workflow">Demo_Manager#SABPlanning_Product_1.0#Writable</xsd:appinfo>
-                    <xsd:appinfo source="X_Workflow">Team_Leader#SABPlanning_Product_1.0#Writable</xsd:appinfo>
                     <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
                     <xsd:appinfo source="X_Write">Power_User</xsd:appinfo>
                     <xsd:appinfo source="X_Write">SAB_roles</xsd:appinfo>
@@ -4877,8 +4449,6 @@
                         reach the customer e.g. delivery to: Domestic customer, Distributor and Internal Stock transport
                         delivery etc.
                     </xsd:appinfo>
-                    <xsd:appinfo source="X_Workflow">Demo_Manager#SABPlanning_Product_1.0#Writable</xsd:appinfo>
-                    <xsd:appinfo source="X_Workflow">Team_Leader#SABPlanning_Product_1.0#Writable</xsd:appinfo>
                     <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
                     <xsd:appinfo source="X_Write">Power_User</xsd:appinfo>
                     <xsd:appinfo source="X_Write">SAB_roles</xsd:appinfo>
@@ -4891,8 +4461,6 @@
                     <xsd:appinfo source="X_ForeignKeyInfo">customerType/description</xsd:appinfo>
                     <xsd:appinfo source="X_Retrieve_FKinfos">true</xsd:appinfo>
                     <xsd:appinfo source="X_ForeignKey_Filter">customerType/code$$Strict Contains$$2$$#</xsd:appinfo>
-                    <xsd:appinfo source="X_Workflow">Demo_Manager#SABPlanning_Product_1.0#Writable</xsd:appinfo>
-                    <xsd:appinfo source="X_Workflow">Team_Leader#SABPlanning_Product_1.0#Writable</xsd:appinfo>
                     <xsd:appinfo source="X_ForeignKey">customerType</xsd:appinfo>
                     <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
                     <xsd:appinfo source="X_Write">Power_User</xsd:appinfo>
@@ -4918,8 +4486,6 @@
                     <xsd:appinfo source="X_ForeignKey_Filter">
                         title/code$$=$$01$$Or#title/code$$=$$02$$Or#title/code$$=$$03$$Or#title/code$$=$$04$$Or#title/code$$=$$05$$Or#title/code$$=$$06$$Or#title/code$$=$$07$$Or#title/code$$=$$08$$Or#
                     </xsd:appinfo>
-                    <xsd:appinfo source="X_Workflow">Demo_Manager#SABPlanning_Product_1.0#Writable</xsd:appinfo>
-                    <xsd:appinfo source="X_Workflow">Team_Leader#SABPlanning_Product_1.0#Writable</xsd:appinfo>
                     <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
                     <xsd:appinfo source="X_Write">Power_User</xsd:appinfo>
                     <xsd:appinfo source="X_Write">SAB_roles</xsd:appinfo>
@@ -4929,8 +4495,6 @@
                 <xsd:annotation>
                     <xsd:appinfo source="X_Label_EN">Name 1</xsd:appinfo>
                     <xsd:appinfo source="X_Description_EN">Trading name of the organisation</xsd:appinfo>
-                    <xsd:appinfo source="X_Workflow">Demo_Manager#SABPlanning_Product_1.0#Writable</xsd:appinfo>
-                    <xsd:appinfo source="X_Workflow">Team_Leader#SABPlanning_Product_1.0#Writable</xsd:appinfo>
                     <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
                     <xsd:appinfo source="X_Write">Power_User</xsd:appinfo>
                     <xsd:appinfo source="X_Write">SAB_roles</xsd:appinfo>
@@ -4941,8 +4505,6 @@
                     <xsd:appinfo source="X_Label_EN">Name 2</xsd:appinfo>
                     <xsd:appinfo source="X_Description_EN">This is typically used to enter the name of the Payer e.g.
                     </xsd:appinfo>
-                    <xsd:appinfo source="X_Workflow">Demo_Manager#SABPlanning_Product_1.0#Writable</xsd:appinfo>
-                    <xsd:appinfo source="X_Workflow">Team_Leader#SABPlanning_Product_1.0#Writable</xsd:appinfo>
                     <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
                     <xsd:appinfo source="X_Write">Power_User</xsd:appinfo>
                     <xsd:appinfo source="X_Write">SAB_roles</xsd:appinfo>
@@ -4950,8 +4512,6 @@
             </xsd:element>
             <xsd:element maxOccurs="1" minOccurs="0" name="middleName" type="xsd:string">
                 <xsd:annotation>
-                    <xsd:appinfo source="X_Workflow">Demo_Manager#SABPlanning_Product_1.0#Writable</xsd:appinfo>
-                    <xsd:appinfo source="X_Workflow">Team_Leader#SABPlanning_Product_1.0#Writable</xsd:appinfo>
                     <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
                     <xsd:appinfo source="X_Write">Power_User</xsd:appinfo>
                     <xsd:appinfo source="X_Write">SAB_roles</xsd:appinfo>
@@ -4959,8 +4519,6 @@
             </xsd:element>
             <xsd:element maxOccurs="1" minOccurs="0" name="initials" type="xsd:string">
                 <xsd:annotation>
-                    <xsd:appinfo source="X_Workflow">Demo_Manager#SABPlanning_Product_1.0#Writable</xsd:appinfo>
-                    <xsd:appinfo source="X_Workflow">Team_Leader#SABPlanning_Product_1.0#Writable</xsd:appinfo>
                     <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
                     <xsd:appinfo source="X_Write">Power_User</xsd:appinfo>
                     <xsd:appinfo source="X_Write">SAB_roles</xsd:appinfo>
@@ -4968,8 +4526,6 @@
             </xsd:element>
             <xsd:element maxOccurs="1" minOccurs="0" name="gender" type="xsd:string">
                 <xsd:annotation>
-                    <xsd:appinfo source="X_Workflow">Demo_Manager#SABPlanning_Product_1.0#Writable</xsd:appinfo>
-                    <xsd:appinfo source="X_Workflow">Team_Leader#SABPlanning_Product_1.0#Writable</xsd:appinfo>
                     <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
                     <xsd:appinfo source="X_Write">Power_User</xsd:appinfo>
                     <xsd:appinfo source="X_Write">SAB_roles</xsd:appinfo>
@@ -4977,8 +4533,6 @@
             </xsd:element>
             <xsd:element maxOccurs="1" minOccurs="0" name="maritalStatus" type="xsd:string">
                 <xsd:annotation>
-                    <xsd:appinfo source="X_Workflow">Demo_Manager#SABPlanning_Product_1.0#Writable</xsd:appinfo>
-                    <xsd:appinfo source="X_Workflow">Team_Leader#SABPlanning_Product_1.0#Writable</xsd:appinfo>
                     <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
                     <xsd:appinfo source="X_Write">Power_User</xsd:appinfo>
                     <xsd:appinfo source="X_Write">SAB_roles</xsd:appinfo>
@@ -4986,8 +4540,6 @@
             </xsd:element>
             <xsd:element maxOccurs="1" minOccurs="0" name="dateOfBirth" type="xsd:string">
                 <xsd:annotation>
-                    <xsd:appinfo source="X_Workflow">Demo_Manager#SABPlanning_Product_1.0#Writable</xsd:appinfo>
-                    <xsd:appinfo source="X_Workflow">Team_Leader#SABPlanning_Product_1.0#Writable</xsd:appinfo>
                     <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
                     <xsd:appinfo source="X_Write">Power_User</xsd:appinfo>
                     <xsd:appinfo source="X_Write">SAB_roles</xsd:appinfo>
@@ -5180,8 +4732,6 @@
             </xsd:element>
             <xsd:element maxOccurs="1" minOccurs="0" name="faxNumber" type="xsd:string">
                 <xsd:annotation>
-                    <xsd:appinfo source="X_Workflow">Demo_Manager#SABPlanning_Product_1.0#Writable</xsd:appinfo>
-                    <xsd:appinfo source="X_Workflow">Team_Leader#SABPlanning_Product_1.0#Writable</xsd:appinfo>
                     <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
                     <xsd:appinfo source="X_Write">Power_User</xsd:appinfo>
                     <xsd:appinfo source="X_Write">Access_Model</xsd:appinfo>
@@ -5225,8 +4775,6 @@
             </xsd:element>
             <xsd:element maxOccurs="1" minOccurs="0" name="poBoxLobby" type="xsd:string">
                 <xsd:annotation>
-                    <xsd:appinfo source="X_Workflow">Demo_Manager#SABPlanning_Product_1.0#Writable</xsd:appinfo>
-                    <xsd:appinfo source="X_Workflow">Team_Leader#SABPlanning_Product_1.0#Writable</xsd:appinfo>
                     <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
                     <xsd:appinfo source="X_Write">Power_User</xsd:appinfo>
                     <xsd:appinfo source="X_Write">Access_Model</xsd:appinfo>
@@ -5250,8 +4798,6 @@
             </xsd:element>
             <xsd:element maxOccurs="1" minOccurs="0" name="faxExtention" type="xsd:string">
                 <xsd:annotation>
-                    <xsd:appinfo source="X_Workflow">Demo_Manager#SABPlanning_Product_1.0#Writable</xsd:appinfo>
-                    <xsd:appinfo source="X_Workflow">Team_Leader#SABPlanning_Product_1.0#Writable</xsd:appinfo>
                     <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
                     <xsd:appinfo source="X_Write">Access_Model</xsd:appinfo>
                     <xsd:appinfo source="X_Hide">Power_User</xsd:appinfo>
@@ -5271,8 +4817,6 @@
                     <xsd:appinfo source="X_Description_EN">The company code is assigned to an organisational unit within
                         financial accounting. e.g. SA Breweries Limited
                     </xsd:appinfo>
-                    <xsd:appinfo source="X_Workflow">Demo_Manager#SABPlanning_Product_1.0#Writable</xsd:appinfo>
-                    <xsd:appinfo source="X_Workflow">Team_Leader#SABPlanning_Product_1.0#Writable</xsd:appinfo>
                     <xsd:appinfo source="X_ForeignKey_Filter">companyCode/code$$=$$1000$$Or#</xsd:appinfo>
                     <xsd:appinfo source="X_Label_EN">Company Code</xsd:appinfo>
                     <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
@@ -5291,8 +4835,6 @@
                     <xsd:appinfo source="X_Description_EN">Business Partner Roles defines the basis of a business
                         process. e.g Payer, Principal credit, Outlet
                     </xsd:appinfo>
-                    <xsd:appinfo source="X_Workflow">Demo_Manager#SABPlanning_Product_1.0#Writable</xsd:appinfo>
-                    <xsd:appinfo source="X_Workflow">Team_Leader#SABPlanning_Product_1.0#Writable</xsd:appinfo>
                     <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
                     <xsd:appinfo source="X_Write">Power_User</xsd:appinfo>
                 </xsd:annotation>
@@ -5309,8 +4851,6 @@
                         structure around groups of similar products or product lines. This allows the people in a
                         Division
                     </xsd:appinfo>
-                    <xsd:appinfo source="X_Workflow">Demo_Manager#SABPlanning_Product_1.0#Writable</xsd:appinfo>
-                    <xsd:appinfo source="X_Workflow">Team_Leader#SABPlanning_Product_1.0#Writable</xsd:appinfo>
                     <xsd:appinfo source="X_ForeignKey_Filter">division/code$$=$$04$$Or#</xsd:appinfo>
                     <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
                     <xsd:appinfo source="X_Write">Power_User</xsd:appinfo>
@@ -5326,8 +4866,6 @@
                     <xsd:appinfo source="X_Description_EN">A Sales Organisation is the organisational unit responsible
                         for the sale. A Sales organisation can have many Divisions and Distribution Channels
                     </xsd:appinfo>
-                    <xsd:appinfo source="X_Workflow">Demo_Manager#SABPlanning_Product_1.0#Writable</xsd:appinfo>
-                    <xsd:appinfo source="X_Workflow">Team_Leader#SABPlanning_Product_1.0#Writable</xsd:appinfo>
                     <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
                     <xsd:appinfo source="X_Hide">Power_User</xsd:appinfo>
                 </xsd:annotation>
@@ -5343,8 +4881,6 @@
                         reach the customer e.g. delivery to: Domestic customer, Distributor and Internal Stock transport
                         delivery etc.
                     </xsd:appinfo>
-                    <xsd:appinfo source="X_Workflow">Demo_Manager#SABPlanning_Product_1.0#Writable</xsd:appinfo>
-                    <xsd:appinfo source="X_Workflow">Team_Leader#SABPlanning_Product_1.0#Writable</xsd:appinfo>
                     <xsd:appinfo source="X_Hide">Power_User</xsd:appinfo>
                     <xsd:appinfo source="X_Hide">SAB_roles</xsd:appinfo>
                     <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
@@ -5357,8 +4893,6 @@
                     <xsd:appinfo source="X_ForeignKeyInfo">customerType/description</xsd:appinfo>
                     <xsd:appinfo source="X_Retrieve_FKinfos">true</xsd:appinfo>
                     <xsd:appinfo source="X_ForeignKey_Filter">customerType/code$$Strict Contains$$2$$#</xsd:appinfo>
-                    <xsd:appinfo source="X_Workflow">Demo_Manager#SABPlanning_Product_1.0#Writable</xsd:appinfo>
-                    <xsd:appinfo source="X_Workflow">Team_Leader#SABPlanning_Product_1.0#Writable</xsd:appinfo>
                     <xsd:appinfo source="X_ForeignKey">customerType</xsd:appinfo>
                     <xsd:appinfo source="X_Hide">Power_User</xsd:appinfo>
                     <xsd:appinfo source="X_Hide">SAB_roles</xsd:appinfo>
@@ -5367,8 +4901,6 @@
             </xsd:element>
             <xsd:element maxOccurs="1" minOccurs="0" name="partnerID" type="xsd:string">
                 <xsd:annotation>
-                    <xsd:appinfo source="X_Workflow">Demo_Manager#SABPlanning_Product_1.0#Writable</xsd:appinfo>
-                    <xsd:appinfo source="X_Workflow">Team_Leader#SABPlanning_Product_1.0#Writable</xsd:appinfo>
                     <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
                     <xsd:appinfo source="X_Write">Power_User</xsd:appinfo>
                     <xsd:appinfo source="X_Label_EN">Partner ID</xsd:appinfo>
@@ -5393,8 +4925,6 @@
                     <xsd:appinfo source="X_ForeignKey_Filter">
                         title/code$$=$$01$$Or#title/code$$=$$02$$Or#title/code$$=$$03$$Or#title/code$$=$$04$$Or#title/code$$=$$05$$Or#title/code$$=$$06$$Or#title/code$$=$$07$$Or#title/code$$=$$08$$Or#
                     </xsd:appinfo>
-                    <xsd:appinfo source="X_Workflow">Demo_Manager#SABPlanning_Product_1.0#Writable</xsd:appinfo>
-                    <xsd:appinfo source="X_Workflow">Team_Leader#SABPlanning_Product_1.0#Writable</xsd:appinfo>
                     <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
                     <xsd:appinfo source="X_Write">Power_User</xsd:appinfo>
                 </xsd:annotation>
@@ -5402,8 +4932,6 @@
             <xsd:element maxOccurs="1" minOccurs="1" name="name1" type="xsd:string">
                 <xsd:annotation>
                     <xsd:appinfo source="X_Description_EN">Trading name of the organisation</xsd:appinfo>
-                    <xsd:appinfo source="X_Workflow">Demo_Manager#SABPlanning_Product_1.0#Writable</xsd:appinfo>
-                    <xsd:appinfo source="X_Workflow">Team_Leader#SABPlanning_Product_1.0#Writable</xsd:appinfo>
                     <xsd:appinfo source="X_Label_EN">Trading Name</xsd:appinfo>
                     <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
                     <xsd:appinfo source="X_Write">Power_User</xsd:appinfo>
@@ -5413,8 +4941,6 @@
                 <xsd:annotation>
                     <xsd:appinfo source="X_Description_EN">This is typically used to enter the name of the Payer e.g.
                     </xsd:appinfo>
-                    <xsd:appinfo source="X_Workflow">Demo_Manager#SABPlanning_Product_1.0#Writable</xsd:appinfo>
-                    <xsd:appinfo source="X_Workflow">Team_Leader#SABPlanning_Product_1.0#Writable</xsd:appinfo>
                     <xsd:appinfo source="X_Label_EN">Legal Entity Name</xsd:appinfo>
                     <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
                     <xsd:appinfo source="X_Write">Power_User</xsd:appinfo>
@@ -5422,8 +4948,6 @@
             </xsd:element>
             <xsd:element maxOccurs="1" minOccurs="0" name="nameCo" type="xsd:string">
                 <xsd:annotation>
-                    <xsd:appinfo source="X_Workflow">Demo_Manager#SABPlanning_Product_1.0#Writable</xsd:appinfo>
-                    <xsd:appinfo source="X_Workflow">Team_Leader#SABPlanning_Product_1.0#Writable</xsd:appinfo>
                     <xsd:appinfo source="X_Label_EN">Name Co</xsd:appinfo>
                     <xsd:appinfo source="X_Hide">Power_User</xsd:appinfo>
                     <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
@@ -5431,8 +4955,6 @@
             </xsd:element>
             <xsd:element maxOccurs="1" minOccurs="0" name="deliveryService" type="xsd:string">
                 <xsd:annotation>
-                    <xsd:appinfo source="X_Workflow">Demo_Manager#SABPlanning_Product_1.0#Writable</xsd:appinfo>
-                    <xsd:appinfo source="X_Workflow">Team_Leader#SABPlanning_Product_1.0#Writable</xsd:appinfo>
                     <xsd:appinfo source="X_Label_EN">Delivery Service</xsd:appinfo>
                     <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
                     <xsd:appinfo source="X_Hide">Power_User</xsd:appinfo>
@@ -5440,8 +4962,6 @@
             </xsd:element>
             <xsd:element maxOccurs="1" minOccurs="0" name="deliveryServiceNumber" type="xsd:string">
                 <xsd:annotation>
-                    <xsd:appinfo source="X_Workflow">Demo_Manager#SABPlanning_Product_1.0#Writable</xsd:appinfo>
-                    <xsd:appinfo source="X_Workflow">Team_Leader#SABPlanning_Product_1.0#Writable</xsd:appinfo>
                     <xsd:appinfo source="X_Label_EN">Delivery Service Number</xsd:appinfo>
                     <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
                     <xsd:appinfo source="X_Hide">Power_User</xsd:appinfo>
@@ -5577,8 +5097,6 @@
             </xsd:element>
             <xsd:element maxOccurs="1" minOccurs="0" name="poBoxLobby" type="xsd:string">
                 <xsd:annotation>
-                    <xsd:appinfo source="X_Workflow">Demo_Manager#SABPlanning_Product_1.0#Writable</xsd:appinfo>
-                    <xsd:appinfo source="X_Workflow">Team_Leader#SABPlanning_Product_1.0#Writable</xsd:appinfo>
                     <xsd:appinfo source="X_Label_EN">Po Box Lobby</xsd:appinfo>
                     <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
                     <xsd:appinfo source="X_Write">Power_User</xsd:appinfo>
@@ -5629,8 +5147,6 @@
             </xsd:element>
             <xsd:element maxOccurs="1" minOccurs="0" name="faxNumber" type="xsd:string">
                 <xsd:annotation>
-                    <xsd:appinfo source="X_Workflow">Demo_Manager#SABPlanning_Product_1.0#Writable</xsd:appinfo>
-                    <xsd:appinfo source="X_Workflow">Team_Leader#SABPlanning_Product_1.0#Writable</xsd:appinfo>
                     <xsd:appinfo source="X_Label_EN">Fax Number</xsd:appinfo>
                     <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
                     <xsd:appinfo source="X_Hide">Power_User</xsd:appinfo>
@@ -5686,8 +5202,6 @@
             </xsd:element>
             <xsd:element maxOccurs="1" minOccurs="0" name="faxExtention" type="xsd:string">
                 <xsd:annotation>
-                    <xsd:appinfo source="X_Workflow">Demo_Manager#SABPlanning_Product_1.0#Writable</xsd:appinfo>
-                    <xsd:appinfo source="X_Workflow">Team_Leader#SABPlanning_Product_1.0#Writable</xsd:appinfo>
                     <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
                     <xsd:appinfo source="X_Write">Access_Model</xsd:appinfo>
                     <xsd:appinfo source="X_Hide">Power_User</xsd:appinfo>
@@ -5701,8 +5215,6 @@
             <xsd:element maxOccurs="1" minOccurs="0" name="organizationalData" type="OrganizationDataCanVendingType">
                 <xsd:annotation>
                     <xsd:appinfo source="X_Label_EN">Organizational Data</xsd:appinfo>
-                    <xsd:appinfo source="X_Workflow">Demo_Manager#SABPlanning_Product_1.0#Writable</xsd:appinfo>
-                    <xsd:appinfo source="X_Workflow">Team_Leader#SABPlanning_Product_1.0#Writable</xsd:appinfo>
                     <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
                     <xsd:appinfo source="X_Write">Power_User</xsd:appinfo>
                 </xsd:annotation>
@@ -5710,8 +5222,6 @@
             <xsd:element maxOccurs="1" minOccurs="0" name="identificationNumbers" type="IdentificationCanVending">
                 <xsd:annotation>
                     <xsd:appinfo source="X_Label_EN">Identification Numbers</xsd:appinfo>
-                    <xsd:appinfo source="X_Workflow">Demo_Manager#SABPlanning_Product_1.0#Writable</xsd:appinfo>
-                    <xsd:appinfo source="X_Workflow">Team_Leader#SABPlanning_Product_1.0#Writable</xsd:appinfo>
                     <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
                     <xsd:appinfo source="X_Write">Power_User</xsd:appinfo>
                 </xsd:annotation>
@@ -5719,8 +5229,6 @@
             <xsd:element maxOccurs="1" minOccurs="0" name="taxIdentification" type="TaxIdentificationCanVeding">
                 <xsd:annotation>
                     <xsd:appinfo source="X_Label_EN">Tax Numbers</xsd:appinfo>
-                    <xsd:appinfo source="X_Workflow">Demo_Manager#SABPlanning_Product_1.0#Writable</xsd:appinfo>
-                    <xsd:appinfo source="X_Workflow">Team_Leader#SABPlanning_Product_1.0#Writable</xsd:appinfo>
                     <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
                     <xsd:appinfo source="X_Hide">Power_User</xsd:appinfo>
                 </xsd:annotation>
@@ -5728,8 +5236,6 @@
             <xsd:element maxOccurs="1" minOccurs="0" name="industries" type="IndustryCanVedingType">
                 <xsd:annotation>
                     <xsd:appinfo source="X_Label_EN">Industries</xsd:appinfo>
-                    <xsd:appinfo source="X_Workflow">Demo_Manager#SABPlanning_Product_1.0#Writable</xsd:appinfo>
-                    <xsd:appinfo source="X_Workflow">Team_Leader#SABPlanning_Product_1.0#Writable</xsd:appinfo>
                     <xsd:appinfo source="X_Hide">SAB_roles</xsd:appinfo>
                     <xsd:appinfo source="X_Hide">Power_User</xsd:appinfo>
                     <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
@@ -5751,8 +5257,6 @@
                     <xsd:appinfo source="X_Description_EN">All Businesses in South Africa must conform to One of the
                         following legal Business types E.G. Closed Corporation, Sole Trader, Partner Ship etc.
                     </xsd:appinfo>
-                    <xsd:appinfo source="X_Workflow">Demo_Manager#SABPlanning_Product_1.0#Writable</xsd:appinfo>
-                    <xsd:appinfo source="X_Workflow">Team_Leader#SABPlanning_Product_1.0#Writable</xsd:appinfo>
                     <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
                     <xsd:appinfo source="X_Hide">Power_User</xsd:appinfo>
                 </xsd:annotation>
@@ -5764,8 +5268,6 @@
                         is used to determine the age of the business (note that this is not the date that SAB started
                         dealing with the business)
                     </xsd:appinfo>
-                    <xsd:appinfo source="X_Workflow">Demo_Manager#SABPlanning_Product_1.0#Writable</xsd:appinfo>
-                    <xsd:appinfo source="X_Workflow">Team_Leader#SABPlanning_Product_1.0#Writable</xsd:appinfo>
                     <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
                     <xsd:appinfo source="X_Write">Power_User</xsd:appinfo>
                 </xsd:annotation>
@@ -5776,8 +5278,6 @@
                     <xsd:appinfo source="X_Description_EN">Liquidation Date. Indicating the end of bankruptcy
                         proceedings. If this date is filled in it implies that the firm no longer exists
                     </xsd:appinfo>
-                    <xsd:appinfo source="X_Workflow">Demo_Manager#SABPlanning_Product_1.0#Writable</xsd:appinfo>
-                    <xsd:appinfo source="X_Workflow">Team_Leader#SABPlanning_Product_1.0#Writable</xsd:appinfo>
                     <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
                     <xsd:appinfo source="X_Hide">SAB_roles</xsd:appinfo>
                     <xsd:appinfo source="X_Hide">Power_User</xsd:appinfo>
@@ -5800,8 +5300,6 @@
                         the ID number is related to the South African Company Registration Number or Citizen Personal
                         Number "
                     </xsd:appinfo>
-                    <xsd:appinfo source="X_Workflow">Demo_Manager#SABPlanning_Product_1.0#Writable</xsd:appinfo>
-                    <xsd:appinfo source="X_Workflow">Team_Leader#SABPlanning_Product_1.0#Writable</xsd:appinfo>
                     <xsd:appinfo source="X_Hide">Power_User</xsd:appinfo>
                 </xsd:annotation>
             </xsd:element>
@@ -5811,40 +5309,30 @@
                     <xsd:appinfo source="X_Description_EN">"Identification Number, that serves to identify a business
                         partner, such as driver's license, or ID card/book number. "
                     </xsd:appinfo>
-                    <xsd:appinfo source="X_Workflow">Demo_Manager#SABPlanning_Product_1.0#Writable</xsd:appinfo>
-                    <xsd:appinfo source="X_Workflow">Team_Leader#SABPlanning_Product_1.0#Writable</xsd:appinfo>
                     <xsd:appinfo source="X_Hide">Power_User</xsd:appinfo>
                 </xsd:annotation>
             </xsd:element>
             <xsd:element maxOccurs="1" minOccurs="0" name="idIstitute" type="xsd:string">
                 <xsd:annotation>
                     <xsd:appinfo source="X_Label_EN">Responsible Institution</xsd:appinfo>
-                    <xsd:appinfo source="X_Workflow">Demo_Manager#SABPlanning_Product_1.0#Writable</xsd:appinfo>
-                    <xsd:appinfo source="X_Workflow">Team_Leader#SABPlanning_Product_1.0#Writable</xsd:appinfo>
                     <xsd:appinfo source="X_Hide">Power_User</xsd:appinfo>
                 </xsd:annotation>
             </xsd:element>
             <xsd:element maxOccurs="1" minOccurs="0" name="idEntryDate" type="xsd:string">
                 <xsd:annotation>
                     <xsd:appinfo source="X_Label_EN">Entry Date</xsd:appinfo>
-                    <xsd:appinfo source="X_Workflow">Demo_Manager#SABPlanning_Product_1.0#Writable</xsd:appinfo>
-                    <xsd:appinfo source="X_Workflow">Team_Leader#SABPlanning_Product_1.0#Writable</xsd:appinfo>
                     <xsd:appinfo source="X_Hide">Power_User</xsd:appinfo>
                 </xsd:annotation>
             </xsd:element>
             <xsd:element maxOccurs="1" minOccurs="0" name="idStartDate" type="xsd:string">
                 <xsd:annotation>
                     <xsd:appinfo source="X_Label_EN">Valid from</xsd:appinfo>
-                    <xsd:appinfo source="X_Workflow">Demo_Manager#SABPlanning_Product_1.0#Writable</xsd:appinfo>
-                    <xsd:appinfo source="X_Workflow">Team_Leader#SABPlanning_Product_1.0#Writable</xsd:appinfo>
                     <xsd:appinfo source="X_Hide">Power_User</xsd:appinfo>
                 </xsd:annotation>
             </xsd:element>
             <xsd:element maxOccurs="1" minOccurs="0" name="idEndDate" type="xsd:string">
                 <xsd:annotation>
                     <xsd:appinfo source="X_Label_EN">Valid To</xsd:appinfo>
-                    <xsd:appinfo source="X_Workflow">Demo_Manager#SABPlanning_Product_1.0#Writable</xsd:appinfo>
-                    <xsd:appinfo source="X_Workflow">Team_Leader#SABPlanning_Product_1.0#Writable</xsd:appinfo>
                     <xsd:appinfo source="X_Hide">Power_User</xsd:appinfo>
                 </xsd:annotation>
             </xsd:element>
@@ -5859,8 +5347,6 @@
                     <xsd:appinfo source="X_Description_EN">The Name of the Country as part of the City and Street
                         address.
                     </xsd:appinfo>
-                    <xsd:appinfo source="X_Workflow">Demo_Manager#SABPlanning_Product_1.0#Writable</xsd:appinfo>
-                    <xsd:appinfo source="X_Workflow">Team_Leader#SABPlanning_Product_1.0#Writable</xsd:appinfo>
                     <xsd:appinfo source="X_Hide">Power_User</xsd:appinfo>
                 </xsd:annotation>
             </xsd:element>
@@ -5872,15 +5358,11 @@
                     <xsd:appinfo source="X_ForeignKeyInfo">region/region</xsd:appinfo>
                     <xsd:appinfo source="X_ForeignKeyInfo">region/description</xsd:appinfo>
                     <xsd:appinfo source="X_Retrieve_FKinfos">true</xsd:appinfo>
-                    <xsd:appinfo source="X_Workflow">Demo_Manager#SABPlanning_Product_1.0#Writable</xsd:appinfo>
-                    <xsd:appinfo source="X_Workflow">Team_Leader#SABPlanning_Product_1.0#Writable</xsd:appinfo>
                     <xsd:appinfo source="X_Hide">Power_User</xsd:appinfo>
                 </xsd:annotation>
             </xsd:element>
             <xsd:element maxOccurs="1" minOccurs="0" name="externalBPNumber" type="xsd:string">
                 <xsd:annotation>
-                    <xsd:appinfo source="X_Workflow">Demo_Manager#SABPlanning_Product_1.0#Writable</xsd:appinfo>
-                    <xsd:appinfo source="X_Workflow">Team_Leader#SABPlanning_Product_1.0#Writable</xsd:appinfo>
                     <xsd:appinfo source="X_Write">Power_User</xsd:appinfo>
                 </xsd:annotation>
             </xsd:element>
@@ -5896,8 +5378,6 @@
                     <xsd:appinfo source="X_ForeignKeyInfo">industries/industry</xsd:appinfo>
                     <xsd:appinfo source="X_ForeignKeyInfo">industries/description</xsd:appinfo>
                     <xsd:appinfo source="X_Retrieve_FKinfos">true</xsd:appinfo>
-                    <xsd:appinfo source="X_Workflow">Demo_Manager#SABPlanning_Product_1.0#Writable</xsd:appinfo>
-                    <xsd:appinfo source="X_Workflow">Team_Leader#SABPlanning_Product_1.0#Writable</xsd:appinfo>
                     <xsd:appinfo source="X_Hide">SAB_roles</xsd:appinfo>
                     <xsd:appinfo source="X_Hide">Power_User</xsd:appinfo>
                     <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
@@ -5907,8 +5387,6 @@
             <xsd:element maxOccurs="1" minOccurs="0" name="stndIndustry" type="xsd:string">
                 <xsd:annotation>
                     <xsd:appinfo source="X_Label_EN">Standard Industry</xsd:appinfo>
-                    <xsd:appinfo source="X_Workflow">Demo_Manager#SABPlanning_Product_1.0#Writable</xsd:appinfo>
-                    <xsd:appinfo source="X_Workflow">Team_Leader#SABPlanning_Product_1.0#Writable</xsd:appinfo>
                     <xsd:appinfo source="X_Hide">SAB_roles</xsd:appinfo>
                     <xsd:appinfo source="X_Hide">Power_User</xsd:appinfo>
                     <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
@@ -5931,8 +5409,6 @@
                     <xsd:appinfo source="X_Description_EN">Tax Category Specifies the applicable tax number required
                         e.g. South Africa: VAT Registration Number
                     </xsd:appinfo>
-                    <xsd:appinfo source="X_Workflow">Demo_Manager#SABPlanning_Product_1.0#Writable</xsd:appinfo>
-                    <xsd:appinfo source="X_Workflow">Team_Leader#SABPlanning_Product_1.0#Writable</xsd:appinfo>
                     <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
                     <xsd:appinfo source="X_Hide">Power_User</xsd:appinfo>
                 </xsd:annotation>
@@ -5943,16 +5419,12 @@
                     <xsd:appinfo source="X_Description_EN">Specifies the Tax Number Note: If not registered for VAT, the
                         convention is to capture NOT REGISTERED in the tax number field
                     </xsd:appinfo>
-                    <xsd:appinfo source="X_Workflow">Demo_Manager#SABPlanning_Product_1.0#Writable</xsd:appinfo>
-                    <xsd:appinfo source="X_Workflow">Team_Leader#SABPlanning_Product_1.0#Writable</xsd:appinfo>
                     <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
                     <xsd:appinfo source="X_Hide">Power_User</xsd:appinfo>
                 </xsd:annotation>
             </xsd:element>
             <xsd:element maxOccurs="1" minOccurs="0" name="naturalPerson" type="xsd:string">
                 <xsd:annotation>
-                    <xsd:appinfo source="X_Workflow">Demo_Manager#SABPlanning_Product_1.0#Writable</xsd:appinfo>
-                    <xsd:appinfo source="X_Workflow">Team_Leader#SABPlanning_Product_1.0#Writable</xsd:appinfo>
                     <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
                     <xsd:appinfo source="X_Hide">Power_User</xsd:appinfo>
                 </xsd:annotation>
@@ -5964,8 +5436,6 @@
             <xsd:element maxOccurs="1" minOccurs="0" name="controlParameters" type="ControlParametersCanVending">
                 <xsd:annotation>
                     <xsd:appinfo source="X_Label_EN">Control Parameters</xsd:appinfo>
-                    <xsd:appinfo source="X_Workflow">Demo_Manager#SABPlanning_Product_1.0#Writable</xsd:appinfo>
-                    <xsd:appinfo source="X_Workflow">Team_Leader#SABPlanning_Product_1.0#Writable</xsd:appinfo>
                     <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
                     <xsd:appinfo source="X_Hide">Power_User</xsd:appinfo>
                 </xsd:annotation>
@@ -5973,8 +5443,6 @@
             <xsd:element maxOccurs="1" minOccurs="0" name="dataOrigin" type="DataOriginCanVending">
                 <xsd:annotation>
                     <xsd:appinfo source="X_Label_EN">Data Origin</xsd:appinfo>
-                    <xsd:appinfo source="X_Workflow">Demo_Manager#SABPlanning_Product_1.0#Writable</xsd:appinfo>
-                    <xsd:appinfo source="X_Workflow">Team_Leader#SABPlanning_Product_1.0#Writable</xsd:appinfo>
                     <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
                     <xsd:appinfo source="X_Hide">Power_User</xsd:appinfo>
                 </xsd:annotation>
@@ -5991,8 +5459,6 @@
                         according to your own criteria. Examples of Business Partner Types defined for SAB Customers
                         are: Outlet owner, Soled to party, Ship to party, Telleseller, Stake holder etc.
                     </xsd:appinfo>
-                    <xsd:appinfo source="X_Workflow">Demo_Manager#SABPlanning_Product_1.0#Writable</xsd:appinfo>
-                    <xsd:appinfo source="X_Workflow">Team_Leader#SABPlanning_Product_1.0#Writable</xsd:appinfo>
                     <xsd:appinfo source="X_ForeignKeyInfo">acountGroupsB/type</xsd:appinfo>
                     <xsd:appinfo source="X_ForeignKeyInfo">acountGroupsB/description</xsd:appinfo>
                     <xsd:appinfo source="X_Retrieve_FKinfos">true</xsd:appinfo>
@@ -6013,8 +5479,6 @@
                     <xsd:appinfo source="X_Description_EN">The Company ID of the Trading Partner. E.G. On Business
                         partners = Distributors the Trading partner ID will be Added
                     </xsd:appinfo>
-                    <xsd:appinfo source="X_Workflow">Demo_Manager#SABPlanning_Product_1.0#Writable</xsd:appinfo>
-                    <xsd:appinfo source="X_Workflow">Team_Leader#SABPlanning_Product_1.0#Writable</xsd:appinfo>
                     <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
                     <xsd:appinfo source="X_Hide">Power_User</xsd:appinfo>
                 </xsd:annotation>
@@ -6022,8 +5486,6 @@
             <xsd:element maxOccurs="1" minOccurs="0" name="endDate" type="xsd:date">
                 <xsd:annotation>
                     <xsd:appinfo source="X_Label_EN">End Date</xsd:appinfo>
-                    <xsd:appinfo source="X_Workflow">Demo_Manager#SABPlanning_Product_1.0#Writable</xsd:appinfo>
-                    <xsd:appinfo source="X_Workflow">Team_Leader#SABPlanning_Product_1.0#Writable</xsd:appinfo>
                     <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
                     <xsd:appinfo source="X_Hide">Power_User</xsd:appinfo>
                 </xsd:annotation>
@@ -6039,8 +5501,6 @@
                         comes into the system. The origin type is only for information purposes. e.g. Bought address
                         lists or Trans Union ITC
                     </xsd:appinfo>
-                    <xsd:appinfo source="X_Workflow">Demo_Manager#SABPlanning_Product_1.0#Writable</xsd:appinfo>
-                    <xsd:appinfo source="X_Workflow">Team_Leader#SABPlanning_Product_1.0#Writable</xsd:appinfo>
                     <xsd:appinfo source="X_ForeignKey">dataOriginSource</xsd:appinfo>
                     <xsd:appinfo source="X_ForeignKeyInfo">dataOriginSource/client</xsd:appinfo>
                     <xsd:appinfo source="X_ForeignKeyInfo">dataOriginSource/spras</xsd:appinfo>
@@ -6059,8 +5519,6 @@
             <xsd:element maxOccurs="1" minOccurs="0" name="generalData" type="GeneralDataCanVending">
                 <xsd:annotation>
                     <xsd:appinfo source="X_Label_EN">General Data</xsd:appinfo>
-                    <xsd:appinfo source="X_Workflow">Demo_Manager#SABPlanning_Product_1.0#Writable</xsd:appinfo>
-                    <xsd:appinfo source="X_Workflow">Team_Leader#SABPlanning_Product_1.0#Writable</xsd:appinfo>
                     <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
                     <xsd:appinfo source="X_Write">Power_User</xsd:appinfo>
                 </xsd:annotation>
@@ -6068,8 +5526,6 @@
             <xsd:element maxOccurs="1" minOccurs="0" name="centralData" type="CentralDataCanVending">
                 <xsd:annotation>
                     <xsd:appinfo source="X_Label_EN">Additional Data</xsd:appinfo>
-                    <xsd:appinfo source="X_Workflow">Demo_Manager#SABPlanning_Product_1.0#Writable</xsd:appinfo>
-                    <xsd:appinfo source="X_Workflow">Team_Leader#SABPlanning_Product_1.0#Writable</xsd:appinfo>
                     <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
                     <xsd:appinfo source="X_Hide">Power_User</xsd:appinfo>
                 </xsd:annotation>
@@ -6081,8 +5537,6 @@
             <xsd:element maxOccurs="1" minOccurs="0" name="vendor" type="xsd:string">
                 <xsd:annotation>
                     <xsd:appinfo source="X_Label_EN">Vendor</xsd:appinfo>
-                    <xsd:appinfo source="X_Workflow">Demo_Manager#SABPlanning_Product_1.0#Writable</xsd:appinfo>
-                    <xsd:appinfo source="X_Workflow">Team_Leader#SABPlanning_Product_1.0#Writable</xsd:appinfo>
                     <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
                     <xsd:appinfo source="X_Write">Power_User</xsd:appinfo>
                 </xsd:annotation>
@@ -6094,8 +5548,6 @@
                         protection for particular objects. The authorization groups usually occur in authorization
                         objects
                     </xsd:appinfo>
-                    <xsd:appinfo source="X_Workflow">Demo_Manager#SABPlanning_Product_1.0#Writable</xsd:appinfo>
-                    <xsd:appinfo source="X_Workflow">Team_Leader#SABPlanning_Product_1.0#Writable</xsd:appinfo>
                     <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
                     <xsd:appinfo source="X_Hide">Power_User</xsd:appinfo>
                 </xsd:annotation>
@@ -6107,8 +5559,6 @@
                     <xsd:appinfo source="X_Retrieve_FKinfos">true</xsd:appinfo>
                     <xsd:appinfo source="X_Label_EN">Customer Classification</xsd:appinfo>
                     <xsd:appinfo source="X_ForeignKey">customerClassification</xsd:appinfo>
-                    <xsd:appinfo source="X_Workflow">Demo_Manager#SABPlanning_Product_1.0#Writable</xsd:appinfo>
-                    <xsd:appinfo source="X_Workflow">Team_Leader#SABPlanning_Product_1.0#Writable</xsd:appinfo>
                     <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
                     <xsd:appinfo source="X_Hide">Power_User</xsd:appinfo>
                 </xsd:annotation>
@@ -6129,8 +5579,6 @@
                     <xsd:appinfo source="X_ForeignKeyInfo">accDiscount/accDiscount</xsd:appinfo>
                     <xsd:appinfo source="X_ForeignKeyInfo">accDiscount/description</xsd:appinfo>
                     <xsd:appinfo source="X_Retrieve_FKinfos">true</xsd:appinfo>
-                    <xsd:appinfo source="X_Workflow">Demo_Manager#SABPlanning_Product_1.0#Writable</xsd:appinfo>
-                    <xsd:appinfo source="X_Workflow">Team_Leader#SABPlanning_Product_1.0#Writable</xsd:appinfo>
                     <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
                     <xsd:appinfo source="X_Hide">Power_User</xsd:appinfo>
                 </xsd:annotation>
@@ -6145,8 +5593,6 @@
                     <xsd:appinfo source="X_ForeignKeyInfo">investOption/investOption</xsd:appinfo>
                     <xsd:appinfo source="X_ForeignKeyInfo">investOption/description</xsd:appinfo>
                     <xsd:appinfo source="X_Retrieve_FKinfos">true</xsd:appinfo>
-                    <xsd:appinfo source="X_Workflow">Demo_Manager#SABPlanning_Product_1.0#Writable</xsd:appinfo>
-                    <xsd:appinfo source="X_Workflow">Team_Leader#SABPlanning_Product_1.0#Writable</xsd:appinfo>
                     <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
                     <xsd:appinfo source="X_Hide">Power_User</xsd:appinfo>
                 </xsd:annotation>
@@ -6161,8 +5607,6 @@
                     <xsd:appinfo source="X_ForeignKeyInfo">allocationLevel/allocationLevel</xsd:appinfo>
                     <xsd:appinfo source="X_ForeignKeyInfo">allocationLevel/description</xsd:appinfo>
                     <xsd:appinfo source="X_Retrieve_FKinfos">true</xsd:appinfo>
-                    <xsd:appinfo source="X_Workflow">Demo_Manager#SABPlanning_Product_1.0#Writable</xsd:appinfo>
-                    <xsd:appinfo source="X_Workflow">Team_Leader#SABPlanning_Product_1.0#Writable</xsd:appinfo>
                     <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
                     <xsd:appinfo source="X_Hide">Power_User</xsd:appinfo>
                 </xsd:annotation>
@@ -6176,8 +5620,6 @@
                     <xsd:appinfo source="X_ForeignKeyInfo">groupCode/groupCode</xsd:appinfo>
                     <xsd:appinfo source="X_ForeignKeyInfo">groupCode/description</xsd:appinfo>
                     <xsd:appinfo source="X_Retrieve_FKinfos">true</xsd:appinfo>
-                    <xsd:appinfo source="X_Workflow">Demo_Manager#SABPlanning_Product_1.0#Writable</xsd:appinfo>
-                    <xsd:appinfo source="X_Workflow">Team_Leader#SABPlanning_Product_1.0#Writable</xsd:appinfo>
                     <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
                     <xsd:appinfo source="X_Hide">Power_User</xsd:appinfo>
                 </xsd:annotation>
@@ -6192,8 +5634,6 @@
                     <xsd:appinfo source="X_ForeignKeyInfo">attribute6/attribute6</xsd:appinfo>
                     <xsd:appinfo source="X_ForeignKeyInfo">attribute6/description</xsd:appinfo>
                     <xsd:appinfo source="X_Retrieve_FKinfos">true</xsd:appinfo>
-                    <xsd:appinfo source="X_Workflow">Demo_Manager#SABPlanning_Product_1.0#Writable</xsd:appinfo>
-                    <xsd:appinfo source="X_Workflow">Team_Leader#SABPlanning_Product_1.0#Writable</xsd:appinfo>
                     <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
                     <xsd:appinfo source="X_Hide">Power_User</xsd:appinfo>
                 </xsd:annotation>
@@ -6205,8 +5645,6 @@
                     <xsd:appinfo source="X_ForeignKeyInfo">strategicInd/strategicInd</xsd:appinfo>
                     <xsd:appinfo source="X_ForeignKeyInfo">strategicInd/description</xsd:appinfo>
                     <xsd:appinfo source="X_Retrieve_FKinfos">true</xsd:appinfo>
-                    <xsd:appinfo source="X_Workflow">Demo_Manager#SABPlanning_Product_1.0#Writable</xsd:appinfo>
-                    <xsd:appinfo source="X_Workflow">Team_Leader#SABPlanning_Product_1.0#Writable</xsd:appinfo>
                     <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
                     <xsd:appinfo source="X_Hide">Power_User</xsd:appinfo>
                 </xsd:annotation>
@@ -6221,8 +5659,6 @@
                     <xsd:appinfo source="X_ForeignKeyInfo">tavernTraining/tavernTraining</xsd:appinfo>
                     <xsd:appinfo source="X_ForeignKeyInfo">tavernTraining/description</xsd:appinfo>
                     <xsd:appinfo source="X_Retrieve_FKinfos">true</xsd:appinfo>
-                    <xsd:appinfo source="X_Workflow">Demo_Manager#SABPlanning_Product_1.0#Writable</xsd:appinfo>
-                    <xsd:appinfo source="X_Workflow">Team_Leader#SABPlanning_Product_1.0#Writable</xsd:appinfo>
                     <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
                     <xsd:appinfo source="X_Hide">Power_User</xsd:appinfo>
                 </xsd:annotation>
@@ -6234,8 +5670,6 @@
                     <xsd:appinfo source="X_ForeignKeyInfo">attribute10/attribute10</xsd:appinfo>
                     <xsd:appinfo source="X_ForeignKeyInfo">attribute10/description</xsd:appinfo>
                     <xsd:appinfo source="X_Retrieve_FKinfos">true</xsd:appinfo>
-                    <xsd:appinfo source="X_Workflow">Demo_Manager#SABPlanning_Product_1.0#Writable</xsd:appinfo>
-                    <xsd:appinfo source="X_Workflow">Team_Leader#SABPlanning_Product_1.0#Writable</xsd:appinfo>
                     <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
                     <xsd:appinfo source="X_Hide">Power_User</xsd:appinfo>
                 </xsd:annotation>
@@ -6250,8 +5684,6 @@
                     </xsd:appinfo>
                     <xsd:appinfo source="X_ForeignKeyInfo">paymentMethod/description</xsd:appinfo>
                     <xsd:appinfo source="X_Retrieve_FKinfos">true</xsd:appinfo>
-                    <xsd:appinfo source="X_Workflow">Demo_Manager#SABPlanning_Product_1.0#Writable</xsd:appinfo>
-                    <xsd:appinfo source="X_Workflow">Team_Leader#SABPlanning_Product_1.0#Writable</xsd:appinfo>
                     <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
                     <xsd:appinfo source="X_Hide">Power_User</xsd:appinfo>
                 </xsd:annotation>
@@ -6267,8 +5699,6 @@
                     <xsd:appinfo source="X_ForeignKeyInfo">companyCode/name</xsd:appinfo>
                     <xsd:appinfo source="X_Retrieve_FKinfos">true</xsd:appinfo>
                     <xsd:appinfo source="X_Label_EN">Company Code</xsd:appinfo>
-                    <xsd:appinfo source="X_Workflow">Demo_Manager#SABPlanning_Product_1.0#Writable</xsd:appinfo>
-                    <xsd:appinfo source="X_Workflow">Team_Leader#SABPlanning_Product_1.0#Writable</xsd:appinfo>
                     <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
                     <xsd:appinfo source="X_Hide">Power_User</xsd:appinfo>
                 </xsd:annotation>
@@ -6280,8 +5710,6 @@
                         which is updated parallel to the subledger account for normal postings (for example, invoice or
                         payment).
                     </xsd:appinfo>
-                    <xsd:appinfo source="X_Workflow">Demo_Manager#SABPlanning_Product_1.0#Writable</xsd:appinfo>
-                    <xsd:appinfo source="X_Workflow">Team_Leader#SABPlanning_Product_1.0#Writable</xsd:appinfo>
                     <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
                     <xsd:appinfo source="X_Hide">Power_User</xsd:appinfo>
                 </xsd:annotation>
@@ -6302,8 +5730,6 @@
                         rules can be stored in the master record of an account which enables you to determine the
                         standard sort sequence on an account-specific basis.
                     </xsd:appinfo>
-                    <xsd:appinfo source="X_Workflow">Demo_Manager#SABPlanning_Product_1.0#Writable</xsd:appinfo>
-                    <xsd:appinfo source="X_Workflow">Team_Leader#SABPlanning_Product_1.0#Writable</xsd:appinfo>
                     <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
                     <xsd:appinfo source="X_Hide">Power_User</xsd:appinfo>
                 </xsd:annotation>
@@ -6319,8 +5745,6 @@
                         customers. By using the release approval group, you can determine release approval paths and
                         those people with release approval authorisation.
                     </xsd:appinfo>
-                    <xsd:appinfo source="X_Workflow">Demo_Manager#SABPlanning_Product_1.0#Writable</xsd:appinfo>
-                    <xsd:appinfo source="X_Workflow">Team_Leader#SABPlanning_Product_1.0#Writable</xsd:appinfo>
                     <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
                     <xsd:appinfo source="X_Hide">Power_User</xsd:appinfo>
                 </xsd:annotation>
@@ -6335,16 +5759,12 @@
                     <xsd:appinfo source="X_Description_EN">Key for defining payment terms composed of cash discount
                         percentages and payment periods.
                     </xsd:appinfo>
-                    <xsd:appinfo source="X_Workflow">Demo_Manager#SABPlanning_Product_1.0#Writable</xsd:appinfo>
-                    <xsd:appinfo source="X_Workflow">Team_Leader#SABPlanning_Product_1.0#Writable</xsd:appinfo>
                     <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
                     <xsd:appinfo source="X_Hide">Power_User</xsd:appinfo>
                 </xsd:annotation>
             </xsd:element>
             <xsd:element maxOccurs="1" minOccurs="0" name="creditMemoPaymentTerms" type="xsd:string">
                 <xsd:annotation>
-                    <xsd:appinfo source="X_Workflow">Demo_Manager#SABPlanning_Product_1.0#Writable</xsd:appinfo>
-                    <xsd:appinfo source="X_Workflow">Team_Leader#SABPlanning_Product_1.0#Writable</xsd:appinfo>
                     <xsd:appinfo source="X_Label_EN">Credit Memo Payment Terms</xsd:appinfo>
                     <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
                     <xsd:appinfo source="X_Hide">Power_User</xsd:appinfo>
@@ -6361,8 +5781,6 @@
                         group contains settings that affect cash discount and payment difference processing. e.g.
                         Tolerance FLX payment term, Up to one day discount grace, Distributor tolerance group.
                     </xsd:appinfo>
-                    <xsd:appinfo source="X_Workflow">Demo_Manager#SABPlanning_Product_1.0#Writable</xsd:appinfo>
-                    <xsd:appinfo source="X_Workflow">Team_Leader#SABPlanning_Product_1.0#Writable</xsd:appinfo>
                     <xsd:appinfo source="X_Label_EN">Tolerance Group</xsd:appinfo>
                     <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
                     <xsd:appinfo source="X_Hide">Power_User</xsd:appinfo>
@@ -6376,8 +5794,6 @@
                         subsequent processing (order, delivery, billing document...) for condition determination and
                         pricing. E.G. Cash, EFT, Direct Cheque deposit, account etc.
                     </xsd:appinfo>
-                    <xsd:appinfo source="X_Workflow">Demo_Manager#SABPlanning_Product_1.0#Writable</xsd:appinfo>
-                    <xsd:appinfo source="X_Workflow">Team_Leader#SABPlanning_Product_1.0#Writable</xsd:appinfo>
                     <xsd:appinfo source="X_ForeignKeyInfo">paymentMethodOutGoing/land1</xsd:appinfo>
                     <xsd:appinfo source="X_ForeignKeyInfo">paymentMethodOutGoing/zlsch</xsd:appinfo>
                     <xsd:appinfo source="X_ForeignKeyInfo">paymentMethodOutGoing/text1</xsd:appinfo>
@@ -6397,8 +5813,6 @@
                     <xsd:appinfo source="X_Description_EN">Short Key for a Hous bank. All bank All bank data is
                         determined using this key.
                     </xsd:appinfo>
-                    <xsd:appinfo source="X_Workflow">Demo_Manager#SABPlanning_Product_1.0#Writable</xsd:appinfo>
-                    <xsd:appinfo source="X_Workflow">Team_Leader#SABPlanning_Product_1.0#Writable</xsd:appinfo>
                     <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
                     <xsd:appinfo source="X_Hide">Power_User</xsd:appinfo>
                 </xsd:annotation>
@@ -6410,8 +5824,6 @@
                     <xsd:appinfo source="X_Description_EN">Payment Block. Block key used to block an open item or an
                         account for payment transactions.
                     </xsd:appinfo>
-                    <xsd:appinfo source="X_Workflow">Demo_Manager#SABPlanning_Product_1.0#Writable</xsd:appinfo>
-                    <xsd:appinfo source="X_Workflow">Team_Leader#SABPlanning_Product_1.0#Writable</xsd:appinfo>
                     <xsd:appinfo source="X_ForeignKeyInfo">paymentBlock/paymentBlock</xsd:appinfo>
                     <xsd:appinfo source="X_ForeignKeyInfo">paymentBlock/description</xsd:appinfo>
                     <xsd:appinfo source="X_Retrieve_FKinfos">true</xsd:appinfo>
@@ -6431,8 +5843,6 @@
                     <xsd:appinfo source="X_Description_EN">The Accounting clerk defined by this identification code is
                         used in the payment functions for correspondence and reporting e.g. open item lists
                     </xsd:appinfo>
-                    <xsd:appinfo source="X_Workflow">Demo_Manager#SABPlanning_Product_1.0#Writable</xsd:appinfo>
-                    <xsd:appinfo source="X_Workflow">Team_Leader#SABPlanning_Product_1.0#Writable</xsd:appinfo>
                     <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
                     <xsd:appinfo source="X_Hide">Power_User</xsd:appinfo>
                 </xsd:annotation>
@@ -6443,8 +5853,6 @@
                     <xsd:appinfo source="X_Description_EN">User at customer. Name or identification code of the
                         accounting clerk at the customer
                     </xsd:appinfo>
-                    <xsd:appinfo source="X_Workflow">Demo_Manager#SABPlanning_Product_1.0#Writable</xsd:appinfo>
-                    <xsd:appinfo source="X_Workflow">Team_Leader#SABPlanning_Product_1.0#Writable</xsd:appinfo>
                     <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
                     <xsd:appinfo source="X_Hide">Power_User</xsd:appinfo>
                 </xsd:annotation>
@@ -6453,8 +5861,6 @@
                 <xsd:annotation>
                     <xsd:appinfo source="X_Description_EN">Accounting Clerk's telephone number at the Business partner
                     </xsd:appinfo>
-                    <xsd:appinfo source="X_Workflow">Demo_Manager#SABPlanning_Product_1.0#Writable</xsd:appinfo>
-                    <xsd:appinfo source="X_Workflow">Team_Leader#SABPlanning_Product_1.0#Writable</xsd:appinfo>
                     <xsd:appinfo source="X_Label_EN">Manager Telephone</xsd:appinfo>
                     <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
                     <xsd:appinfo source="X_Hide">Power_User</xsd:appinfo>
@@ -6464,8 +5870,6 @@
                 <xsd:annotation>
                     <xsd:appinfo source="X_Description_EN">Accounting Clerk's Fax number at the Business partner
                     </xsd:appinfo>
-                    <xsd:appinfo source="X_Workflow">Demo_Manager#SABPlanning_Product_1.0#Writable</xsd:appinfo>
-                    <xsd:appinfo source="X_Workflow">Team_Leader#SABPlanning_Product_1.0#Writable</xsd:appinfo>
                     <xsd:appinfo source="X_Label_EN">Manager Fax</xsd:appinfo>
                     <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
                     <xsd:appinfo source="X_Hide">Power_User</xsd:appinfo>
@@ -6475,8 +5879,6 @@
                 <xsd:annotation>
                     <xsd:appinfo source="X_Description_EN">Accounting Clerk's internet address at the Business partner
                     </xsd:appinfo>
-                    <xsd:appinfo source="X_Workflow">Demo_Manager#SABPlanning_Product_1.0#Writable</xsd:appinfo>
-                    <xsd:appinfo source="X_Workflow">Team_Leader#SABPlanning_Product_1.0#Writable</xsd:appinfo>
                     <xsd:appinfo source="X_Label_EN">Manager Internet</xsd:appinfo>
                     <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
                     <xsd:appinfo source="X_Hide">Power_User</xsd:appinfo>
@@ -6489,8 +5891,6 @@
                         dunning notices are created for the branch. Normally automatic payment transactions and dunning
                         notices are created for the HEAD OFFICE
                     </xsd:appinfo>
-                    <xsd:appinfo source="X_Workflow">Demo_Manager#SABPlanning_Product_1.0#Writable</xsd:appinfo>
-                    <xsd:appinfo source="X_Workflow">Team_Leader#SABPlanning_Product_1.0#Writable</xsd:appinfo>
                     <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
                     <xsd:appinfo source="X_Hide">Power_User</xsd:appinfo>
                 </xsd:annotation>
@@ -6506,8 +5906,6 @@
                         different ID's, you can divide customers into groups with different account statement intervals.
                         E.G weekly account statements or monthly account statements
                     </xsd:appinfo>
-                    <xsd:appinfo source="X_Workflow">Demo_Manager#SABPlanning_Product_1.0#Writable</xsd:appinfo>
-                    <xsd:appinfo source="X_Workflow">Team_Leader#SABPlanning_Product_1.0#Writable</xsd:appinfo>
                     <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
                     <xsd:appinfo source="X_Hide">Power_User</xsd:appinfo>
                 </xsd:annotation>
@@ -6516,8 +5914,6 @@
                 <xsd:annotation>
                     <xsd:appinfo source="X_Label_EN">Account Memo</xsd:appinfo>
                     <xsd:appinfo source="X_Description_EN">Internal memo of the accounting department.</xsd:appinfo>
-                    <xsd:appinfo source="X_Workflow">Demo_Manager#SABPlanning_Product_1.0#Writable</xsd:appinfo>
-                    <xsd:appinfo source="X_Workflow">Team_Leader#SABPlanning_Product_1.0#Writable</xsd:appinfo>
                     <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
                     <xsd:appinfo source="X_Hide">Power_User</xsd:appinfo>
                 </xsd:annotation>
@@ -6536,8 +5932,6 @@
                     <xsd:appinfo source="X_Description_EN">Vending Commission, Specifies a customer-defined group of
                         customers.
                     </xsd:appinfo>
-                    <xsd:appinfo source="X_Workflow">Demo_Manager#SABPlanning_Product_1.0#Writable</xsd:appinfo>
-                    <xsd:appinfo source="X_Workflow">Team_Leader#SABPlanning_Product_1.0#Writable</xsd:appinfo>
 
 
                     <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
@@ -6551,8 +5945,6 @@
                     <xsd:appinfo source="X_Description_EN">Material Listing, Specifies a customer-defined group of
                         customers
                     </xsd:appinfo>
-                    <xsd:appinfo source="X_Workflow">Demo_Manager#SABPlanning_Product_1.0#Writable</xsd:appinfo>
-                    <xsd:appinfo source="X_Workflow">Team_Leader#SABPlanning_Product_1.0#Writable</xsd:appinfo>
                     <xsd:appinfo source="X_ForeignKeyInfo">materialListing/marterialListing</xsd:appinfo>
                     <xsd:appinfo source="X_ForeignKeyInfo">materialListing/description</xsd:appinfo>
                     <xsd:appinfo source="X_Retrieve_FKinfos">true</xsd:appinfo>
@@ -6568,8 +5960,6 @@
                     <xsd:appinfo source="X_Label_EN">Price Type</xsd:appinfo>
                     <xsd:appinfo source="X_Description_EN">Price Type, Specifies a customer-defined group of customers
                     </xsd:appinfo>
-                    <xsd:appinfo source="X_Workflow">Demo_Manager#SABPlanning_Product_1.0#Writable</xsd:appinfo>
-                    <xsd:appinfo source="X_Workflow">Team_Leader#SABPlanning_Product_1.0#Writable</xsd:appinfo>
                     <xsd:appinfo source="X_ForeignKeyInfo">priceType/priceType</xsd:appinfo>
                     <xsd:appinfo source="X_ForeignKeyInfo">priceType/description</xsd:appinfo>
                     <xsd:appinfo source="X_Retrieve_FKinfos">true</xsd:appinfo>
@@ -6589,10 +5979,6 @@
                     <xsd:appinfo source="X_Description_EN">Charge Container, Specifies a customer-defined group of
                         customers
                     </xsd:appinfo>
-                    <xsd:appinfo source="X_Workflow">Demo_Manager#SABPlanning_Product_1.0#Writable</xsd:appinfo>
-                    <xsd:appinfo source="X_Workflow">Team_Leader#SABPlanning_Product_1.0#Writable</xsd:appinfo>
-
-
                     <xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
                     <xsd:appinfo source="X_Hide">Power_User</xsd:appinfo>
                 </xsd:annotation>
@@ -6604,8 +5990,6 @@
                     <xsd:appinfo source="X_Description_EN">Freigh Recovery, Specifies a customer-defined group of
                         customers
                     </xsd:appinfo>
-                    <xsd:appinfo source="X_Workflow">Demo_Manager#SABPlanning_Product_1.0#Writable</xsd:appinfo>
-                    <xsd:appinfo source="X_Workflow">Team_Leader#SABPlanning_Product_1.0#Writable</xsd:appinfo>
                     <xsd:appinfo source="X_ForeignKeyInfo">freightRecovery/freightRecovery</xsd:appinfo>
                     <xsd:appinfo source="X_ForeignKeyInfo">freightRecovery/description</xsd:appinfo>
                     <xsd:appinfo source="X_Retrieve_FKinfos">true</xsd:appinfo>

@@ -129,7 +129,7 @@ public class MetadataValidationTest extends TestCase {
         }
         assertEquals(1, handler.getErrorCount());
         assertTrue(handler.getMessages().contains(ValidationError.TYPE_DOES_NOT_EXIST));
-        assertTrue(handler.getLineNumbers().contains(181));
+        assertTrue(handler.getLineNumbers().contains(145));
         assertFalse(handler.getLineNumbers().contains(null));
     }
 
@@ -288,7 +288,7 @@ public class MetadataValidationTest extends TestCase {
         assertEquals(1, handler.getErrorCount());
         assertEquals(0, handler.getWarningCount());
         assertTrue(handler.getMessages().contains(ValidationError.TYPE_DOES_NOT_OWN_FIELD));
-        assertTrue(handler.getLineNumbers().contains(213));
+        assertTrue(handler.getLineNumbers().contains(171));
         assertFalse(handler.getLineNumbers().contains(null));
     }
 
@@ -305,7 +305,7 @@ public class MetadataValidationTest extends TestCase {
         assertEquals(1, handler.getErrorCount());
         assertEquals(0, handler.getWarningCount());
         assertTrue(handler.getMessages().contains(ValidationError.FOREIGN_KEY_INFO_NOT_REFERENCING_FK_TYPE));
-        assertTrue(handler.getLineNumbers().contains(183));
+        assertTrue(handler.getLineNumbers().contains(147));
         assertFalse(handler.getLineNumbers().contains(null));
     }
 
@@ -459,10 +459,10 @@ public class MetadataValidationTest extends TestCase {
         }
         assertEquals(2, handler.getErrorCount());
         assertTrue(handler.getMessages().contains(ValidationError.TYPE_DOES_NOT_OWN_FIELD));
-        assertTrue(handler.getLineNumbers().contains(181));
-        assertTrue(handler.getLineNumbers().contains(232));
-        assertTrue(handler.getLineNumbers().contains(375));
-        assertTrue(handler.getLineNumbers().contains(388));
+        assertTrue(handler.getLineNumbers().contains(145));
+        assertTrue(handler.getLineNumbers().contains(342));
+        assertTrue(handler.getLineNumbers().contains(329));
+        assertTrue(handler.getLineNumbers().contains(186));
         assertFalse(handler.getLineNumbers().contains(null));
     }
 
@@ -479,8 +479,8 @@ public class MetadataValidationTest extends TestCase {
         assertEquals(3, handler.getErrorCount());
         assertTrue(handler.getMessages().contains(ValidationError.TYPE_DOES_NOT_OWN_FIELD));
         assertTrue(handler.getLineNumbers().contains(21));
-        assertTrue(handler.getLineNumbers().contains(190));
-        assertTrue(handler.getLineNumbers().contains(318));
+        assertTrue(handler.getLineNumbers().contains(152));
+        assertTrue(handler.getLineNumbers().contains(272));
         assertFalse(handler.getLineNumbers().contains(null));
     }
 

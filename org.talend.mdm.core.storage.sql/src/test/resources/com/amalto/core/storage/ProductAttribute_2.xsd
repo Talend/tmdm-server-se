@@ -17,10 +17,6 @@
 			<xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
 			<xsd:appinfo source="X_Write">Demo_User</xsd:appinfo>
 			<xsd:appinfo source="X_PrimaryKeyInfo">Product/Name</xsd:appinfo>
-			<xsd:appinfo source="X_Workflow">Demo_User#Product_Product_1.0#Read-only
-			</xsd:appinfo>
-			<xsd:appinfo source="X_Workflow">Demo_Manager#Product_Product_1.0#Read-only
-			</xsd:appinfo>
 		</xsd:annotation>
 		<xsd:complexType>
 			<xsd:sequence maxOccurs="1" minOccurs="1">
@@ -31,10 +27,6 @@
 						<xsd:appinfo source="X_Label_FR">Id unique</xsd:appinfo>
 						<xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
 						<xsd:appinfo source="X_Write">Demo_User</xsd:appinfo>
-						<xsd:appinfo source="X_Workflow">Demo_User#Product_Product_1.0#Read-only
-						</xsd:appinfo>
-						<xsd:appinfo source="X_Workflow">Demo_Manager#Product_Product_1.0#Read-only
-						</xsd:appinfo>
 					</xsd:annotation>
 				</xsd:element>
 				<xsd:element maxOccurs="1" minOccurs="1" name="Name"
@@ -44,10 +36,6 @@
 						<xsd:appinfo source="X_Label_FR">Nom</xsd:appinfo>
 						<xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
 						<xsd:appinfo source="X_Write">Demo_User</xsd:appinfo>
-						<xsd:appinfo source="X_Workflow">Demo_User#Product_Product_1.0#Read-only
-						</xsd:appinfo>
-						<xsd:appinfo source="X_Workflow">Demo_Manager#Product_Product_1.0#Read-only
-						</xsd:appinfo>
 					</xsd:annotation>
 				</xsd:element>
 				<xsd:element maxOccurs="unbounded" minOccurs="0"
@@ -55,10 +43,6 @@
 					<xsd:annotation>
 						<xsd:appinfo source="X_Write">Demo_Manager</xsd:appinfo>
 						<xsd:appinfo source="X_Write">Demo_User</xsd:appinfo>
-						<xsd:appinfo source="X_Workflow">Demo_User#Product_Product_1.0#Read-only
-						</xsd:appinfo>
-						<xsd:appinfo source="X_Workflow">Demo_Manager#Product_Product_1.0#Read-only
-						</xsd:appinfo>
 						<xsd:appinfo source="X_ForeignKey">StoreItem/StoreItemId
 						</xsd:appinfo>
 						<xsd:appinfo source="X_ForeignKey_NotSep">false</xsd:appinfo>

@@ -13,8 +13,6 @@
     <name>org.talend.mdm.core</name>
 
     <properties>
-        <jackson.version>2.9.10</jackson.version>
-        <jackson.provider.version>2.9.10</jackson.provider.version>
         <activemq.version>5.15.9</activemq.version>
         <woodstox.core.version>5.3.0</woodstox.core.version>
         <joda.time.version>2.10</joda.time.version>
@@ -225,63 +223,47 @@
         <dependency>
             <groupId>com.fasterxml.jackson.dataformat</groupId>
             <artifactId>jackson-dataformat-yaml</artifactId>
-            <exclusions>
-	            <exclusion>
-	                <groupId>org.yaml</groupId>
-	                <artifactId>snakeyaml</artifactId>
-	            </exclusion>
-            </exclusions>
-            <version>${jackson.provider.version}</version>
         </dependency>
         <dependency>
             <groupId>com.fasterxml.jackson.dataformat</groupId>
             <artifactId>jackson-dataformat-xml</artifactId>
-            <version>${jackson.provider.version}</version>
         </dependency>
         <dependency>
             <groupId>com.fasterxml.jackson.datatype</groupId>
             <artifactId>jackson-datatype-joda</artifactId>
-            <version>${jackson.provider.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.fasterxml.jackson.jaxrs</groupId>
+            <artifactId>jackson-jaxrs-base</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.fasterxml.jackson.jaxrs</groupId>
+            <artifactId>jackson-jaxrs-json-provider</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.fasterxml.jackson.module</groupId>
+            <artifactId>jackson-module-jaxb-annotations</artifactId>
         </dependency>
         <dependency>
             <groupId>com.fasterxml.jackson.core</groupId>
             <artifactId>jackson-core</artifactId>
-            <version>${jackson.provider.version}</version>
         </dependency>
         <dependency>
             <groupId>com.fasterxml.jackson.core</groupId>
             <artifactId>jackson-databind</artifactId>
-            <version>${jackson.version}</version>
         </dependency>
         <dependency>
             <groupId>com.fasterxml.jackson.core</groupId>
             <artifactId>jackson-annotations</artifactId>
-            <version>${jackson.provider.version}</version>
         </dependency>
-		<dependency>
-		    <groupId>com.fasterxml.jackson.module</groupId>
-		    <artifactId>jackson-module-jaxb-annotations</artifactId>
-		    <version>${jackson.provider.version}</version>
-		</dependency>
-		<dependency>
-		    <groupId>com.fasterxml.woodstox</groupId>
-		    <artifactId>woodstox-core</artifactId>
-		    <version>${woodstox.core.version}</version>
-		</dependency>
-		<dependency>
-		    <groupId>joda-time</groupId>
-		    <artifactId>joda-time</artifactId>
-		    <version>${joda.time.version}</version>
-		</dependency>
-		<dependency>
-		    <groupId>com.fasterxml.jackson.jaxrs</groupId>
-		    <artifactId>jackson-jaxrs-base</artifactId>
-		    <version>${jackson.provider.version}</version>
-		</dependency>
+        <dependency>
+            <groupId>com.fasterxml.woodstox</groupId>
+            <artifactId>woodstox-core</artifactId>
+            <version>${woodstox.core.version}</version>
+        </dependency>
         <dependency>
             <groupId>com.fasterxml.jackson.jaxrs</groupId>
             <artifactId>jackson-jaxrs-json-provider</artifactId>
-            <version>${jackson.provider.version}</version>
         </dependency>
         <dependency>
             <groupId>org.springframework</groupId>

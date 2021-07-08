@@ -14,6 +14,7 @@ import com.amalto.core.objects.ObjectPOJO;
 import com.amalto.core.objects.ObjectPOJOPK;
 import com.amalto.core.objects.routing.RoutingRulePOJO;
 import com.amalto.core.objects.routing.RoutingRulePOJOPK;
+import com.amalto.core.util.PluginRegistry;
 import com.amalto.core.util.XtentisException;
 
 import org.apache.logging.log4j.Logger;
@@ -38,6 +39,9 @@ public class DefaultRoutingRule implements RoutingRule {
         try {
             if (routingRule.getConcept() == null || "".equals(routingRule.getConcept())) { //$NON-NLS-1$
                 routingRule.setConcept("*"); //$NON-NLS-1$
+            }
+            if (PluginRegistry.getInstance().getService(routingRule.getServiceJNDI()) == null) {
+            	throw new XtentisException("Unable to create the Routing Rule. Service " + routingRule.getServiceJNDI() + " does not exist.");
             }
             ObjectPOJOPK pk = routingRule.store();
             if (pk == null) {
